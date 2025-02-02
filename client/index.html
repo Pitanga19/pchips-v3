@@ -1,0 +1,648 @@
+<!-- pchips-v3/client/index.html -->
+
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+<title>POKER CHIPS</title>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<link rel='stylesheet' type='text/css' href='css/style.css'>
+</head>
+<body>
+    <main>
+        <div class="main-div" id="login-container">
+            <h2 class="main-h2">Log In</h2>
+            <form class="form" id="login-form">
+                <div class="form-div" id="username-div">
+                    <label for="user" class="form-label" id="username-label">Username:</label>
+                    <input type="text" name="user" class="form-input" id="username-input" placeholder="username">
+                </div>
+                <div class="form-div" id="password-div">
+                    <label for="user" class="form-label" id="password-label">Password:</label>
+                    <input type="password" name="user" class="form-input" id="password-input" placeholder="password">
+                </div>
+                <div class="login-div" id="login-navigation-div">
+                    <input type="submit" value="Log In ➤" class="form-submit" id="login-submit">
+                    <input type="button" value="Register" class="form-button" id="register-button">
+                    <input type="button" value="Forgot Password?" class="form-button" id="forgot-button">
+                </div>
+            </form>
+        </div>
+
+        <div class="main-div" id="register-container">
+            <h2 class="main-h2">Register</h2>
+            <form class="form" id="login-form">
+                <div class="form-div" id="username-div">
+                    <label for="user" class="form-label" id="username-label">Username:</label>
+                    <input type="text" name="user" class="form-input" id="username-input" placeholder="username">
+                </div>
+                <div class="form-div" id="email-div">
+                    <label for="email" class="form-label" id="email-label">Email:</label>
+                    <input type="email" name="user" class="form-input" id="email-input" placeholder="email">
+                </div>
+                <div class="form-div" id="password-div">
+                    <label for="password" class="form-label" id="password-label">Password:</label>
+                    <input type="password" name="password" class="form-input" id="password-input" placeholder="password">
+                </div>
+                <div class="form-div" id="repeat-password-div">
+                    <label for="repeat-password" class="form-label" id="repeat-password-label">Repeat Password:</label>
+                    <input type="password" name="repeat-password" class="form-input" id="repeat-password-input" placeholder="repeat password">
+                </div>
+                <div class="register-div" id="register-navigation-div">
+                    <input type="submit" value="Create Account ➤" class="form-submit" id="register-submit">
+                    <input type="button" value="Back" class="register-button" id="register-back-button">
+                </div>
+            </form>
+        </div>
+        
+        <div class="main-div" id="forgot-container">
+            <h2 class="main-h2">Recovery Password</h2>
+            <form class="form" id="forgot-form">
+                <div class="form-div" id="username-div">
+                    <label for="reset-user" class="form-label" id="reset-username-label">Reset by Username:</label>
+                    <input type="text" name="reset-user" class="form-input" id="reset-username-input" placeholder="username">
+                </div>
+                <div class="form-div" id="username-div">
+                    <label for="reset-email" class="form-label" id="reset-email-label">Reset by Email:</label>
+                    <input type="reset-email" name="user" class="form-input" id="reset-email-input" placeholder="email">
+                </div>
+                <div class="forgot-div" id="forgot-navigation-div">
+                    <input type="submit" value="Reset Password ➤" class="form-submit" id="forgot-submit">
+                    <input type="button" value="Back" class="forgot-button" id="forgot-back-button">
+                </div>
+            </form>
+        </div>
+        
+        <div class="main-div" id="menu-container">
+            <h1 class="menu-title">Poker Chips</h1>
+            <ul class="menu-ul">
+                <li class="menu-li"><input type="button" value="New Game" class="menu-button" id="new_game-button"></li>
+                <li class="menu-li"><input type="button" value="Parties" class="menu-button" id="parties-button"></li>
+                <li class="menu-li"><input type="button" value="Friends" class="menu-button" id="friends-button"></li>
+                <li class="menu-li"><input type="button" value="Profile" class="menu-button" id="profile-button"></li>
+            </ul>
+            <h6 class="menu-p">Poker Chips v0.0.1 by Pitanga</>
+        </div>
+
+        <div class="main-div" id="profile-container">
+            <h2 class="main-h2">My Profile</h2>
+            <ul class="profile-ul" id="user_info-ul">
+                <li class="profile-li" id="username-li">
+                    <label for="username" class="profile-label" id="username-label">Username:</label>
+                    <strong class="strong-label" id="username"><!-- Username here -->ExampleUsername</strong>
+                    <input
+                        type="text"
+                        name="new-username"
+                        placeholder="new username ..."
+                        id="new_username-input"
+                        class="profile-input"
+                    >
+                    <input type="button" value="✎" class="profile-button" id="edit_username-button">
+                    <input type="button" value="✔" class="profile-button" id="edit_username-button">
+                </li>
+                <li class="profile-li" id="email-li">
+                    <label for="email" class="profile-label" id="email-label">email:</label>
+                    <strong class="strong-label" id="email"><!-- email here -->example@email.com</strong>
+                    <input
+                        type="email"
+                        name="new-email"
+                        placeholder="new email ..."
+                        id="new_email-input"
+                        class="profile-input"
+                    >
+                    <input type="button" value="✎" class="profile-button" id="edit_email-button">
+                    <input type="button" value="✔" class="profile-button" id="edit_email-button">
+                </li>
+            </ul>
+            <div class="profile-div" id="profile-navigation-div">
+                <input type="button" value="Log Out" class="profile-button" id="profile-log_out-button">
+                <input type="button" value="Back" class="profile-button" id="profile-back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="friends-container">
+            <h2 class="main-h2">My Friends</h2>
+            <ul class="friends-ul" id="friends_list-ul"><!-- Friends here -->
+                <li class="friends-li" id="example_friend1-li">
+                    <strong class="friends-strong" id="example_friend1-strong">FriendUsername</strong>
+                    <input type="button" value="Add to party" class="friends-button add_friend-button">
+                    <input type="button" value="Remove" class="friends-button remove-button">
+                </li>
+                <li class="friends-li" id="example_friend2-li">
+                    <strong class="friends-strong" id="example_friend1-strong">OtherFriend</strong>
+                    <input type="button" value="Add to party" class="friends-button add_friend-button" id="add_to_party2-button">
+                    <input type="button" value="Remove" class="friends-button remove-button">
+                </li>
+            </ul>
+            <div class="friends-div" id="friends-navigation-div">
+                <input type="button" value="Add New Friend" class="friends-button" id="friends-new_friend-button">
+                <input type="button" value="Back" class="friends-button" id="friends-back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="friend_to_party-container">
+            <h2 class="main-h2">Add friend to party</h2>
+            <h3 class="ftp-h3" id="ftp-username"><!-- Friend username here -->FriendUsername is current in ...</h3>
+            <ul class="ftp-ul" id="ftp-current_parties"><!-- Friend current parties here -->
+                <li class="fpt-li ftp-current">
+                    ExampleParty
+                </li>
+                <li class="fpt-li ftp-current">
+                    OtherParty
+                </li>
+            </ul>
+            <form class="ftp-form" id="to_add-form">
+                <h3 class="ftp-h3" id="ftp-username">Adding <!-- Friend username here -->FriendUsername to party ...</h3>
+                <input
+                    type="text"
+                    name="party-find-party"
+                    placeholder="find by name ..."
+                    id="ftp-find_party-input"
+                    class="ftp-input"
+                >
+                <ul class="ftp-ul" id="ftp-to_add_parties"><!-- Friend avalible parties to add here -->
+                    <li class="fpt-li ftp-to_add">
+                        <input type="checkbox" name="ftp-example1" id="ftp-example1" class="ftp-checkbox">
+                        <label for="ftp-example1" class="ftp-label ftp-current-label"><!-- Party name -->AvalibleParty</label>
+                    </li>
+                    <li class="fpt-li ftp-to_add">
+                        <input type="checkbox" name="ftp-example2" id="ftp-example2" class="ftp-checkbox">
+                        <label for="ftp-example2" class="ftp-label ftp-current-label"><!-- Party name -->OtherAvParty</label>
+                    </li>
+                    <li class="fpt-li ftp-to_add">
+                        <input type="checkbox" name="ftp-example3" id="ftp-example3" class="ftp-checkbox">
+                        <label for="ftp-example3" class="ftp-label ftp-current-label"><!-- Party name -->AnotherParty</label>
+                    </li>
+                </ul>
+            </form>
+            <div class="ftp-div" id="ftp-navigation-div">
+                <input type="submit" value="Done" class="ftp-button" id="ftp-submit">
+                <input type="button" value="Cancel" class="ftp-button" id="ftp-back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="new_friend-container">
+            <h2 class="main-h2">New Friend</h2>
+            <form class="new_friend-form" id="new_friend-find_user-form">
+                <input
+                    type="text"
+                    name="new_friend-find-user"
+                    placeholder="find by username ..."
+                    id="new_friend-find_user-input"
+                    class="new_friend-input"
+                >
+                <input type="submit" value="Find ➤" class="form-submit" id="login-submit">
+            </form>
+            <ul class="new_friend-ul" id="new_friend-find_results"><!-- Found users here -->
+                <li class="new_friend-li" id="founded_user_example1-li">
+                    <strong class="new_friend-strong" id="founded_user_example1-strong">FoundUsername</strong>
+                    <input type="button" value="Add +" class="new_friend-button" id="add_founded_example1-button">
+                </li>
+                <li class="new_friend-li" id="founded_user_example2-li">
+                    <strong class="new_friend-strong" id="founded_user_example2-strong">OtherFound</strong>
+                    <input type="button" value="Add +" class="new_friend-button" id="add_founded_example2-button">
+                </li>
+            </ul>
+            <div class="new_friend-div" id="new_friend-navigation-div">
+                <input type="button" value="Back" class="new_friend-button" id="new_friend-back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="parties-container">
+            <h2 class="main-h2">My Parties</h2>
+            <form class="parties-form" id="parties-find_party-form">
+                <input
+                    type="text"
+                    name="parties-find-party"
+                    placeholder="find by name ..."
+                    id="parties-find_party-input"
+                    class="parties-input"
+                >
+            </form>
+            <ul class="parties-ul" id="parties-ul"><!-- Parties here -->
+                <li class="parties-li">
+                    <label for="parties-example1" class="parties-label"><!-- Party name -->MyParty</label>
+                    <input type="button" value="See" class="parties-button" id="see_example1-button">
+                    <input type="button" value="Remove" class="parties-button" id="remove_example1-button">
+                </li>
+                <li class="parties-li">
+                    <label for="party-example1" class="parties-label"><!-- Party name -->OtherParty</label>
+                    <input type="button" value="See" class="parties-button" id="see_example1-button">
+                    <input type="button" value="Remove" class="parties-button" id="remove_example1-button">
+                </li>
+            </ul>
+            <div class="parties-div" id="parties_navigation-div">
+                <input type="button" value="New Party +" class="parties-button" id="parties_create_party-button">
+                <input type="button" value="Back" class="parties-button" id="parties_back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="party-container">
+            <h2 class="main-h2"><!-- Party name here -->Party Screen</h2>
+            <h3 class="main-h3">Users in party</h3>
+            <ul class="party-ul" id="party_users-ul"><!-- Party users here -->
+                <li class="party_users-li" id="example_friend1-li">
+                    <label for="party-example1" class="party_users-label party-current-label">
+                        <!-- User here -->MaybeFriend
+                    </label>
+                </li>
+                <li class="party_users-li" id="example_friend1-li">
+                    <label for="party_users-example2" class="party-label party_users-current-label">
+                        <!-- User here -->MaybeNotFriend
+                    </label>
+                    <input type="button" value="Add +" class="party-button" id="party_ex2_add_friend-button">
+                </li>
+            </ul>
+            <div class="party-div" id="party_navigation-div">
+                <input type="button" value="Party Table" class="party-button" id="party_table-button">
+                <input type="button" value="Add users" class="party-button" id="party_add_users-button">
+                <input type="button" value="Back" class="party-button" id="party_back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="party_add_friend-container">
+            <h2 class="main-h2">Add user to <!-- Party name here -->PartyName</h2>
+            <input
+                type="text"
+                name="party-find-user"
+                placeholder="find by username ..."
+                id="party-find_user-input"
+                class="create_new_party-input"
+            >
+            <h3 class="party_add_friend-h3" id="party_add_friend_users-h3"></h3>
+            <ul class="paf_users-ul" id="paf-users-ul"><!-- Party users here -->
+                <li class="paf_users-li" id="example_friend1-li">
+                    <input type="checkbox" name="paf_users-example1" id="paf_users-example1" class="paf_users-checkbox">
+                    <label for="paf-example1" class="paf_users-label cnp-current-label">
+                        <!-- Friend here -->FriendUsername
+                    </label>
+                </li>
+                <li class="paf_users-li" id="example_friend1-li">
+                    <input type="checkbox" name="paf_users-example2" id="paf_users-example2" class="paf_users-checkbox">
+                    <label for="paf_users-example2" class="paf-label paf_users-current-label">
+                        <!-- Friend here -->OtherFriend
+                    </label>
+                </li>
+            </ul>
+            <div class="party_add_friend-div" id="party_add_friend-navigation-div">
+                <input type="submit" value="Done" class="form-submit" id="party_add_friend-submit">
+                <input type="button" value="Back" class="party_add_friend-button" id="party_add_friend-back-button">
+            </div>
+        </form>
+        </div>
+
+        <div class="main-div" id="create_new_party-container">
+            <h2 class="main-h2">Create New Party</h2>
+            <form class="create_new_party-form">
+                <ul class="create_new_party-ul">
+                    <h3 class="create_new_party-h3">
+                        <!-- Party name preview here ... -->Preview New Party Name
+                    </h3>
+                    <li class="create_new_party-li" id="new_party_name-li">
+                        <label for="new-party-name" class="create_new_party-label" id="new_party_name-label">
+                            Name: 
+                        </label>
+                        <input
+                            type="text"
+                            name="new-party-name"
+                            placeholder="new party name ..."
+                            id="new-party-name"
+                            class="create_new_party-input"
+                        >
+                    </li>
+                    <li class="create_new_party-li" id="create_new_party_users-li">
+                        <h3 class="create_new_party-h3">Add friends to party ...</h3>
+                        <input
+                            type="text"
+                            name="party-find-user"
+                            placeholder="find by username ..."
+                            id="party-find_user-input"
+                            class="create_new_party-input"
+                        >
+                        <h3 class="create_new_party-h3" id="create-new_party_users-h3"></h3>
+                        <ul class="cnp_users-ul" id="cnp-users-ul"><!-- Party users here -->
+                            <li class="cnp_users-li" id="example_friend1-li">
+                                <input type="checkbox" name="cnp_users-example1" id="cnp_users-example1" class="cnp_users-checkbox">
+                                <label for="cnp-example1" class="cnp_users-label cnp-current-label">
+                                    <!-- Friend here -->FriendUsername
+                                </label>
+                            </li>
+                            <li class="cnp_users-li" id="example_friend1-li">
+                                <input type="checkbox" name="cnp_users-example2" id="cnp_users-example2" class="cnp_users-checkbox">
+                                <label for="cnp_users-example2" class="cnp-label cnp_users-current-label">
+                                    <!-- Friend here -->OtherFriend
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </form>
+            <div class="party-div" id="party_navigation-div">
+                <input type="button" value="Create" class="party-button" id="party_create_party-button">
+                <input type="button" value="Back" class="party-button" id="party_back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="settings-container">
+            <h2 class="main-h2">Game Settings</h2>
+            <div class="settings-div" id="party_settings-div">
+                <form class="party_settings-form" id="party_settings-select_party-form">
+                    <h3 class="ftp-h3" id="ftp-username">Party:</h3>
+                    <input
+                        type="text"
+                        name="ps-find-user"
+                        placeholder="find by name ..."
+                        id="ps-select_party-input"
+                        class="ps-input"
+                    >
+                    <ul class="ps-ul" id="ftp-to_add_parties"><!-- User parties here -->
+                        <li class="ps-select_party-li ps-party-option">
+                            <input type="checkbox" name="ps-select_party-example1" id="ps-select_party-example1" class="ps-select_party-checkbox">
+                            <label for="ps-select_party-example1" class="ps-select_party-label ps-select_party-current-label">
+                                <!-- Party name -->AvalibleParty
+                            </label>
+                        </li>
+                        <li class="ps-select_party-li ps-party-option">
+                            <input type="checkbox" name="ps-select_party-example2" id="ps-select_party-example2" class="ps-select_party-checkbox">
+                            <label for="ps-select_party-example2" class="ps-select_party-label ps-select_party-current-label">
+                                <!-- Party name -->OtherAvParty
+                            </label>
+                        </li>
+                    </ul>
+                </form>
+                <form class="party_settings-form" id="party_settings-find_user-form">
+                    <h3 class="ftp-h3" id="ftp-username">Players:</h3>
+                    <input
+                        type="text"
+                        name="ps-find-user"
+                        placeholder="find by username ..."
+                        id="ps-find_user-input"
+                        class="ps-input"
+                    >
+                </form>
+                <ul class="party_settings-ul" id="party_settings_users-ul"><!-- Party users here -->
+                    <li class="ps_users-li" id="example_friend1-li">
+                        <input type="checkbox" name="ps_users-example1" id="ps_users-example1" class="ps_users-checkbox">
+                        <label for="ps-example1" class="ps_users-label ps-current-label">
+                            <!-- Party member here -->PartyMember
+                        </label>
+                    </li>
+                    <li class="ps_users-li" id="example_friend1-li">
+                        <input type="checkbox" name="ps_users-example2" id="ps_users-example2" class="ps_users-checkbox">
+                        <label for="ps_users-example2" class="ps-label ps_users-current-label">
+                            <!-- Party member here -->OtherMember
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="settings-div" id="rules_settings-div">
+                <form class="rules-settings-form">
+                    <h3 class="rules_settings-h3">Starting Level:</h3>
+                    <ul class="rules_settings-ul" id="starting-level">
+                        <li class="rules_settings-li" id="nl2-li">
+                            <input type="checkbox" name="" id="nl2-checkbox" class="settings-checkbox">
+                            <label for="nl2-checkbox" class="rules_settings-label" id="nl2-label">NL2</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl5-li">
+                            <input type="checkbox" name="" id="nl5-checkbox" class="settings-checkbox">
+                            <label for="nl5-checkbox" class="rules_settings-label" id="nl5-label">NL5</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl10-li">
+                            <input type="checkbox" name="" id="nl10-checkbox" class="settings-checkbox">
+                            <label for="nl10-checkbox" class="rules_settings-label" id="nl10-label">NL10</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl25-li">
+                            <input type="checkbox" name="" id="nl25-checkbox" class="settings-checkbox">
+                            <label for="nl25-checkbox" class="rules_settings-label" id="nl25-label">NL25</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl50-li">
+                            <input type="checkbox" name="" id="nl50-checkbox" class="settings-checkbox">
+                            <label for="nl50-checkbox" class="rules_settings-label" id="nl50-label">NL50</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl100-li">
+                            <input type="checkbox" name="" id="nl100-checkbox" class="settings-checkbox">
+                            <label for="nl100-checkbox" class="rules_settings-label" id="nl100-label">NL100</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl200-li">
+                            <input type="checkbox" name="" id="nl200-checkbox" class="settings-checkbox">
+                            <label for="nl200-checkbox" class="rules_settings-label" id="nl200-label">NL200</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl500-li">
+                            <input type="checkbox" name="" id="nl500-checkbox" class="settings-checkbox">
+                            <label for="nl500-checkbox" class="rules_settings-label" id="nl500-label">NL500</label>
+                        </li>
+                        <li class="rules_settings-li" id="nl1000-li">
+                            <input type="checkbox" name="" id="nl1000-checkbox" class="settings-checkbox">
+                            <label for="nl1000-checkbox" class="rules_settings-label" id="nl1000-label">NL1000</label>
+                        </li>
+                    </ul>
+                    <h3 class="rules_settings-h3">Starting Chips:</h3>
+                    <input
+                        type="number"
+                        name="starting-chips"
+                        placeholder="set starting chips ..."
+                        id="starting_chips-input"
+                        class="rules_settings-input"
+                    >
+                    <ul class="rules_settings-ul" id="starting-chips">
+                        <li class="rules_settings-li" id="20bbs-li">
+                            <input type="checkbox" name="" id="20bbs-checkbox" class="settings-checkbox">
+                            <label for="20bbs-checkbox" class="rules_settings-label" id="20bbs-label">20 BBs</label>
+                        </li>
+                        <li class="rules_settings-li" id="50bbs-li">
+                            <input type="checkbox" name="" id="50bbs-checkbox" class="settings-checkbox">
+                            <label for="50bbs-checkbox" class="rules_settings-label" id="50bbs-label">50 BBs</label>
+                        </li>
+                        <li class="rules_settings-li" id="80bbs-li">
+                            <input type="checkbox" name="" id="80bbs-checkbox" class="settings-checkbox">
+                            <label for="80bbs-checkbox" class="rules_settings-label" id="80bbs-label">80 BBs</label>
+                        </li>
+                        <li class="rules_settings-li" id="100bbs-li">
+                            <input type="checkbox" name="" id="100bbs-checkbox" class="settings-checkbox">
+                            <label for="100bbs-checkbox" class="rules_settings-label" id="100bbs-label">100 BBs</label>
+                        </li>
+                        <li class="rules_settings-li" id="150bbs-li">
+                            <input type="checkbox" name="" id="150bbs-checkbox" class="settings-checkbox">
+                            <label for="150bbs-checkbox" class="rules_settings-label" id="150bbs-label">150 BBs</label>
+                        </li>
+                        <li class="rules_settings-li" id="200bbs-li">
+                            <input type="checkbox" name="" id="200bbs-checkbox" class="settings-checkbox">
+                            <label for="200bbs-checkbox" class="rules_settings-label" id="200bbs-label">200 BBs</label>
+                        </li>
+                    </ul>
+                    <h3 class="rules_settings-h3">Level Raising:</h3>
+                    <ul class="rules_settings-ul" id="level_raising-ul">
+                        <li class="rules_settings-li" id="not_raise">
+                            <input type="checkbox" name="" id="not_raise-checkbox" class="rules_settings-checkbox">
+                            <label for="not_raise" class="rules_settings-label" id="not_raise-label">Not Raise</label>
+                        </li>
+                        <li class="rules_settings-li" id="time_raise">
+                            <input type="checkbox" name="" id="time_raise-checkbox" class="rules_settings-checkbox">
+                            <label for="time_raise" class="rules_settings-label" id="time_raise-label">Time Raise</label>
+                            <input
+                                type="number"
+                                name="time-raise"
+                                placeholder="increase every ..."
+                                id="time_raise-input"
+                                class="rules_settings-input"
+                            >
+                            <span class="rules_settings-span"> minutes</span>
+                        </li>
+                        <li class="rules_settings-li" id="round_raise">
+                            <input type="checkbox" name="" id="round_raise-checkbox" class="rules_settings-checkbox">
+                            <label for="round_raise" class="rules_settings-label" id="round_raise-label">Round Raise</label>
+                            <input
+                                type="number"
+                                name="round-raise"
+                                placeholder="increase every ..."
+                                id="round_raise-input"
+                                class="rules_settings-input"
+                            >
+                            <span class="rules_settings-span"> rounds</span>
+                        </li>
+                        <li class="rules_settings-li" id="elimination_raise">
+                            <input type="checkbox" name="" id="elimination_raise-checkbox" class="rules_settings-checkbox">
+                            <label for="elimination_raise" class="rules_settings-label" id="elimination_raise-label">Elimination Raise</label>
+                            <input
+                                type="number"
+                                name="elimination-raise"
+                                placeholder="increase every ..."
+                                id="elimination_raise-input"
+                                class="rules_settings-input"
+                            >
+                            <span class="rules_settings-span"> eliminations</span>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div class="settings-div" id="settings_navigation-div">
+                <input type="submit" value="Submit Settings ➤" class="settings-button" id="settings_submit-button">
+                <input type="button" value="Back" class="settings-button" id="settings_back-button">
+            </div>
+        </div>
+
+        <div class="main-div" id="game-container">
+            <h2 class="main-h2">Game Screen</h2>
+            <div class="game-div" id="game-header">
+                <div class="game_header-div" id="stage-div">
+                    <h3 class="game_header-h3" id="stage-h3">Pre-Flop / Flop / Turn / River</h3>
+                    <ul class="game_header-ul" id="cards-ul">
+                        <li class="game_header-li game_header-card" id="card_1-li"></li>
+                        <li class="game_header-li game_header-card" id="card_2-li"></li>
+                        <li class="game_header-li game_header-card" id="card_3-li"></li>
+                        <li class="game_header-li game_header-card" id="card_4-li"></li>
+                        <li class="game_header-li game_header-card" id="card_5-li"></li>
+                    </ul>
+                </div>
+                <div class="game_header-div" id="pots-div">
+                    <ul class="game_header-ul" id="pots-ul"><!-- Pots here -->
+                        <li class="game-li" id="pot1-li">
+                            <strong class="game-strong" id="pot1-strong">Pot 1: XXXc</strong>
+                            <ul class="chips-ul" id="pot1-chips-ul">
+                                <!-- Chips graph -->
+                                <li class="chips-li" id="pot1-1-li">White</li>
+                                <li class="chips-li" id="pot1-5-li">Red</li>
+                                <li class="chips-li" id="pot1-25-li">Blue</li>
+                                <li class="chips-li" id="pot1-100-li">Black</li>
+                                <li class="chips-li" id="pot1-500-li">Purple</li>
+                                <li class="chips-li" id="pot1-1000-li">Brown</li>
+                                <li class="chips-li" id="pot1-5000-li">Golden</li>
+                            </ul>
+                        </li>
+                        <li class="game-li" id="pot2-li">
+                            <strong class="game-strong" id="pot2-strong">Pot 2: XXXc</strong>
+                            <ul class="chips-ul" id="pot2-chips-ul">
+                                <!-- Chips graph -->
+                                <li class="chips-li" id="pot2-1-li">White</li>
+                                <li class="chips-li" id="pot2-5-li">Red</li>
+                                <li class="chips-li" id="pot2-25-li">Blue</li>
+                                <li class="chips-li" id="pot2-100-li">Black</li>
+                                <li class="chips-li" id="pot2-500-li">Purple</li>
+                                <li class="chips-li" id="pot2-1000-li">Brown</li>
+                                <li class="chips-li" id="pot2-5000-li">Golden</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="game_header-div" id="values-div">
+                    <ul class="game_header-ul" id="values-ul">
+                        <li class="game_header-ul" id="bb-value-li">BB value: 5c</li>
+                        <li class="game_header-ul" id="current-bet-li">Current bet: 15c</li>
+                        <li class="game_header-ul" id="min-raise-li">Minimum raise: 25c</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="game-div" id="game-rivals"><!-- Rivals here -->
+                <ul class="game_rivals-ul" id="rivals-ul">
+                    <li class="game_rivals-li" id="ex-rival1-li">
+                        <h4 class="game-h4" id="ex-rival1-username-h4">RivalUsername</h4>
+                        <h4 class="game-h4" id="ex-rival1-chips-h4">XXXc</h4>
+                        <ul class="rival-chips-ul" id="rival1-chips-ul">
+                            <!-- Chips graph -->
+                            <li class="chips-li" id="rival1-1-li">White</li>
+                            <li class="chips-li" id="rival1-5-li">Red</li>
+                            <li class="chips-li" id="rival1-25-li">Blue</li>
+                            <li class="chips-li" id="rival1-100-li">Black</li>
+                            <li class="chips-li" id="rival1-500-li">Purple</li>
+                            <li class="chips-li" id="rival1-1000-li">Brown</li>
+                            <li class="chips-li" id="rival1-5000-li">Golden</li>
+                        </ul>
+                    </li>
+                    <li class="game_rivals-li" id="ex-rival2-li">
+                        <h4 class="game-h4" id="ex-rival2-username-h4">OtherRival</h4>
+                        <h4 class="game-h4" id="ex-rival2-chips-h4">XXXc</h4>
+                        <ul class="rival-chips-ul" id="rival2-chips-ul">
+                            <!-- Chips graph -->
+                            <li class="chips-li" id="rival2-1-li">White</li>
+                            <li class="chips-li" id="rival2-5-li">Red</li>
+                            <li class="chips-li" id="rival2-25-li">Blue</li>
+                            <li class="chips-li" id="rival2-100-li">Black</li>
+                            <li class="chips-li" id="rival2-500-li">Purple</li>
+                            <li class="chips-li" id="rival2-1000-li">Brown</li>
+                            <li class="chips-li" id="rival2-5000-li">Golden</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="game-div" id="game-user">
+                <h3 class="game-h3" id="user-h3">ExampleUsername</h3>
+                <div class="user-div" id="chips-div">
+                    <h3 class="game-h3" id="chips-h3">XXXc</h3>
+                    <ul class="chips-ul" id="chips-ul">
+                        <!-- Chips graph -->
+                        <li class="chips-li" id="1-li">White</li>
+                        <li class="chips-li" id="5-li">Red</li>
+                        <li class="chips-li" id="25-li">Blue</li>
+                        <li class="chips-li" id="100-li">Black</li>
+                        <li class="chips-li" id="500-li">Purple</li>
+                        <li class="chips-li" id="1000-li">Brown</li>
+                        <li class="chips-li" id="5000-li">Golden</li>
+                    </ul>
+                </div>
+                <ul class="game-ul" id="actions-ul">
+                    <li class="game-li" id="amount-li">
+                        <input type="number" name="amount" placeholder="amount ..." id="amount-input" class="game-input">
+                    </li>
+                    <li class="game-li" id="all_in-li">
+                        <input type="button" value="All in" class="game-button" id="all_in-button">
+                    </li>
+                    <li class="game-li" id="raise-li">
+                        <input type="button" value="Raise" class="game-button" id="raise-button">
+                    </li>
+                    <li class="game-li" id="call-li">
+                        <input type="button" value="Call" class="game-button" id="call-button">
+                    </li>
+                    <li class="game-li" id="check-li">
+                        <input type="button" value="Check" class="game-button" id="check-button">
+                    </li>
+                    <li class="game-li" id="fold-li">
+                        <input type="button" value="Fold" class="game-button" id="fold-button">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/script.js'></script>
+</body>
+</html>

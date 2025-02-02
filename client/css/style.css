@@ -1,0 +1,62 @@
+/* pchips-v3/client/css/style.css */
+body {
+    background-color: #222;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    border: none;
+    list-style-type: none;
+}
+
+input {
+    background-color: #444;
+}
+
+.main-div {
+    margin: 15rem 0;
+}
+
+/* #login-container, #register-container, #forgot-container, #menu-container, #profile-container, #friends-container, #friend_to_party-container, #new_friend-container, #parties-container, #party-container, #party_add_friend-container, #create_new_party-container, #settings-container, #game-container {
+    display: none;
+} */
+
+/* Mini devices (phones, 320px and down) */
+@media only screen and (max-width: 319px) {
+    
+}
+
+
+/* Extra small devices (phones, 320px and up) */
+@media only screen and (min-width: 320px) and (max-width: 479px) {
+    
+}
+
+
+/* Small devices (portrait tablets and large phones, 480px and up) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    
+}
+
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    
+}
+
+
+/* Large devices (laptops/desktops, 960px and up) */
+@media only screen and (min-width: 960px) and (max-width: 1023px) {
+    
+}
+
+
+/* Extra large devices (large laptops and desktops, 1024px and up) */
+@media only screen and (min-width: 1024px) {
+    
+}
