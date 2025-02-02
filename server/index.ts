@@ -4,11 +4,12 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import logger from 'morgan';
+import initDatabase from '../db/initDatabase';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
 // ---------------- MAIN INIT   -------------------------------- //
-const app = express();              // Init express app
+const app = express();              // Initialize express app
 const server = createServer(app);   // Create http server
 const io = new Server(server);      // Create web socket server
 
@@ -34,6 +35,15 @@ io.on('connection', (socket) => {
 });
 
 // ---------------- SERVER  ------------------------------------ //
-server.listen(PORT, () => { 
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+initDatabase()  // Initialize database
+    .then(() => {
+        console.log('Database initialized succesfully')
+        
+        server.listen(PORT, () => { // Initialize server when database is ready
+            console.log(`Server is running on http://localhost:${PORT}\n`);
+        });
+    })
+    .catch((error) => {
+        console.error(`Error while initializing the database: ${error}\n`);
+        process.exit(1); // Stop server if database error found
+    });
