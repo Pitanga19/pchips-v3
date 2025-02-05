@@ -27,20 +27,20 @@ app.get('/', (req: Request, res: Response) => {
 // ---------------- SOCKETS ------------------------------------ //
 // Simple connection socket
 io.on('connection', (socket) => {
-    console.log('A user has connected');
+    console.log('[index.ts] A user has connected');
     
     socket.on('disconnect', () => {
-        console.log('A user has disconnected');
+        console.log('[index.ts] A user has disconnected');
     });
 });
 
 // ---------------- SERVER  ------------------------------------ //
 initDatabase()  // Initialize database
     .then(() => {
-        console.log('Database initialized succesfully')
+        console.log('[index.ts] Database initialized successfully');
         
         server.listen(PORT, () => { // Initialize server when database is ready
-            console.log(`Server is running on http://localhost:${PORT}\n`);
+            console.log(`[index.ts] Server is running on http://localhost:${PORT}\n`);
         });
     })
     .catch((error) => {
