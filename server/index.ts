@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
+import AuthRoutes from '../src/routes/AuthRoutes';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -23,6 +24,7 @@ app.use(express.json());            // Require & response json
 app.get('/', (req: Request, res: Response) => {
     res.status(200).sendFile(process.cwd() + '/client/index.html');
 });
+app.use('/api/auth', AuthRoutes);       // Register, Log in routes
 
 // ---------------- SOCKETS ------------------------------------ //
 // Simple connection socket
