@@ -22,7 +22,11 @@ input {
     margin: 15rem 0;
 }
 
-/* #login-container, #register-container, #forgot-container, #menu-container, #profile-container, #friends-container, #friend_to_party-container, #new_friend-container, #parties-container, #party-container, #party_add_friend-container, #create_new_party-container, #settings-container, #game-container {
+.error {
+    color: red
+}
+
+/* #login-container, #register-container, #recover-container, #forgot-container, #menu-container, #profile-container, #parties-container, #party-container, #party_add_friend-container, #create_new_party-container, #settings-container, #game-container {
     display: none;
 } */
 

@@ -10,43 +10,28 @@
 </head>
 <body>
     <main>
-        <div class="main-div" id="login-container">
-            <h2 class="main-h2">Log In</h2>
-            <form class="form" id="login-form">
-                <div class="form-div" id="username-div">
-                    <label for="user" class="form-label" id="username-label">Username:</label>
-                    <input type="text" name="user" class="form-input" id="username-input" placeholder="username">
-                </div>
-                <div class="form-div" id="password-div">
-                    <label for="user" class="form-label" id="password-label">Password:</label>
-                    <input type="password" name="user" class="form-input" id="password-input" placeholder="password">
-                </div>
-                <div class="login-div" id="login-navigation-div">
-                    <input type="submit" value="Log In ➤" class="form-submit" id="login-submit">
-                    <input type="button" value="Register" class="form-button" id="register-button">
-                    <input type="button" value="Forgot Password?" class="form-button" id="forgot-button">
-                </div>
-            </form>
-        </div>
-
         <div class="main-div" id="register-container">
             <h2 class="main-h2">Register</h2>
-            <form class="form" id="login-form">
+            <form class="form" id="register-form">
                 <div class="form-div" id="username-div">
                     <label for="user" class="form-label" id="username-label">Username:</label>
-                    <input type="text" name="user" class="form-input" id="username-input" placeholder="username">
+                    <input type="text" name="user" class="form-input" id="register-username-input" placeholder="username">
+                    <span class="register-span" id="register-username-log"></span>
                 </div>
                 <div class="form-div" id="email-div">
                     <label for="email" class="form-label" id="email-label">Email:</label>
-                    <input type="email" name="user" class="form-input" id="email-input" placeholder="email">
+                    <input type="email" name="user" class="form-input" id="register-email-input" placeholder="email">
+                    <span class="register-span" id="register-email-log"></span>
                 </div>
                 <div class="form-div" id="password-div">
                     <label for="password" class="form-label" id="password-label">Password:</label>
-                    <input type="password" name="password" class="form-input" id="password-input" placeholder="password">
+                    <input type="password" name="password" class="form-input" id="register-password-input" placeholder="password">
+                    <span class="register-span" id="register-password-log"></span>
                 </div>
                 <div class="form-div" id="repeat-password-div">
                     <label for="repeat-password" class="form-label" id="repeat-password-label">Repeat Password:</label>
                     <input type="password" name="repeat-password" class="form-input" id="repeat-password-input" placeholder="repeat password">
+                    <span class="register-span" id="register-repeat-password-log"></span>
                 </div>
                 <div class="register-div" id="register-navigation-div">
                     <input type="submit" value="Create Account ➤" class="form-submit" id="register-submit">
@@ -55,20 +40,52 @@
             </form>
         </div>
         
-        <div class="main-div" id="forgot-container">
-            <h2 class="main-h2">Recovery Password</h2>
-            <form class="form" id="forgot-form">
+        <div class="main-div" id="login-container">
+            <h2 class="main-h2">Log In</h2>
+            <form class="form" id="login-form">
                 <div class="form-div" id="username-div">
-                    <label for="reset-user" class="form-label" id="reset-username-label">Reset by Username:</label>
-                    <input type="text" name="reset-user" class="form-input" id="reset-username-input" placeholder="username">
+                    <label for="user" class="form-label" id="username-label">Username:</label>
+                    <input type="text" name="user" class="form-input" id="login-username-input" placeholder="username">
+                    <span class="register-span" id="login-username-log"></span>
                 </div>
-                <div class="form-div" id="username-div">
-                    <label for="reset-email" class="form-label" id="reset-email-label">Reset by Email:</label>
-                    <input type="reset-email" name="user" class="form-input" id="reset-email-input" placeholder="email">
+                <div class="form-div" id="password-div">
+                    <label for="user" class="form-label" id="password-label">Password:</label>
+                    <input type="password" name="user" class="form-input" id="login-password-input" placeholder="password">
+                    <span class="register-span" id="login-password-log"></span>
                 </div>
-                <div class="forgot-div" id="forgot-navigation-div">
-                    <input type="submit" value="Reset Password ➤" class="form-submit" id="forgot-submit">
-                    <input type="button" value="Back" class="forgot-button" id="forgot-back-button">
+                <div class="login-div" id="login-navigation-div">
+                    <input type="submit" value="Log In ➤" class="form-submit" id="login-submit">
+                    <input type="button" value="Register" class="form-button" id="register-button">
+                    <input type="button" value="Forgot Password?" class="form-button" id="recover-button">
+                </div>
+            </form>
+        </div>
+        
+        <div class="main-div" id="recover-container">
+            <h2 class="main-h2">Recover Password</h2>
+            <form class="form" id="recover-form">
+                <ul class="form-div" id="recover-ipnut-div">
+                    <li class="recover-li" id="recover-log-li">
+                        <span class="register-span" id="recover-finded-type-log"></span>
+                    </li>
+                    <li class="recover-li" id="recover-username-li">
+                        <input type="checkbox" name="reset-user" class="form-checkbox" id="recover-username-checkbox">
+                        <label for="reset-user" class="form-label" id="reset-username-label">Recover by Username</label>
+                    </li>
+                    <li class="recover-li" id="recover-email-li">
+                        <input type="checkbox" name="user" class="form-checkbox" id="recover-email-checkbox">
+                        <label for="reset-email" class="form-label" id="reset-email-label">Recover by Email</label>
+                    </li>
+                    <li class="recover-li" id="recover-input-li">
+                        <input type="text" name="recover-input" id="recover-input" class="form-input">
+                        <span class="register-span" id="recover-finded-value-log"></span>
+                        <span class="register-span" id="recover-username-log"></span>
+                        <span class="register-span" id="recover-email-log"></span>
+                    </li>
+                </>
+                <div class="recover-div" id="recover-navigation-div">
+                    <input type="submit" value="Recover Password ➤" class="form-submit" id="recover-submit">
+                    <input type="button" value="Back" class="recover-button" id="recover-back-button">
                 </div>
             </form>
         </div>
@@ -81,7 +98,7 @@
                 <li class="menu-li"><input type="button" value="Friends" class="menu-button" id="friends-button"></li>
                 <li class="menu-li"><input type="button" value="Profile" class="menu-button" id="profile-button"></li>
             </ul>
-            <h6 class="menu-p">Poker Chips v0.0.1 by Pitanga</>
+            <h6 class="menu-span">Poker Chips v0.0.1 by Pitanga</>
         </div>
 
         <div class="main-div" id="profile-container">
@@ -97,7 +114,7 @@
                         id="new_username-input"
                         class="profile-input"
                     >
-                    <input type="button" value="✎" class="profile-button" id="edit_username-button">
+                    <input type="button" value="✎" class="p1||ofile-button" id="edit_username-button">
                     <input type="button" value="✔" class="profile-button" id="edit_username-button">
                 </li>
                 <li class="profile-li" id="email-li">
@@ -191,7 +208,7 @@
                     id="new_friend-find_user-input"
                     class="new_friend-input"
                 >
-                <input type="submit" value="Find ➤" class="form-submit" id="login-submit">
+                <input type="submit" value="Find ➤" class="form-submit" id="new_friend-submit">
             </form>
             <ul class="new_friend-ul" id="new_friend-find_results"><!-- Found users here -->
                 <li class="new_friend-li" id="founded_user_example1-li">
@@ -266,7 +283,7 @@
                 type="text"
                 name="party-find-user"
                 placeholder="find by username ..."
-                id="party-find_user-input"
+                id="paf-find_user-input"
                 class="create_new_party-input"
             >
             <h3 class="party_add_friend-h3" id="party_add_friend_users-h3"></h3>
