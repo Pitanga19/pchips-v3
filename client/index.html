@@ -34,8 +34,8 @@
                     <span class="register-span" id="register-repeat-password-log"></span>
                 </div>
                 <div class="register-div" id="register-navigation-div">
-                    <input type="submit" value="Create Account ➤" class="form-submit" id="register-submit">
-                    <input type="button" value="Back" class="register-button" id="register-back-button">
+                    <input type="submit" value="Create Account ➤" class="form-submit button" id="register-submit">
+                    <input type="button" value="Back" class="button" id="register-back-button">
                 </div>
             </form>
         </div>
@@ -54,9 +54,9 @@
                     <span class="register-span" id="login-password-log"></span>
                 </div>
                 <div class="login-div" id="login-navigation-div">
-                    <input type="submit" value="Log In ➤" class="form-submit" id="login-submit">
-                    <input type="button" value="Register" class="form-button" id="register-button">
-                    <input type="button" value="Forgot Password?" class="form-button" id="recover-button">
+                    <input type="submit" value="Log In ➤" class="form-submit button" id="login-submit">
+                    <input type="button" value="Register" class="button" id="login-register-button">
+                    <input type="button" value="Forgot Password?" class="button" id="login-recover-button">
                 </div>
             </form>
         </div>
@@ -84,8 +84,8 @@
                     </li>
                 </>
                 <div class="recover-div" id="recover-navigation-div">
-                    <input type="submit" value="Recover Password ➤" class="form-submit" id="recover-submit">
-                    <input type="button" value="Back" class="recover-button" id="recover-back-button">
+                    <input type="submit" value="Recover Password ➤" class="form-submit button" id="recover-submit">
+                    <input type="button" value="Back" class="button" id="recover-back-button">
                 </div>
             </form>
         </div>
@@ -93,10 +93,10 @@
         <div class="main-div" id="menu-container">
             <h1 class="menu-title">Poker Chips</h1>
             <ul class="menu-ul">
-                <li class="menu-li"><input type="button" value="New Game" class="menu-button" id="new_game-button"></li>
-                <li class="menu-li"><input type="button" value="Parties" class="menu-button" id="parties-button"></li>
-                <li class="menu-li"><input type="button" value="Friends" class="menu-button" id="friends-button"></li>
-                <li class="menu-li"><input type="button" value="Profile" class="menu-button" id="profile-button"></li>
+                <li class="menu-li"><input type="button" value="New Game" class="menu-button button" id="menu-new_game-button"></li>
+                <li class="menu-li"><input type="button" value="Parties" class="menu-button button" id="menu-parties-button"></li>
+                <li class="menu-li"><input type="button" value="Friends" class="menu-button button" id="menu-friends-button"></li>
+                <li class="menu-li"><input type="button" value="Profile" class="menu-button button" id="menu-profile-button"></li>
             </ul>
             <h6 class="menu-span">Poker Chips v0.0.1 by Pitanga</>
         </div>
@@ -106,34 +106,34 @@
             <ul class="profile-ul" id="user_info-ul">
                 <li class="profile-li" id="username-li">
                     <label for="username" class="profile-label" id="username-label">Username:</label>
-                    <strong class="strong-label" id="username"><!-- Username here -->ExampleUsername</strong>
+                    <strong class="strong-label" id="profile-username-strong"><!-- Username here --></strong>
                     <input
                         type="text"
                         name="new-username"
                         placeholder="new username ..."
-                        id="new_username-input"
+                        id="profile-new_username-input"
                         class="profile-input"
                     >
-                    <input type="button" value="✎" class="p1||ofile-button" id="edit_username-button">
-                    <input type="button" value="✔" class="profile-button" id="edit_username-button">
+                    <input type="button" value="✎" class="p1||ofile-button" id="profile-edit_username-button">
+                    <input type="button" value="✔" class="profile-button" id="profile-confirm_edit_username-button">
                 </li>
                 <li class="profile-li" id="email-li">
                     <label for="email" class="profile-label" id="email-label">email:</label>
-                    <strong class="strong-label" id="email"><!-- email here -->example@email.com</strong>
+                    <strong class="strong-label" id="profile-email-strong"><!-- email here --></strong>
                     <input
                         type="email"
                         name="new-email"
                         placeholder="new email ..."
-                        id="new_email-input"
+                        id="profile-new_email-input"
                         class="profile-input"
                     >
-                    <input type="button" value="✎" class="profile-button" id="edit_email-button">
-                    <input type="button" value="✔" class="profile-button" id="edit_email-button">
+                    <input type="button" value="✎" class="profile-button" id="profile-edit_email-button">
+                    <input type="button" value="✔" class="profile-button" id="profile-confirm_edit_email-button">
                 </li>
             </ul>
             <div class="profile-div" id="profile-navigation-div">
-                <input type="button" value="Log Out" class="profile-button" id="profile-log_out-button">
-                <input type="button" value="Back" class="profile-button" id="profile-back-button">
+                <input type="button" value="Log Out" class="button" id="profile-log_out-button">
+                <input type="button" value="Back" class="button" id="profile-back-button">
             </div>
         </div>
 
@@ -152,8 +152,8 @@
                 </li>
             </ul>
             <div class="friends-div" id="friends-navigation-div">
-                <input type="button" value="Add New Friend" class="friends-button" id="friends-new_friend-button">
-                <input type="button" value="Back" class="friends-button" id="friends-back-button">
+                <input type="button" value="Add New Friend" class="button" id="friends-new_friend-button">
+                <input type="button" value="Back" class="button" id="friends-back-button">
             </div>
         </div>
 
@@ -193,8 +193,8 @@
                 </ul>
             </form>
             <div class="ftp-div" id="ftp-navigation-div">
-                <input type="submit" value="Done" class="ftp-button" id="ftp-submit">
-                <input type="button" value="Cancel" class="ftp-button" id="ftp-back-button">
+                <input type="submit" value="Done" class="button" id="ftp-submit">
+                <input type="button" value="Cancel" class="button" id="ftp-back-button">
             </div>
         </div>
 
@@ -221,7 +221,7 @@
                 </li>
             </ul>
             <div class="new_friend-div" id="new_friend-navigation-div">
-                <input type="button" value="Back" class="new_friend-button" id="new_friend-back-button">
+                <input type="button" value="Back" class="button" id="new_friend-back-button">
             </div>
         </div>
 
@@ -249,8 +249,8 @@
                 </li>
             </ul>
             <div class="parties-div" id="parties_navigation-div">
-                <input type="button" value="New Party +" class="parties-button" id="parties_create_party-button">
-                <input type="button" value="Back" class="parties-button" id="parties_back-button">
+                <input type="button" value="New Party +" class="button" id="parties_create_party-button">
+                <input type="button" value="Back" class="button" id="parties_back-button">
             </div>
         </div>
 
@@ -271,9 +271,9 @@
                 </li>
             </ul>
             <div class="party-div" id="party_navigation-div">
-                <input type="button" value="Party Table" class="party-button" id="party_table-button">
-                <input type="button" value="Add users" class="party-button" id="party_add_users-button">
-                <input type="button" value="Back" class="party-button" id="party_back-button">
+                <input type="button" value="Party Table" class="button" id="party_table-button">
+                <input type="button" value="Add users" class="button" id="party_add_users-button">
+                <input type="button" value="Back" class="button" id="party_back-button">
             </div>
         </div>
 
@@ -302,8 +302,8 @@
                 </li>
             </ul>
             <div class="party_add_friend-div" id="party_add_friend-navigation-div">
-                <input type="submit" value="Done" class="form-submit" id="party_add_friend-submit">
-                <input type="button" value="Back" class="party_add_friend-button" id="party_add_friend-back-button">
+                <input type="submit" value="Done" class="form-submit button" id="party_add_friend-submit">
+                <input type="button" value="Back" class="button" id="party_add_friend-back-button">
             </div>
         </form>
         </div>
@@ -355,8 +355,8 @@
                 </ul>
             </form>
             <div class="party-div" id="party_navigation-div">
-                <input type="button" value="Create" class="party-button" id="party_create_party-button">
-                <input type="button" value="Back" class="party-button" id="party_back-button">
+                <input type="button" value="Create" class="button" id="party_create_party-button">
+                <input type="button" value="Back" class="button" id="party_back-button">
             </div>
         </div>
 
@@ -533,8 +533,8 @@
                 </form>
             </div>
             <div class="settings-div" id="settings_navigation-div">
-                <input type="submit" value="Submit Settings ➤" class="settings-button" id="settings_submit-button">
-                <input type="button" value="Back" class="settings-button" id="settings_back-button">
+                <input type="submit" value="Submit Settings ➤" class="button" id="settings_submit-button">
+                <input type="button" value="Back" class="button" id="settings_back-button">
             </div>
         </div>
 
