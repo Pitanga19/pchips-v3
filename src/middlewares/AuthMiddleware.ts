@@ -1,9 +1,9 @@
 // pchips-v3/src/middlewares/AuthMiddleware.ts
 
 import { Request, Response, NextFunction } from "express";
-import { TRegisterBody, TLoginBody, TRecoverBody, TErrorsReturn } from "../utils/types/authTypes";
+import { TRegisterBody, TLoginBody, TRecoverBody, TErrorsReturn, TModifyBody } from "../utils/types/authTypes";
 import { EStatusHTTP, EAuthProcesses, EAuthResponse } from "../utils/enums/authEnums";
-import { validateUsername, validateEmail, validatePassword, validateExistingInputs, validateFindedType, validateRepeatPassword } from "../utils/authUtils";
+import { validateUsername, validateEmail, validatePassword, validateExistingInputs, validateFindedType, validateRepeatPassword, validateExistingUpdates } from "../utils/authUtils";
 
 class AuthMiddleware {
     public static validateRegisterInputs = (req: Request, res: Response, next: NextFunction): void => {
@@ -58,6 +58,40 @@ class AuthMiddleware {
         validateExistingInputs(EAuthProcesses.RECOVERY, errors, receivedInputs);
         if (findedType) validateFindedType(errors, findedType);
 
+        if (errors.length > 0) {
+            const message = EAuthResponse.INVALID_DATA;
+            res.status(status).json({ user, errors, message });
+            return;
+        };
+
+        next();
+    };
+
+    public static validateModifyInputs = (req: Request, res: Response, next: NextFunction): void => {
+        const { id, password, updates, repeatPassword }: TModifyBody = req.body;
+        const status = EStatusHTTP.BAD_REQUEST;
+        const user = null;
+        const errors: TErrorsReturn = [];
+        const receivedInputs = { id, password, updates, repeatPassword };
+        console.log('\n\nValidating modify inputs ...\n\n');
+        console.log(JSON.stringify(req.body));
+
+        validateExistingInputs(EAuthProcesses.MODIFY, errors, receivedInputs);
+        validateExistingUpdates(updates);
+
+        if (updates) {
+            if (updates.username) {
+                validateUsername(errors, updates.username);
+            };
+            if (updates.email) {
+                validateEmail(errors, updates.email);
+            };
+            if (updates.password) {
+                validatePassword(errors, updates.password);
+                validateRepeatPassword(errors, updates.password, repeatPassword);
+            };
+        };
+            
         if (errors.length > 0) {
             const message = EAuthResponse.INVALID_DATA;
             res.status(status).json({ user, errors, message });

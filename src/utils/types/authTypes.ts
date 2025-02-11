@@ -25,7 +25,12 @@ export type TUserDeleteReturn = {
     message: EAuthResponse,
 };
 
-export type TUserUpdates = Partial<Pick<UserModel, 'username' | 'email' | 'password'>>;
+export type TUserUpdates = {
+    username?: string;
+    email?: string;
+    password?: string;
+    [key: string]: string | undefined;
+}
 
 export type TAuthServiceReturn = {
     status: EStatusHTTP,
@@ -51,11 +56,20 @@ export type TRecoverBody = {
     findedValue: string,
 };
 
+export type TModifyBody = {
+    id: number,
+    password: string,
+    updates: TUserUpdates,
+    repeatPassword: string,
+};
+
 export type TAuthBody = {
+    id?: number,
     username?: string,
     email?: string,
     password?: string,
     repeatPassword?: string,
     findedType?: EFindedType,
     findedValue?: string,
+    updates?: TUserUpdates,
 };

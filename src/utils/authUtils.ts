@@ -1,6 +1,6 @@
 // pchips-v3/src/utils/authUtils.ts
 
-import { TErrorsReturn, TErrorReturn, TAuthBody } from "./types/authTypes";
+import { TErrorsReturn, TErrorReturn, TAuthBody, TUserUpdates } from "./types/authTypes";
 import { EAuthProcesses, EAuthResponse, EFindedType, EInputField } from "./enums/authEnums";
 import { RegExHandler } from "./stringsUtils";
 import UserModel from "../../db/models/UserModel";
@@ -11,12 +11,14 @@ export const addToValidateResult = (errors: TErrorsReturn, field: EInputField, m
 };
 
 export const validateExistingInputs = (authProcess: EAuthProcesses, errors: TErrorsReturn, receivedBody: TAuthBody): void => {
+    const id = receivedBody.id;
     const username = receivedBody.username;
     const email = receivedBody.email;
     const password = receivedBody.password;
     const repeatPassword = receivedBody.repeatPassword;
     const findedType = receivedBody.findedType;
     const findedValue = receivedBody.findedValue;
+    const updates = receivedBody.updates;
     const message = EAuthResponse.DATA_IS_MISSING;
     let field: EInputField;
 
@@ -61,6 +63,27 @@ export const validateExistingInputs = (authProcess: EAuthProcesses, errors: TErr
         if (!findedValue) {
             field = EInputField.FINDED_VALUE;
             addToValidateResult(errors, field, message);
+        };
+    };
+
+    if (authProcess === EAuthProcesses.MODIFY) {
+        console.log('[authUtils] Recover auth existing test');
+        if (!id) {
+            field = EInputField.USERNAME;
+            addToValidateResult(errors, field, message);
+        };
+        if (!password) {
+            field = EInputField.PASSWORD;
+            addToValidateResult(errors, field, message);
+        };
+        if (!updates) {
+            field = EInputField.UPDATES;
+            addToValidateResult(errors, field, message);
+        } else if (updates.password) {
+            if (!repeatPassword) {
+                field = EInputField.REPEAT_PASSWORD;
+                addToValidateResult(errors, field, message);
+            };
         };
     };
 };
@@ -141,4 +164,10 @@ export const validateFindedType = (errors: TErrorsReturn, findedType: EFindedTyp
     } else {
         addToValidateResult(errors, field, message);
     };
+};
+
+export const validateExistingUpdates = (updates: TUserUpdates): void => {
+    Object.keys(updates).forEach(key => {
+        if (updates[key] === "") delete updates[key];
+    });
 };

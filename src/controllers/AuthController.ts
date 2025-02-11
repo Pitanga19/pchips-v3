@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import AuthService from "../services/AuthService";
-import { TAuthServiceReturn, TRegisterBody, TLoginBody, TRecoverBody } from "../utils/types/authTypes";
+import { TAuthServiceReturn, TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
 import { EAuthResponse } from "../utils/enums/authEnums";
 
 class AuthController {
@@ -50,6 +50,22 @@ class AuthController {
 
             res.status(status).json({ user, errors, message });
         } catch (error){
+            res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
+        };
+    };
+
+    public static async modify(req: Request, res: Response): Promise<void> {
+        const { id, password, updates }: TModifyBody = req.body;
+
+        try {
+            const authModifyResult: TAuthServiceReturn = await AuthService.modify(id, password, updates);
+            const status = authModifyResult.status;
+            const user = authModifyResult.user;
+            const errors = authModifyResult.errors;
+            const message = authModifyResult.message;
+
+            res.status(status).json({ user, errors, message });
+        } catch (error) {
             res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
         };
     };

@@ -35,6 +35,7 @@ export enum EInputField {
     REPEAT_PASSWORD = 'repeat-password',
     FINDED_TYPE = 'finded-type',
     FINDED_VALUE = 'finded-value',
+    UPDATES = 'updates',
 };
 
 export enum EFindedType {
@@ -47,4 +48,5 @@ export enum EAuthProcesses {
     REGISTER = 'register',
     LOGIN = 'login',
     RECOVERY = 'recover',
+    MODIFY = 'modify',
 };

@@ -21,4 +21,9 @@ router.post('/recover', AuthMiddleware.validateRecoverInputs, async (req: Reques
     await AuthController.recover(req, res);
 });
 
+// Modify route
+router.post('/modify', AuthMiddleware.validateModifyInputs, async (req: Request, res: Response) => {
+    await AuthController.modify(req, res);
+});
+
 export default router;

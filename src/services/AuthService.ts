@@ -1,9 +1,10 @@
 // pchips-v3/src/services/AuthService.ts
 
 import { IUser } from "../../db/models/interfaces";
+import UserModel from "../../db/models/UserModel";
 import { validateCorrectPassword } from "../utils/authUtils";
 import { EAuthResponse, EFindedType, EInputField, EStatusHTTP } from "../utils/enums/authEnums";
-import { TAuthServiceReturn, TUserServiceReturn } from "../utils/types/authTypes";
+import { TAuthServiceReturn, TUserServiceReturn, TUserUpdates } from "../utils/types/authTypes";
 import UserService from "./UserService";
 
 class AuthService {
@@ -43,7 +44,7 @@ class AuthService {
         const userModel = getUserResult.userModel;
         const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
         if (!isCorrectPassword) {
-            console.log(`[AuthService] User not found: ${username}\n`);
+            console.log(`[AuthService] Wrong password: ${username}\n`);
             return { status, user, errors, message };
         };
         
@@ -90,6 +91,42 @@ class AuthService {
         };
 
         console.log(`[AuthService] User successfully start to recover password: ${findedData}\n`);
+        return {
+            status: getUserResult.status,
+            user,
+            errors: getUserResult.errors,
+            message: getUserResult.message,
+        };
+    };
+
+    public static async modify(id: number, password: string, updates: TUserUpdates): Promise<TAuthServiceReturn> {
+        const getUserResult = await UserService.getById(id);
+        const status = getUserResult.status;
+        const errors = getUserResult.errors;
+        const message = getUserResult.message;
+        let user = null;
+
+        if (!getUserResult.userModel) {
+            console.log(`[AuthService] User not found: ${id}\n`);
+            return { status, user, errors, message };
+        };
+
+        let userModel = getUserResult.userModel;
+        const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
+        if (!isCorrectPassword) {
+            console.log(`[AuthService] Wrong password: ${id}\n`);
+            return { status, user, errors, message };
+        };
+        
+        console.log(`[AuthService] User successfully loaded, updating: ${id}\n`);
+        const updateResult = await UserService.update(id, updates);
+
+        if (updateResult.userModel) {
+            userModel = updateResult.userModel;
+        };
+
+        user = userModel.toJSON();
+
         return {
             status: getUserResult.status,
             user,
