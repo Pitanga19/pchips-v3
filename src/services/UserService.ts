@@ -159,8 +159,40 @@ class UserService {
             const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
             errors.push(error);
         };
+        
+        if (updates.username) {
+            const getByUsername = await this.getByUsername(updates.username);
 
-        if (userModel !== null) {
+            if (getByUsername.userModel) {
+                console.log(`[UserService] Username already exist: ${updates.username}`);
+                userModel = null;
+                status = EStatusHTTP.CONFLICT;
+                message = EAuthResponse.INVALID_DATA;
+                const error: TErrorReturn = {
+                    field: EInputField.USERNAME,
+                    message: EAuthResponse.EXISTING_USERNAME,
+                };
+                errors.push(error);
+            };
+        };
+        
+        if (updates.email) {
+            const getByEmail = await this.getByEmail(updates.email);
+
+            if (getByEmail.userModel) {
+                console.log(`[UserService] Email already exist: ${updates.email}`);
+                userModel = null;
+                status = EStatusHTTP.CONFLICT;
+                message = EAuthResponse.INVALID_DATA;
+                const error: TErrorReturn = {
+                    field: EInputField.EMAIL,
+                    message: EAuthResponse.EXISTING_EMAIL,
+                };
+                errors.push(error);
+            };
+        };
+
+        if (userModel !== null && errors.length === 0) {
             console.log(`[UserService] User succefully loaded: { id: ${id} }`);
             await userModel.update(updates);
         };

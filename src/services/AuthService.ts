@@ -101,9 +101,10 @@ class AuthService {
 
     public static async modify(id: number, password: string, updates: TUserUpdates): Promise<TAuthServiceReturn> {
         const getUserResult = await UserService.getById(id);
-        const status = getUserResult.status;
-        const errors = getUserResult.errors;
-        const message = getUserResult.message;
+        let status = getUserResult.status;
+        let errors = getUserResult.errors;
+        let message = getUserResult.message;
+        let userModel: UserModel | null = null;
         let user = null;
 
         if (!getUserResult.userModel) {
@@ -111,7 +112,7 @@ class AuthService {
             return { status, user, errors, message };
         };
 
-        let userModel = getUserResult.userModel;
+        userModel = getUserResult.userModel;
         const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
         if (!isCorrectPassword) {
             console.log(`[AuthService] Wrong password: ${id}\n`);
@@ -121,18 +122,15 @@ class AuthService {
         console.log(`[AuthService] User successfully loaded, updating: ${id}\n`);
         const updateResult = await UserService.update(id, updates);
 
-        if (updateResult.userModel) {
-            userModel = updateResult.userModel;
+        userModel = updateResult.userModel;
+        if (userModel) {
+            user = userModel.toJSON();
         };
+        status = updateResult.status;
+        errors = updateResult.errors;
+        message = updateResult.message;
 
-        user = userModel.toJSON();
-
-        return {
-            status: getUserResult.status,
-            user,
-            errors: getUserResult.errors,
-            message: getUserResult.message,
-        };
+        return { status, user, errors, message };
     };
 };
 
