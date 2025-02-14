@@ -104,7 +104,7 @@
         <div class="main-div" id="profile-container">
             <h2 class="main-h2">My Profile</h2>
             <ul class="profile-ul" id="user_info-ul">
-                <li class="profile-li" id="username-li">
+                <li class="profile-li" id="profile-username-li">
                     <label for="username" class="profile-label" id="username-label">Username:</label>
                     <strong class="strong-label" id="profile-username-strong"><!-- Username here --></strong>
                     <input
@@ -114,11 +114,13 @@
                         id="profile-new_username-input"
                         class="profile-input"
                     >
-                    <input type="button" value="✎" class="p1||ofile-button" id="profile-edit_username-button">
-                    <input type="button" value="✔" class="profile-button" id="profile-confirm_edit_username-button">
+                    <input type="button" value="✎" class="button" id="profile-edit_username-button">
+                    <input type="button" value="✔" class="button" id="profile-confirm_edit_username-button">
+                    <input type="button" value="🗙" class="button" id="profile-cancel_edit_username-button">
+                    <span class="profile-span" id="profile-username-log"></span>
                 </li>
-                <li class="profile-li" id="email-li">
-                    <label for="email" class="profile-label" id="email-label">email:</label>
+                <li class="profile-li" id="profile-email-li">
+                    <label for="email" class="profile-label" id="email-label">Email:</label>
                     <strong class="strong-label" id="profile-email-strong"><!-- email here --></strong>
                     <input
                         type="email"
@@ -127,8 +129,40 @@
                         id="profile-new_email-input"
                         class="profile-input"
                     >
-                    <input type="button" value="✎" class="profile-button" id="profile-edit_email-button">
-                    <input type="button" value="✔" class="profile-button" id="profile-confirm_edit_email-button">
+                    <input type="button" value="✎" class="button" id="profile-edit_email-button">
+                    <input type="button" value="✔" class="button" id="profile-confirm_edit_email-button">
+                    <input type="button" value="🗙" class="button" id="profile-cancel_edit_email-button">
+                    <span class="profile-span" id="profile-email-log"></span>
+                </li>
+                <li class="profile-li" id="profile-change_password-li">
+                    <label for="email" class="profile-label" id="profile-new_password-label">Change password</label>
+                    <input
+                        type="password"
+                        name="new-password"
+                        placeholder="new password ..."
+                        id="profile-new_password-input"
+                        class="profile-input"
+                    >
+                    <input
+                        type="password"
+                        name="repeat-password"
+                        placeholder="repeat password ..."
+                        id="profile-repeat_password-input"
+                        class="profile-input"
+                    >
+                    <input type="button" value="✎" class="button" id="profile-edit_new_password-button">
+                    <input type="button" value="✔" class="button" id="profile-confirm_edit_new_password-button">
+                    <input type="button" value="🗙" class="button" id="profile-cancel_edit_new_password-button">
+                    <span class="profile-span" id="profile-new_password-log"></span>
+                </li>
+                <li class="profile-li" id="profile-confirm-password-li">
+                    <label for="profile-password-input" class="profile-label" id="profile-password-label">Input password to confirm changes:</label>
+                    <input type="password"
+                    name="profile-password-input"
+                    placeholder="password"
+                    id="profile-password-input"
+                    class="profile-input">
+                    <span class="profile-span" id="profile-password-log"></span>
                 </li>
             </ul>
             <div class="profile-div" id="profile-navigation-div">

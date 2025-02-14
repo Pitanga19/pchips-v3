@@ -34,12 +34,25 @@ const printCheckboxes = (checkboxList) => {
     });
 };
 
-const hideAll = (itemsList) => {
-    itemsList.forEach(i => i.classList.add('invisible'));
-};
-
 const showItem = (item) => {
     item.classList.remove('invisible');
+};
+
+const hideItem = (item) => {
+    item.classList.add('invisible');
+};
+
+const showAll = (itemsList) => {
+    itemsList.forEach(i => showItem(i));
+};
+
+const hideAll = (itemsList) => {
+    itemsList.forEach(i => hideItem(i));
+};
+
+const switchHideList = (showList, hideList) => {
+    showAll(showList);
+    hideAll(hideList);
 };
 
 const navigateToScreen = (screen) => {
@@ -111,7 +124,7 @@ const registerFormSubmit = () => {
         if (user) {
             alert('Successfully Register! :D');
             clearInputs(registerInputs);
-            navigateToScreen(menuScreen);
+            navigateToScreen(loginScreen);
         };
         console.log(`[Script.js] user: ${userLog}`);
         console.log(`[Script.js] errors: ${errorsLog}`);
@@ -317,17 +330,170 @@ const profileUsernameStrong = document.getElementById('profile-username-strong')
 const profileNewUsernameInput = document.getElementById('profile-new_username-input');
 const profileEditUsernameButton = document.getElementById('profile-edit_username-button');
 const profileConfirmEditUsernameButton = document.getElementById('profile-confirm_edit_username-button');
+const profileCancelEditUsernameButton = document.getElementById('profile-cancel_edit_username-button');
+const profileUsernameLog = document.getElementById('profile-username-log');
 const profileEmailStrong = document.getElementById('profile-email-strong');
 const profileNewEmailInput = document.getElementById('profile-new_email-input');
 const profileEditEmailButton = document.getElementById('profile-edit_email-button');
 const profileConfirmEditEmailButton = document.getElementById('profile-confirm_edit_email-button');
+const profileCancelEditEmailButton = document.getElementById('profile-cancel_edit_email-button');
+const profileEmailLog = document.getElementById('profile-email-log');
+const profileNewPasswordLabel = document.getElementById('profile-new_password-label');
+const profileNewPasswordInput = document.getElementById('profile-new_password-input');
+const profileRepeatPasswordInput = document.getElementById('profile-repeat_password-input');
+const profileNewPasswordLog = document.getElementById('profile-new_password-log');
+const profileEditNewPasswordButton = document.getElementById('profile-edit_new_password-button');
+const profileConfirmEditNewPasswordButton = document.getElementById('profile-confirm_edit_new_password-button');
+const profileCancelEditNewPasswordButton = document.getElementById('profile-cancel_edit_new_password-button');
+const profilePasswordLabel = document.getElementById('profile-password-label');
+const profilePasswordInput = document.getElementById('profile-password-input');
+const profilePasswordLog = document.getElementById('profile-password-log');
+const profileEditNewPAss = document.getElementById('profile-password-log');
 const profileLogOutButton = document.getElementById('profile-log_out-button');
 const profileBackButton = document.getElementById('profile-back-button');
+const infoUsernameList = [profileUsernameStrong, profileEditUsernameButton];
+const editUsernameList = [profileNewUsernameInput, profileConfirmEditUsernameButton, profileCancelEditUsernameButton];
+const infoEmailList = [profileEmailStrong, profileEditEmailButton];
+const editEmailList = [profileNewEmailInput, profileConfirmEditEmailButton, profileCancelEditEmailButton];
+const infoPasswordList = [profileNewPasswordLabel, profileEditNewPasswordButton]
+const editPasswordList = [profileNewPasswordInput, profileRepeatPasswordInput, profileConfirmEditNewPasswordButton, profileCancelEditNewPasswordButton];
+const confirmPasswordList = [profilePasswordLabel, profilePasswordInput, profilePasswordLog];
+const newPasswordInputList = [profileNewPasswordInput, profileRepeatPasswordInput];
+hideAll(editUsernameList);
+hideAll(editEmailList);
+hideAll(editPasswordList);
+hideAll(confirmPasswordList);
 
 const updateProfileInfo = () => {
     profileUsernameStrong.innerHTML = lsUser.username;
     profileEmailStrong.innerHTML = lsUser.email;
 };
+
+const checkHidePassword = () => {
+    if (
+        profileNewUsernameInput.classList.contains('invisible') &&
+        profileNewEmailInput.classList.contains('invisible') &&
+        profileNewPasswordInput.classList.contains('invisible')
+    ){
+        clearInputs([profilePasswordInput]);
+        hideAll(confirmPasswordList);
+    };
+};
+
+const modifyUser = (password, updates, repeatPassword = "") => {
+    const id = lsUser.id;
+
+    fetch('/api/auth/modify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, password, updates, repeatPassword }),
+    })
+    .then(response => response.json())
+    .then(({ user, errors, message }) => {
+        let userLog;
+        let errorsLog;
+
+        console.log(`errors: ${JSON.stringify(errors)}`);
+        user ? userLog = JSON.stringify(user) : userLog = user;
+
+        if (errors) { errors.forEach(e => {
+            console.log('error field: ',e.field);
+            const errorLog = document.getElementById(`profile-${e.field}-log`);
+            errorLog.classList.add('error')
+            errorLog.innerHTML = `${(e.message)}`;
+            errorsLog += `\n${JSON.stringify(e)}`;
+        })} else { errorsLog = errors };
+        if (user) {
+            updateLsUser(user);
+            updateProfileInfo();
+
+            if (!profileUsernameLog.value) {
+                switchHideList(infoUsernameList, editUsernameList);
+                clearInputs([profileNewUsernameInput]);
+            };
+            if (!profileEmailLog.value) {
+                switchHideList(infoEmailList, editEmailList);
+                clearInputs([profileNewEmailInput]);
+            };
+            if (!profileUsernameLog.value && !profileEmailLog.value) {
+                checkHidePassword();
+            };
+
+            alert('Successfully modify! :D');
+        };
+        console.log(`[Script.js] user: ${userLog}`);
+        console.log(`[Script.js] errors: ${errorsLog}`);
+        console.log(`[Script.js] message: ${message}`);
+        
+    });
+};
+
+profileEditUsernameButton.addEventListener('click', e => {
+    e.preventDefault();
+    switchHideList(editUsernameList, infoUsernameList);
+    showAll(confirmPasswordList);
+});
+
+profileConfirmEditUsernameButton.addEventListener('click', e => {
+    e.preventDefault();
+    const password = profilePasswordInput.value;
+    const username = profileNewUsernameInput.value;
+    const updates = { username }
+
+    modifyUser(password, updates);
+});
+
+profileCancelEditUsernameButton.addEventListener('click', e => {
+    e.preventDefault();
+    clearInputs([profileNewEmailInput]);
+    switchHideList(infoUsernameList, editUsernameList);
+    checkHidePassword();
+});
+
+profileEditEmailButton.addEventListener('click', e => {
+    e.preventDefault();
+    switchHideList(editEmailList, infoEmailList);
+    showAll(confirmPasswordList);
+});
+
+profileConfirmEditEmailButton.addEventListener('click', e => {
+    e.preventDefault();
+    const password = profilePasswordInput.value;
+    const email = profileNewEmailInput.value;
+    const updates = { email }
+
+    modifyUser(password, updates);
+});
+
+profileCancelEditEmailButton.addEventListener('click', e => {
+    e.preventDefault();
+    clearInputs([profileNewEmailInput]);
+    switchHideList(infoEmailList, editEmailList);
+    checkHidePassword();
+});
+
+profileEditNewPasswordButton.addEventListener('click', e => {
+    e.preventDefault();
+    switchHideList(editPasswordList, infoPasswordList);
+    showAll(confirmPasswordList);
+});
+
+profileConfirmEditNewPasswordButton.addEventListener('click', e => {
+    e.preventDefault();
+    const password = profilePasswordInput.value;
+    console.log('password', password);
+    const updates = { password: profileNewPasswordInput.value };
+    const repeatPassword = profileRepeatPasswordInput.value;
+
+    modifyUser(password, updates, repeatPassword);
+});
+
+profileCancelEditNewPasswordButton.addEventListener('click', e => {
+    e.preventDefault();
+    clearInputs(newPasswordInputList);
+    switchHideList(infoPasswordList, editPasswordList);
+    checkHidePassword();
+});
 
 profileLogOutButton.addEventListener('click', e => {
     e.preventDefault();
