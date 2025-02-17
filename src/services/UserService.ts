@@ -1,39 +1,34 @@
 // pchips-v3/src/services/UserService.ts
 
 import UserModel from "../../db/models/UserModel";
-import { EAuthResponse, EInputField, EStatusHTTP } from "../utils/enums/authEnums";
-import { TUserServiceReturn, TUserDeleteReturn, TUserUpdates, TErrorReturn, TErrorsReturn } from "../utils/types/authTypes";
+import { addToResponseErrors } from "../utils/errorUtils";
+import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
+import { EResponseMessage, EResponseStatus } from "../utils/enums/statusEnums";
+import { TErrorList } from "../utils/types/errorTypes";
+import { TUserServiceReturn, TUserDeleteReturn, TUserUpdates} from "../utils/types/userTypes";
 
 class UserService {
     // Create user
     public static async create(username: string, email: string, password: string): Promise<TUserServiceReturn> {
         const getByUsername = await this.getByUsername(username);
         const getByEmail = await this.getByEmail(email);
-        const errors: TErrorsReturn = [];
-        let status = EStatusHTTP.CREATED;
+        const errors: TErrorList = [];
+        let status = EResponseStatus.CREATED;
         let userModel: UserModel | null = null;
-        let message = EAuthResponse.CREATED;
+        let message = EResponseMessage.CREATED;
 
         if (getByUsername.userModel) {
             console.log(`[UserService] Username already exist: ${username}`);
-            status = EStatusHTTP.CONFLICT;
-            message = EAuthResponse.INVALID_DATA;
-            const error: TErrorReturn = {
-                field: EInputField.USERNAME,
-                message: EAuthResponse.EXISTING_USERNAME,
-            };
-            errors.push(error);
+            status = EResponseStatus.CONFLICT;
+            message = EResponseMessage.INVALID_DATA;
+            addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.EXISTING_USERNAME);
         };
 
         if (getByEmail.userModel) {
             console.log(`[UserService] Email already exist: ${email}`);
-            status = EStatusHTTP.CONFLICT;
-            message = EAuthResponse.INVALID_DATA;
-            const error: TErrorReturn = {
-                field: EInputField.EMAIL,
-                message: EAuthResponse.EXISTING_EMAIL,
-            };
-            errors.push(error);
+            status = EResponseStatus.CONFLICT;
+            message = EResponseMessage.INVALID_DATA;
+            addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.EXISTING_EMAIL);
         };
 
         if (errors.length === 0) {
@@ -41,8 +36,8 @@ class UserService {
 
             if (!userModel) {
                 console.log(`[UserService] Error creating user: ${username}`);
-                const status = EStatusHTTP.INTERNAL_SERVER_ERROR;
-                const message = EAuthResponse.INTERNAL_SERVER_ERROR;
+                const status = EResponseStatus.INTERNAL_SERVER_ERROR;
+                const message = EResponseMessage.INTERNAL_SERVER_ERROR;
                 return { userModel, status, errors: [], message };
             };
             
@@ -55,19 +50,18 @@ class UserService {
     // Get user by id
     public static async getById(id: number): Promise<TUserServiceReturn> {
         let userModel = await UserModel.findByPk(id);
-        let status = EStatusHTTP.SUCCESS;
-        let message = EAuthResponse.SUCCESS;
-        const field: EInputField = EInputField.ID;
-        const errors: TErrorsReturn = [];
+        let status = EResponseStatus.SUCCESS;
+        let message = EResponseMessage.SUCCESS;
+        const field: EErrorField = EErrorField.ID;
+        const errors: TErrorList = [];
         
         if (!userModel) {
             console.log(`[UserService] User not found: { id: ${id} }`);
-            status = EStatusHTTP.NOT_FOUND;
+            status = EResponseStatus.NOT_FOUND;
             userModel = null;
-            message = EAuthResponse.INVALID_DATA;
+            message = EResponseMessage.INVALID_DATA;
 
-            const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
-            errors.push(error);
+            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
             return { userModel, status, errors, message };
         };
 
@@ -78,19 +72,18 @@ class UserService {
     // Get user by username
     public static async getByUsername(username: string): Promise<TUserServiceReturn> {
         let userModel = await UserModel.findOne({ where: { username } });
-        let status = EStatusHTTP.SUCCESS;
-        let message = EAuthResponse.SUCCESS;
-        const field: EInputField = EInputField.USERNAME;
-        const errors: TErrorsReturn = [];
+        let status = EResponseStatus.SUCCESS;
+        let message = EResponseMessage.SUCCESS;
+        const field: EErrorField = EErrorField.USERNAME;
+        const errors: TErrorList = [];
         
         if (!userModel) {
             console.log(`[UserService] User not found: { username: ${username} }`);
-            status = EStatusHTTP.NOT_FOUND;
+            status = EResponseStatus.NOT_FOUND;
             userModel = null;
-            message = EAuthResponse.INVALID_DATA;
-
-            const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
-            errors.push(error);
+            message = EResponseMessage.INVALID_DATA;
+            
+            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
             return { userModel, status, errors, message };
         };
 
@@ -101,19 +94,18 @@ class UserService {
     // Get user by email
     public static async getByEmail(email: string): Promise<TUserServiceReturn> {
         let userModel = await UserModel.findOne({ where: { email } });
-        let status = EStatusHTTP.SUCCESS;
-        let message = EAuthResponse.SUCCESS;
-        const field: EInputField = EInputField.EMAIL;
-        const errors: TErrorsReturn = [];
+        let status = EResponseStatus.SUCCESS;
+        let message = EResponseMessage.SUCCESS;
+        const field: EErrorField = EErrorField.EMAIL;
+        const errors: TErrorList = [];
         
         if (!userModel) {
             console.log(`[UserService] User not found: { email: ${email} }`);
-            status = EStatusHTTP.NOT_FOUND;
+            status = EResponseStatus.NOT_FOUND;
             userModel = null;
-            message = EAuthResponse.INVALID_DATA;
-
-            const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
-            errors.push(error);
+            message = EResponseMessage.INVALID_DATA;
+            
+            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
         };
 
         if (errors.length === 0) console.log(`[UserService] User succefully loaded: { email: ${email} }`);
@@ -121,21 +113,20 @@ class UserService {
     };
 
     public static async validatePassword(user: UserModel, password: string): Promise<TUserServiceReturn> {
-        let status = EStatusHTTP.SUCCESS;
+        let status = EResponseStatus.SUCCESS;
         let userModel: UserModel | null = user;
-        let message = EAuthResponse.SUCCESS;
-        const field = EInputField.PASSWORD;
-        const errors: TErrorsReturn = [];
+        let message = EResponseMessage.SUCCESS;
+        const field = EErrorField.PASSWORD;
+        const errors: TErrorList = [];
         const isValidPassword: boolean = await userModel.comparePassword(password);
 
         if (!isValidPassword) {
             console.log('[AuthService] Wrong password!\n');
-            status = EStatusHTTP.UNAUTHORIZED;
+            status = EResponseStatus.UNAUTHORIZED;
             userModel = null;
-            message = EAuthResponse.INVALID_DATA;
+            message = EResponseMessage.INVALID_DATA;
 
-            const error: TErrorReturn = { field, message: EAuthResponse.WRONG_PASSWORD };
-            errors.push(error);
+            addToResponseErrors(errors, field, EErrorMessage.WRONG_PASSWORD);
         };
 
         if (errors.length === 0) console.log('[AuthService] Is correct password!\n');
@@ -145,19 +136,18 @@ class UserService {
     // Update user
     public static async update(id: number, updates: TUserUpdates): Promise<TUserServiceReturn> {
         let userModel = await UserModel.findByPk(id);
-        let status = EStatusHTTP.SUCCESS;
-        let message = EAuthResponse.SUCCESS;
-        const field: EInputField = EInputField.ID;
-        const errors: TErrorsReturn = [];
+        let status = EResponseStatus.SUCCESS;
+        let message = EResponseMessage.SUCCESS;
+        const field: EErrorField = EErrorField.ID;
+        const errors: TErrorList = [];
         
         if (!userModel) {
             console.log(`[UserService] User not found: { id: ${id} }`);
             userModel = null;
-            status = EStatusHTTP.NOT_FOUND;
-            message = EAuthResponse.INVALID_DATA;
+            status = EResponseStatus.NOT_FOUND;
+            message = EResponseMessage.INVALID_DATA;
 
-            const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
-            errors.push(error);
+            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
         };
         
         if (updates.username) {
@@ -166,13 +156,10 @@ class UserService {
             if (getByUsername.userModel) {
                 console.log(`[UserService] Username already exist: ${updates.username}`);
                 userModel = null;
-                status = EStatusHTTP.CONFLICT;
-                message = EAuthResponse.INVALID_DATA;
-                const error: TErrorReturn = {
-                    field: EInputField.USERNAME,
-                    message: EAuthResponse.EXISTING_USERNAME,
-                };
-                errors.push(error);
+                status = EResponseStatus.CONFLICT;
+                message = EResponseMessage.INVALID_DATA;
+
+                addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.EXISTING_USERNAME);
             };
         };
         
@@ -182,13 +169,10 @@ class UserService {
             if (getByEmail.userModel) {
                 console.log(`[UserService] Email already exist: ${updates.email}`);
                 userModel = null;
-                status = EStatusHTTP.CONFLICT;
-                message = EAuthResponse.INVALID_DATA;
-                const error: TErrorReturn = {
-                    field: EInputField.EMAIL,
-                    message: EAuthResponse.EXISTING_EMAIL,
-                };
-                errors.push(error);
+                status = EResponseStatus.CONFLICT;
+                message = EResponseMessage.INVALID_DATA;
+
+                addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.EXISTING_EMAIL);
             };
         };
 
@@ -202,20 +186,19 @@ class UserService {
     // Delete user
     public static async delete(id: number): Promise<TUserDeleteReturn> {
         const userModel = await UserModel.findByPk(id);
-        const field: EInputField = EInputField.ID;
-        const errors: TErrorsReturn = [];
-        let status = EStatusHTTP.SUCCESS;
-        let message = EAuthResponse.SUCCESS;
+        const field: EErrorField = EErrorField.ID;
+        const errors: TErrorList = [];
+        let status = EResponseStatus.SUCCESS;
+        let message = EResponseMessage.SUCCESS;
         let value: boolean = true;
         
         if (!userModel) {
             console.log(`[UserService] User not found: { id: ${id} }`);
             value = false;
-            status = EStatusHTTP.NOT_FOUND;
-            message = EAuthResponse.INVALID_DATA;
+            status = EResponseStatus.NOT_FOUND;
+            message = EResponseMessage.INVALID_DATA;
 
-            const error: TErrorReturn = { field, message: EAuthResponse.USER_NOT_FOUND };
-            errors.push(error);
+            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
         };
 
         if (userModel !== null) {

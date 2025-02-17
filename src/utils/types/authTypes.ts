@@ -1,42 +1,16 @@
 // pchips-v3/src/utils/types/authTypes.ts
 
-import UserModel from "../../../db/models/UserModel";
-import { EStatusHTTP, EAuthResponse, EInputField, EFindedType } from "../enums/authEnums";
-import { IUser } from "../../../db/models/interfaces";
-
-export type TErrorReturn = {
-    field: EInputField,
-    message: EAuthResponse,
-};
-
-export type TErrorsReturn = TErrorReturn[];
-
-export type TUserServiceReturn = {
-    status: EStatusHTTP,
-    userModel: UserModel | null,
-    errors: TErrorsReturn,
-    message: EAuthResponse,
-};
-
-export type TUserDeleteReturn = {
-    status: EStatusHTTP,
-    value: boolean,
-    errors: TErrorReturn[],
-    message: EAuthResponse,
-};
-
-export type TUserUpdates = {
-    username?: string;
-    email?: string;
-    password?: string;
-    [key: string]: string | undefined;
-}
+import { EUserFind } from "../enums/authEnums";
+import { EResponseMessage, EResponseStatus } from "../enums/statusEnums";
+import { TUserUpdates } from "./userTypes";
+import { IUser } from "../../../db/models/utils/interfaces";
+import { TErrorList } from "./errorTypes";
 
 export type TAuthServiceReturn = {
-    status: EStatusHTTP,
+    status: EResponseStatus,
     user: IUser | null,
-    errors: TErrorReturn[],
-    message: EAuthResponse,
+    errors: TErrorList,
+    message: EResponseMessage,
 };
 
 export type TRegisterBody = {
@@ -52,7 +26,7 @@ export type TLoginBody = {
 };
 
 export type TRecoverBody = {
-    findedType: EFindedType,
+    findedType: EUserFind,
     findedValue: string,
 };
 
@@ -69,7 +43,8 @@ export type TAuthBody = {
     email?: string,
     password?: string,
     repeatPassword?: string,
-    findedType?: EFindedType,
+    findedType?: EUserFind,
     findedValue?: string,
     updates?: TUserUpdates,
 };
+

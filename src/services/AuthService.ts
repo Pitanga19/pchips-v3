@@ -1,11 +1,14 @@
 // pchips-v3/src/services/AuthService.ts
 
-import { IUser } from "../../db/models/interfaces";
+import { IUser } from "../../db/models/utils/interfaces";
 import UserModel from "../../db/models/UserModel";
 import { validateCorrectPassword } from "../utils/authUtils";
-import { EAuthResponse, EFindedType, EInputField, EStatusHTTP } from "../utils/enums/authEnums";
-import { TAuthServiceReturn, TUserServiceReturn, TUserUpdates } from "../utils/types/authTypes";
+import { EResponseStatus, EResponseMessage } from "../utils/enums/statusEnums";
+import { EUserFind } from "../utils/enums/authEnums";
+import { TUserServiceReturn, TUserUpdates } from "../utils/types/userTypes";
+import { TAuthServiceReturn } from "../utils/types/authTypes";
 import UserService from "./UserService";
+import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
 
 class AuthService {
     public static async register(username: string, email: string, password: string): Promise<TAuthServiceReturn> {
@@ -58,27 +61,27 @@ class AuthService {
         };
     };
 
-    public static async recover(findedType: EFindedType, findedData: string): Promise<TAuthServiceReturn> {
+    public static async recover(findedType: EUserFind, findedData: string): Promise<TAuthServiceReturn> {
         let getUserResult: TUserServiceReturn;
         let user: IUser | null = null;
-        if (findedType === EFindedType.USERNAME) {
+        if (findedType === EUserFind.USERNAME) {
             getUserResult = await UserService.getByUsername(findedData);
-        } else if (findedType === EFindedType.EMAIL) {
+        } else if (findedType === EUserFind.EMAIL) {
             getUserResult = await UserService.getByEmail(findedData);
-        } else if (findedType === EFindedType.NULL) {
-            const error = { field: EInputField.FINDED_TYPE, message: EAuthResponse.DATA_IS_MISSING };
+        } else if (findedType === EUserFind.NULL) {
+            const error = { field: EErrorField.FINDED_TYPE, message: EErrorMessage.DATA_IS_MISSING };
             return {
                 user: null,
-                status: EStatusHTTP.BAD_REQUEST,
+                status: EResponseStatus.BAD_REQUEST,
                 errors: [error],
-                message: EAuthResponse.INVALID_DATA,
+                message: EResponseMessage.INVALID_DATA,
             };
         } else {
             return {
                 user: null,
-                status: EStatusHTTP.INTERNAL_SERVER_ERROR,
+                status: EResponseStatus.INTERNAL_SERVER_ERROR,
                 errors: [],
-                message: EAuthResponse.INTERNAL_SERVER_ERROR,
+                message: EResponseMessage.INTERNAL_SERVER_ERROR,
             };
         };
 

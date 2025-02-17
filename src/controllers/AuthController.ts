@@ -3,7 +3,7 @@
 import { Request, Response } from "express";
 import AuthService from "../services/AuthService";
 import { TAuthServiceReturn, TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
-import { EAuthResponse } from "../utils/enums/authEnums";
+import { EResponseMessage } from "../utils/enums/statusEnums";
 
 class AuthController {
     public static async register(req: Request, res: Response): Promise<void> {
@@ -18,7 +18,7 @@ class AuthController {
 
             res.status(status).json({ user, errors, message });
         } catch (error){
-            res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
+            res.status(500).json({ error, message: EResponseMessage.INTERNAL_SERVER_ERROR });
         };
     };
 
@@ -34,7 +34,7 @@ class AuthController {
 
             res.status(status).json({ user, errors, message });
         } catch (error){
-            res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
+            res.status(500).json({ error, message: EResponseMessage.INTERNAL_SERVER_ERROR });
         };
     };
 
@@ -50,7 +50,7 @@ class AuthController {
 
             res.status(status).json({ user, errors, message });
         } catch (error){
-            res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
+            res.status(500).json({ error, message: EResponseMessage.INTERNAL_SERVER_ERROR });
         };
     };
 
@@ -66,7 +66,7 @@ class AuthController {
 
             res.status(status).json({ user, errors, message });
         } catch (error) {
-            res.status(500).json({ error, message: EAuthResponse.INTERNAL_SERVER_ERROR });
+            res.status(500).json({ error, message: EResponseMessage.INTERNAL_SERVER_ERROR });
         };
     };
 };
