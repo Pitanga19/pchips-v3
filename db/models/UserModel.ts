@@ -1,7 +1,7 @@
 // pchips-v3/db/models/UserModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { IUser } from './interfaces';
+import { IUser } from './utils/interfaces';
 import bcrypt from 'bcrypt';
 import sequelize from "../database";
 
