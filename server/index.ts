@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
 import AuthRoutes from '../src/routes/AuthRoutes';
+import test from '../src/tests/test';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -44,6 +45,8 @@ initDatabase()  // Initialize database
         server.listen(PORT, () => { // Initialize server when database is ready
             console.log(`[index.ts] Server is running on http://localhost:${PORT}\n`);
         });
+
+        test();
     })
     .catch((error) => {
         console.error(`Error while initializing the database: ${error}\n`);
