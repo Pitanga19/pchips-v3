@@ -1,8 +1,17 @@
 import sequelize from "./database"; // Import sequelize object
+import UserModel from "./models/UserModel";
+import FriendModel from "./models/FriendModel";
 // ---------------- IMPORT MODELS   ---------------------------- //
 
 const initDatabase = async () => {
-    // ---------------- DEFINE RELATIONS    -------------------- //
+    // ---------------- RELATIONS   ---------------------------- //
+    // User <-> Friend (firstUserId) (1:N)
+    UserModel.hasMany(FriendModel, { foreignKey: 'firstUserId', as: 'firstUserFriends' });
+    FriendModel.belongsTo(UserModel, { foreignKey: 'firstUserId', as: 'firstUser' });
+
+    // User <-> Friend (secondUserId) (1:N)
+    UserModel.hasMany(FriendModel, { foreignKey: 'secondUserId', as: 'secondUserFriends' });
+    FriendModel.belongsTo(UserModel, { foreignKey: 'secondUserId', as: 'secondUser' });
     
     // ---------------- SYNC DATABASE   ------------------------ //
     try {

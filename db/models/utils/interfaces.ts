@@ -10,8 +10,9 @@ export interface IUser {
 
 export interface IFriend {
     id: number,
-    userId: number,
-    friendId: number,
+    firstUserId: number,
+    secondUserId: number,
+    senderId: number,
     status: EFriendStatus,
 };
 

@@ -3,6 +3,5 @@
 export enum EFriendStatus {
     PENDING = 'pending',
     ACCEPTED = 'accepted',
-    BLOCKED = 'blocked',
 };
 
