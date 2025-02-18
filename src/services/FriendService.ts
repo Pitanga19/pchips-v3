@@ -1,7 +1,7 @@
 // pchips-v3/src/services/FriendService.ts
 
 import FriendModel from "../../db/models/FriendModel";
-import { TFriendModelReturn, TRelationshipDeleteReturn, TRelationshipUserListReturn, TFriendServiceReturn } from "../utils/types/relationshipTypes";
+import { TFriendModelReturn, TRelationshipDeleteReturn, TFriendModelListReturn, TFriendServiceReturn } from "../utils/types/relationshipTypes";
 import { EResponseStatus, EResponseMessage } from "../utils/enums/statusEnums";
 import { addToResponseErrors } from "../utils/errorUtils";
 import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
@@ -93,7 +93,7 @@ class FriendService {
         return { status, friendModel, errors, message };
     };
 
-    private static async getFriendModelList(userId: number, friendStatus: EFriendStatus | null = null): Promise<TRelationshipUserListReturn> {
+    private static async getFriendModelList(userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendModelListReturn> {
         const errors: TErrorList = [];
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
@@ -176,15 +176,15 @@ class FriendService {
         return { status, friendModel, errors, message };
     };
 
-    public static async getAllFriendModelList(userId: number): Promise<TRelationshipUserListReturn> {
+    public static async getAllFriendModelList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId);
     };
 
-    public static async getAcceptedFriendModelList(userId: number): Promise<TRelationshipUserListReturn> {
+    public static async getAcceptedFriendModelList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId, EFriendStatus.ACCEPTED);
     };
 
-    public static async getPendingFriendModelList(userId: number): Promise<TRelationshipUserListReturn> {
+    public static async getPendingFriendModelList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId, EFriendStatus.PENDING);
     };
 };

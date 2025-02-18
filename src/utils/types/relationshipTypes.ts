@@ -15,7 +15,7 @@ export type TFriendServiceReturn = {
     message: EResponseMessage,
 };
 
-export type TRelationshipUserListReturn = {
+export type TFriendModelListReturn = {
     status: EResponseStatus,
     friendModelList: UserModel[],
     errors: TErrorList,
