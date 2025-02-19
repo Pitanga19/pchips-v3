@@ -16,3 +16,9 @@ export interface IFriend {
     status: EFriendStatus,
 };
 
+export interface IBlock {
+    id: number,
+    blockerId: number,
+    blockedId: number,
+};
+

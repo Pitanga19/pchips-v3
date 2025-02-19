@@ -1,18 +1,59 @@
 import sequelize from "./database"; // Import sequelize object
+// ---------------- IMPORT MODELS   ---------------------------- //
 import UserModel from "./models/UserModel";
 import FriendModel from "./models/FriendModel";
-// ---------------- IMPORT MODELS   ---------------------------- //
+import BlockModel from "./models/BlockModel";
 
-const initDatabase = async () => {
+const initDatabase = async () => { // Init database function
     // ---------------- RELATIONS   ---------------------------- //
     // User <-> Friend (firstUserId) (1:N)
-    UserModel.hasMany(FriendModel, { foreignKey: 'firstUserId', as: 'firstUserFriends' });
-    FriendModel.belongsTo(UserModel, { foreignKey: 'firstUserId', as: 'firstUser' });
+    UserModel.hasMany(FriendModel, {
+        foreignKey: 'firstUserId',
+        as: 'firstUserFriends',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    FriendModel.belongsTo(UserModel, {
+        foreignKey: 'firstUserId',
+        as: 'firstUser',
+    });
 
     // User <-> Friend (secondUserId) (1:N)
-    UserModel.hasMany(FriendModel, { foreignKey: 'secondUserId', as: 'secondUserFriends' });
-    FriendModel.belongsTo(UserModel, { foreignKey: 'secondUserId', as: 'secondUser' });
-    
+    UserModel.hasMany(FriendModel, {
+        foreignKey: 'secondUserId',
+        as: 'secondUserFriends',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    FriendModel.belongsTo(UserModel, {
+        foreignKey: 'secondUserId',
+        as: 'secondUser',
+    });
+
+    // User <-> Block (blockerId) (1:N)
+    UserModel.hasMany(BlockModel, {
+        foreignKey: 'blockerId',
+        as: 'blockerBlocks',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    BlockModel.belongsTo(UserModel, {
+        foreignKey: 'blockerId',
+        as: 'blocker',
+    });
+
+    // User <-> Block (blockedId) (1:N)
+    UserModel.hasMany(BlockModel, {
+        foreignKey: 'blockedId',
+        as: 'blockedBlocks',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    BlockModel.belongsTo(UserModel, {
+        foreignKey: 'blockedId',
+        as: 'blocked',
+    });
+
     // ---------------- SYNC DATABASE   ------------------------ //
     try {
         await sequelize.authenticate(); // Connect to database
