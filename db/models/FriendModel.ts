@@ -36,10 +36,18 @@ FriendModel.init(
         firstUserId: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: "users",
+                key: "id",
+            },
         },
         secondUserId: {
             type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: "users",
+                key: "id",
+            },
         },
         senderId: {
             type: DataTypes.INTEGER,
