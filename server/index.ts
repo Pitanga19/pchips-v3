@@ -6,7 +6,10 @@ import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
 import AuthRoutes from '../src/routes/AuthRoutes';
-import test from '../src/tests/test';
+import userTest from '../src/tests/userTest';
+import authTest from '../src/tests/authTest';
+import friendTest from '../src/tests/friendTest';
+import blockTest from '../src/tests/blockTest';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -39,14 +42,17 @@ io.on('connection', (socket) => {
 
 // ---------------- SERVER  ------------------------------------ //
 initDatabase()  // Initialize database
-    .then(() => {
+    .then(async () => {
         console.log('[index.ts] Database initialized successfully');
         
         server.listen(PORT, () => { // Initialize server when database is ready
             console.log(`[index.ts] Server is running on http://localhost:${PORT}\n`);
         });
 
-        test();
+        await userTest();
+        await authTest();
+        await friendTest();
+        await blockTest();
     })
     .catch((error) => {
         console.error(`Error while initializing the database: ${error}\n`);
