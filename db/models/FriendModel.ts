@@ -40,6 +40,8 @@ FriendModel.init(
                 model: "users",
                 key: "id",
             },
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
         },
         secondUserId: {
             type: DataTypes.INTEGER,
@@ -48,6 +50,8 @@ FriendModel.init(
                 model: "users",
                 key: "id",
             },
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
         },
         senderId: {
             type: DataTypes.INTEGER,

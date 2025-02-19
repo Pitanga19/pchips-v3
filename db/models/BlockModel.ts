@@ -35,6 +35,8 @@ BlockModel.init(
                 model: "users",
                 key: "id",
             },
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
         },
         blockedId: {
             type: DataTypes.INTEGER,
@@ -43,6 +45,8 @@ BlockModel.init(
                 model: "users",
                 key: "id",
             },
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE",
         },
     }, {
         sequelize,
