@@ -1,16 +1,16 @@
 // pchips-v3/src/utils/types/relationshipTypes.ts
 
 import { EResponseStatus, EResponseMessage } from "../enums/statusEnums";
+import { TErrorList } from "./errorTypes";
 import UserModel from "../../../db/models/UserModel";
 import FriendModel from "../../../db/models/FriendModel";
-// import BlockModel from "../../../db/models/BlockModel";
-import { TErrorList } from "./errorTypes";
+import BlockModel from "../../../db/models/BlockModel";
 
 export type TFriendModelReturn = FriendModel | null;
 
 export type TFriendServiceReturn = {
     status: EResponseStatus,
-    friendModel: FriendModel | null,
+    friendModel: TFriendModelReturn,
     errors: TErrorList,
     message: EResponseMessage,
 };
@@ -25,6 +25,15 @@ export type TFriendModelListReturn = {
 export type TRelationshipDeleteReturn = {
     status: EResponseStatus,
     value: boolean,
+    errors: TErrorList,
+    message: EResponseMessage,
+};
+
+export type TBlockModelReturn = BlockModel | null;
+
+export type TBlockServiceReturn = {
+    status: EResponseStatus,
+    blockModel: TBlockModelReturn,
     errors: TErrorList,
     message: EResponseMessage,
 };
