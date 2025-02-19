@@ -23,7 +23,7 @@ class FriendModel extends Model {
             senderId: this.senderId,
             status: this.status,
         };
-    }
+    };
 };
 
 FriendModel.init(
@@ -74,7 +74,7 @@ FriendModel.init(
                     const temp = friend.firstUserId;
                     friend.firstUserId = friend.secondUserId;
                     friend.secondUserId = temp;
-                }
+                };
             },
         },
     },
