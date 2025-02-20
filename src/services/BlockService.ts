@@ -3,7 +3,7 @@
 import BlockModel from "../../db/models/BlockModel";
 import { TErrorList } from "../utils/types/errorTypes";
 import { EResponseMessage, EResponseStatus } from "../utils/enums/statusEnums";
-import { TBlockModelReturn, TBlockServiceReturn, TRelationshipDeleteReturn } from "../utils/types/relationshipTypes";
+import { TBlockModelReturn, TBlockServiceReturn, TRelationDeleteReturn } from "../utils/types/relationTypes";
 import { addToResponseErrors } from "../utils/errorUtils";
 import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
 
@@ -59,7 +59,7 @@ class BlockService {
         return { status, blockModel, errors, message };
     };
 
-    public static async delete(blockerId: number, blockedId: number): Promise<TRelationshipDeleteReturn> {
+    public static async delete(blockerId: number, blockedId: number): Promise<TRelationDeleteReturn> {
         const errors: TErrorList = [];
         let status: EResponseStatus = EResponseStatus.CREATED;
         let message: EResponseMessage = EResponseMessage.CREATED;

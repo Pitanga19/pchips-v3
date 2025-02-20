@@ -1,7 +1,7 @@
 // pchips-v3/src/services/FriendService.ts
 
 import FriendModel from "../../db/models/FriendModel";
-import { TFriendModelReturn, TRelationshipDeleteReturn, TFriendModelListReturn, TFriendServiceReturn } from "../utils/types/relationshipTypes";
+import { TFriendModelReturn, TRelationDeleteReturn, TFriendModelListReturn, TFriendServiceReturn } from "../utils/types/relationTypes";
 import { EResponseStatus, EResponseMessage } from "../utils/enums/statusEnums";
 import { addToResponseErrors } from "../utils/errorUtils";
 import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
@@ -9,7 +9,7 @@ import { TErrorList } from "../utils/types/errorTypes";
 import { Op } from "sequelize";
 import UserModel from "../../db/models/UserModel";
 import { EFriendStatus } from "../../db/models/utils/enums";
-import { checkIsAccepted, checkIsSenderId } from "../utils/relationshipUtils";
+import { checkIsAccepted, checkIsSenderId } from "../utils/relationUtils";
 
 class FriendService {
     private static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
@@ -124,7 +124,7 @@ class FriendService {
         return { status, friendModelList, errors, message };
     };
 
-    private static async delete(senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationshipDeleteReturn> {
+    private static async delete(senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationDeleteReturn> {
         const errors: TErrorList = [];
         const friendGetResult = await this.get(senderId, receiverId, errors, expectedStatus, needCheckSender);
         const friendModel = friendGetResult.friendModel;
@@ -149,15 +149,15 @@ class FriendService {
         return friendCreateResult;
     };
 
-    public static async cancelFriendRequest(senderId: number, receiverId: number): Promise<TRelationshipDeleteReturn> {
+    public static async cancelFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
         return this.delete(senderId, receiverId, EFriendStatus.PENDING, true);
     };
     
-    public static async rejectFriendRequest(senderId: number, receiverId: number): Promise<TRelationshipDeleteReturn> {
+    public static async rejectFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
         return this.delete(senderId, receiverId, EFriendStatus.PENDING, true);
     };
     
-    public static async removeFriend(firstUserId: number, secondUserId: number): Promise<TRelationshipDeleteReturn> {
+    public static async removeFriend(firstUserId: number, secondUserId: number): Promise<TRelationDeleteReturn> {
         return this.delete(firstUserId, secondUserId, EFriendStatus.ACCEPTED, false);
     };    
 

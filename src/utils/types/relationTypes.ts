@@ -1,4 +1,4 @@
-// pchips-v3/src/utils/types/relationshipTypes.ts
+// pchips-v3/src/utils/types/relationTypes.ts
 
 import { EResponseStatus, EResponseMessage } from "../enums/statusEnums";
 import { TErrorList } from "./errorTypes";
@@ -22,7 +22,7 @@ export type TFriendModelListReturn = {
     message: EResponseMessage,
 };
 
-export type TRelationshipDeleteReturn = {
+export type TRelationDeleteReturn = {
     status: EResponseStatus,
     value: boolean,
     errors: TErrorList,

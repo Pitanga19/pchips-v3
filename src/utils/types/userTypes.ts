@@ -4,9 +4,11 @@ import { EResponseStatus, EResponseMessage } from '../enums/statusEnums';
 import UserModel from '../../../db/models/UserModel';
 import { TErrorList } from './errorTypes';
 
+export type TUserModel = UserModel | null;
+
 export type TUserServiceReturn = {
     status: EResponseStatus,
-    userModel: UserModel | null,
+    userModel: TUserModel,
     errors: TErrorList,
     message: EResponseMessage,
 };
