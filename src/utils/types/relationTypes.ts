@@ -37,3 +37,10 @@ export type TBlockServiceReturn = {
     errors: TErrorList,
     message: EResponseMessage,
 };
+
+export type TBlockModelListReturn = {
+    status: EResponseStatus,
+    blockedModelList: UserModel[],
+    errors: TErrorList,
+    message: EResponseMessage,
+};
