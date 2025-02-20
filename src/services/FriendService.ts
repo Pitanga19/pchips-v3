@@ -170,7 +170,7 @@ class FriendService {
 
         if (friendModel && errors.length === 0) {
             await friendModel.update({ status: EFriendStatus.ACCEPTED });
-            console.log(`[RelationshipService] Relationship succesfully accepted: ${senderId} - ${receiverId}`);
+            console.log(`[FriendService] Friend succesfully accepted: ${senderId} - ${receiverId}`);
         };
 
         return { status, friendModel, errors, message };
