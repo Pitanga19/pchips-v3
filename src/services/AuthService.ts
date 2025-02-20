@@ -34,9 +34,9 @@ class AuthService {
 
     public static async login(username: string, password: string): Promise<TAuthServiceReturn> {
         const getUserResult = await UserService.getByUsername(username);
-        const status = getUserResult.status;
         const errors = getUserResult.errors;
-        const message = getUserResult.message;
+        let status = getUserResult.status;
+        let message = getUserResult.message;
         let user = null;
 
         if (!getUserResult.userModel) {
@@ -48,6 +48,8 @@ class AuthService {
         const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
         if (!isCorrectPassword) {
             console.log(`[AuthService] Wrong password: ${username}\n`);
+            status = EResponseStatus.UNAUTHORIZED;
+            message = EResponseMessage.INVALID_DATA;
             return { status, user, errors, message };
         };
         
