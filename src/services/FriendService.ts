@@ -14,7 +14,7 @@ import { checkIsAccepted, checkIsSenderId } from "../utils/relationUtils";
 class FriendService {
     private static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
         const field = EErrorField.RELATIONSHIP;
-        let friendModel: FriendModel | null = null;
+        let friendModel: TFriendModelReturn = null;
 
         if (firstUserId > secondUserId) {
             [firstUserId, secondUserId] = [secondUserId, firstUserId];
@@ -36,7 +36,7 @@ class FriendService {
         const field = EErrorField.RELATIONSHIP;
         const firstUserId = Math.min(senderId, receiverId);
         const secondUserId = Math.max(senderId, receiverId);
-        let friendModel: FriendModel | null = null;
+        let friendModel: TFriendModelReturn = null;
         
         try {
             friendModel = await FriendModel.create({ firstUserId, secondUserId, senderId });
@@ -49,6 +49,7 @@ class FriendService {
             } else {
                 status = EResponseStatus.INTERNAL_SERVER_ERROR;
                 message = EResponseMessage.INTERNAL_SERVER_ERROR;
+                console.log(`[FriendService] Error creating Friend: ${firstUserId} - ${secondUserId}`);
                 addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
             };
         };        
@@ -176,15 +177,15 @@ class FriendService {
         return { status, friendModel, errors, message };
     };
 
-    public static async getAllFriendModelList(userId: number): Promise<TFriendModelListReturn> {
+    public static async getCompleteFriendList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId);
     };
 
-    public static async getAcceptedFriendModelList(userId: number): Promise<TFriendModelListReturn> {
+    public static async getAcceptedFriendList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId, EFriendStatus.ACCEPTED);
     };
 
-    public static async getPendingFriendModelList(userId: number): Promise<TFriendModelListReturn> {
+    public static async getPendingFriendList(userId: number): Promise<TFriendModelListReturn> {
         return this.getFriendModelList(userId, EFriendStatus.PENDING);
     };
 };
