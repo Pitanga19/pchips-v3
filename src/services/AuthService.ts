@@ -4,7 +4,7 @@ import { IUser } from "../../db/models/utils/interfaces";
 import { validateCorrectPassword } from "../utils/authUtils";
 import { EResponseStatus, EResponseMessage } from "../utils/enums/statusEnums";
 import { EUserFind } from "../utils/enums/authEnums";
-import { TUserModel, TUserServiceReturn, TUserUpdates } from "../utils/types/userTypes";
+import { TUserModelReturn, TUserServiceReturn, TUserUpdates } from "../utils/types/userTypes";
 import { TAuthServiceReturn } from "../utils/types/authTypes";
 import UserService from "./UserService";
 import { EErrorField, EErrorMessage } from "../utils/enums/errorEnums";
@@ -108,7 +108,7 @@ class AuthService {
         let status = getUserResult.status;
         let errors = getUserResult.errors;
         let message = getUserResult.message;
-        let userModel: TUserModel = null;
+        let userModel: TUserModelReturn = null;
         let user = null;
 
         if (!getUserResult.userModel) {
