@@ -7,8 +7,8 @@ export const checkIsSenderId = (relationshipModel: RelationshipModel, userId: nu
     let isSenderId = false;
 
     if (relationshipModel.senderId === userId) {
-        console.log(`[RelationshipService] Same sender ID: ${userId}`);
-        isSenderId = false;
+        console.log(`[relationshipUtils] Same sender ID: ${userId}`);
+        isSenderId = true;
     };
 
     return isSenderId;
@@ -18,7 +18,7 @@ export const checkIsAccepted = (relationshipModel: RelationshipModel): boolean =
     let isAccepted = false;
 
     if (relationshipModel.status === EFriendStatus.ACCEPTED) {
-        console.log(`[RelationshipService] Relationship is accepted`);
+        console.log(`[relationshipUtils] Relationship is accepted`);
         isAccepted = true;
     };
 
