@@ -14,21 +14,21 @@ class AuthService {
         const createUserResult = await UserService.create(username, email, password);
         if (!createUserResult.userModel) {
             console.log(`[AuthService] Error creating user: ${username}\n`);
-                return {
-                    status: createUserResult.status,
-                    user: createUserResult.userModel,
-                    errors: createUserResult.errors,
-                    message: createUserResult.message,
-                };
-        };
-
-        console.log(`[AuthService] User successfully start to register: ${username}\n`);
             return {
                 status: createUserResult.status,
-                user: createUserResult.userModel.toJSON(),
+                user: createUserResult.userModel,
                 errors: createUserResult.errors,
                 message: createUserResult.message,
             };
+        };
+
+        console.log(`[AuthService] User successfully start to register: ${username}\n`);
+        return {
+            status: createUserResult.status,
+            user: createUserResult.userModel.toJSON(),
+            errors: createUserResult.errors,
+            message: createUserResult.message,
+        };
     };
 
     public static async login(username: string, password: string): Promise<TAuthServiceReturn> {
