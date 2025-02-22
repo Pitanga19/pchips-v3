@@ -12,7 +12,7 @@ import { EFriendStatus } from "../../db/models/utils/enums";
 import { checkIsAccepted, checkIsSenderId } from "../utils/relationUtils";
 
 class FriendService {
-    private static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
+    public static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
         const field = EErrorField.RELATIONSHIP;
         let friendModel: TFriendModelReturn = null;
 
@@ -30,7 +30,7 @@ class FriendService {
         return friendModel;
     };
 
-    private static async create(senderId: number, receiverId: number, errors: TErrorList): Promise<TFriendServiceReturn> {
+    public static async create(senderId: number, receiverId: number, errors: TErrorList): Promise<TFriendServiceReturn> {
         let status: EResponseStatus = EResponseStatus.CREATED;
         let message: EResponseMessage = EResponseMessage.CREATED;
         const field = EErrorField.RELATIONSHIP;
@@ -57,7 +57,7 @@ class FriendService {
         return { status, friendModel, errors, message };
     };
 
-    private static async get(senderId: number, receiverId: number, errors: TErrorList, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendServiceReturn> {
+    public static async get(senderId: number, receiverId: number, errors: TErrorList, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendServiceReturn> {
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
         const field = EErrorField.RELATIONSHIP;
@@ -94,7 +94,7 @@ class FriendService {
         return { status, friendModel, errors, message };
     };
 
-    private static async getFriendModelList(userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendModelListReturn> {
+    public static async getFriendModelList(userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendModelListReturn> {
         const errors: TErrorList = [];
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
@@ -125,7 +125,7 @@ class FriendService {
         return { status, friendModelList, errors, message };
     };
 
-    private static async delete(senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationDeleteReturn> {
+    public static async delete(senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationDeleteReturn> {
         const errors: TErrorList = [];
         const friendGetResult = await this.get(senderId, receiverId, errors, expectedStatus, needCheckSender);
         const friendModel = friendGetResult.friendModel;
@@ -140,53 +140,6 @@ class FriendService {
         };
     
         return { status, value, errors, message };
-    };
-
-    public static async sendFriendRequest(senderId: number, receiverId: number): Promise<TFriendServiceReturn> {
-        const errors: TErrorList = [];
-
-        const friendCreateResult = await FriendService.create(senderId, receiverId, errors);
-
-        return friendCreateResult;
-    };
-
-    public static async cancelFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
-        return this.delete(senderId, receiverId, EFriendStatus.PENDING, true);
-    };
-    
-    public static async rejectFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
-        return this.delete(senderId, receiverId, EFriendStatus.PENDING, true);
-    };
-    
-    public static async removeFriend(firstUserId: number, secondUserId: number): Promise<TRelationDeleteReturn> {
-        return this.delete(firstUserId, secondUserId, EFriendStatus.ACCEPTED, false);
-    };    
-
-    public static async acceptFriendRequest(senderId: number, receiverId: number): Promise<TFriendServiceReturn> {
-        const errors: TErrorList = [];
-        const friendGetResult = await this.get(senderId, receiverId, errors, EFriendStatus.PENDING, true);
-        const friendModel = friendGetResult.friendModel;
-        let status = friendGetResult.status;
-        let message = friendGetResult.message;
-
-        if (friendModel && errors.length === 0) {
-            await friendModel.update({ status: EFriendStatus.ACCEPTED });
-            console.log(`[FriendService] Friend succesfully accepted: ${senderId} - ${receiverId}`);
-        };
-
-        return { status, friendModel, errors, message };
-    };
-
-    public static async getCompleteFriendList(userId: number): Promise<TFriendModelListReturn> {
-        return this.getFriendModelList(userId);
-    };
-
-    public static async getAcceptedFriendList(userId: number): Promise<TFriendModelListReturn> {
-        return this.getFriendModelList(userId, EFriendStatus.ACCEPTED);
-    };
-
-    public static async getPendingFriendList(userId: number): Promise<TFriendModelListReturn> {
-        return this.getFriendModelList(userId, EFriendStatus.PENDING);
     };
 };
 
