@@ -61,7 +61,7 @@ class BlockService {
         return { status, blockModel, errors, message };
     };
 
-    public static async getBlockedList(blockerId: number): Promise<TBlockModelListReturn>{
+    public static async getBlockedModelList(blockerId: number): Promise<TBlockModelListReturn>{
         const errors: TErrorList = [];
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
@@ -78,7 +78,7 @@ class BlockService {
             b.dataValues.blocked
         ).filter(Boolean);
 
-        console.log('[BlockService] Blocked users succesfully loaded\n', { status, friendModelList: blockedModelList.map(b => b.toJSON()), errors, message });
+        console.log('[BlockService] Blocked users succesfully loaded\n', { status, blockedModelList: blockedModelList.map(b => b.toJSON()), errors, message });
 
         return { status, blockedModelList, errors, message };
     };
