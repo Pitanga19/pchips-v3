@@ -78,3 +78,22 @@ export type TRelationDeleteReturn = {
     errors: TErrorList,
     message: EResponseMessage,
 };
+
+export type TRelationFriendBody = {
+    senderId: number,
+    receiverId: number,
+};
+
+export type TRelationRemoveBody = {
+    firstUserId: number,
+    secondUserId: number,
+};
+
+export type TRelationBlockBody = {
+    blockerId: number,
+    blockedId: number,
+};
+
+export type TRelationListBody = {
+    userId: number,
+};
