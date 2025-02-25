@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import AuthService from "../services/AuthService";
-import { TAuthServiceReturn, TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
+import { TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
 import { EResponseMessage } from "../utils/enums/statusEnums";
 
 class AuthController {
@@ -10,11 +10,7 @@ class AuthController {
         const { username, email, password }: TRegisterBody = req.body;
 
         try {
-            const authRegisterResult: TAuthServiceReturn = await AuthService.register(username, email, password);
-            const status = authRegisterResult.status;
-            const user = authRegisterResult.user;
-            const errors = authRegisterResult.errors;
-            const message = authRegisterResult.message;
+            const { status, user, errors, message } = await AuthService.register(username, email, password);
 
             res.status(status).json({ user, errors, message });
         } catch (error){
@@ -26,11 +22,7 @@ class AuthController {
         const { username, password }: TLoginBody = req.body;
 
         try {
-            const authLoginResult: TAuthServiceReturn = await AuthService.login(username, password);
-            const status = authLoginResult.status;
-            const user = authLoginResult.user;
-            const errors = authLoginResult.errors;
-            const message = authLoginResult.message;
+            const { status, user, errors, message } = await AuthService.login(username, password);
 
             res.status(status).json({ user, errors, message });
         } catch (error){
@@ -42,11 +34,7 @@ class AuthController {
         const { findedType, findedValue }: TRecoverBody = req.body;
 
         try {
-            const authRecoverResult: TAuthServiceReturn = await AuthService.recover(findedType, findedValue);
-            const status = authRecoverResult.status;
-            const user = authRecoverResult.user;
-            const errors = authRecoverResult.errors;
-            const message = authRecoverResult.message;
+            const { status, user, errors, message } = await AuthService.recover(findedType, findedValue);
 
             res.status(status).json({ user, errors, message });
         } catch (error){
@@ -58,11 +46,7 @@ class AuthController {
         const { id, password, updates }: TModifyBody = req.body;
 
         try {
-            const authModifyResult: TAuthServiceReturn = await AuthService.modify(id, password, updates);
-            const status = authModifyResult.status;
-            const user = authModifyResult.user;
-            const errors = authModifyResult.errors;
-            const message = authModifyResult.message;
+            const { status, user, errors, message } = await AuthService.modify(id, password, updates);
 
             res.status(status).json({ user, errors, message });
         } catch (error) {
