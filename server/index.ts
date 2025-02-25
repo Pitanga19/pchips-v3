@@ -8,7 +8,7 @@ import initDatabase from '../db/initDatabase';
 import AuthRoutes from '../src/routes/AuthRoutes';
 import userTest from '../src/tests/userTest';
 import authTest from '../src/tests/authTest';
-import friendTest from '../src/tests/friendTest';
+import relationTest from '../src/tests/relationTest';
 import blockTest from '../src/tests/blockTest';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
@@ -51,7 +51,7 @@ initDatabase()  // Initialize database
 
         await userTest();
         await authTest();
-        await friendTest();
+        await relationTest();
         await blockTest();
     })
     .catch((error) => {

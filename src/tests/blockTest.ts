@@ -26,7 +26,7 @@ const blockTest = async () => {
         console.log("[blockTest.ts] Creating block user3 to user5 result:", createBlockResult3to5);
 
         console.log("\n\n\n[blockTest.ts] Getting blocks ...");
-        const getBlockListResult = await BlockService.getBlockedList(user3);
+        const getBlockListResult = await BlockService.getBlockedModelList(user3);
         listApplyToJSON(getBlockListResult);
         console.log("[blockTest.ts] Blocked list for user3 result:", getBlockListResult);
 
@@ -36,7 +36,7 @@ const blockTest = async () => {
         console.log("[blockTest.ts] Delte block user3 to user4 result:", deleteBlockResult);
 
         console.log("\n\n\n[blockTest.ts] Getting blocks ...");
-        const getBlockListResultFinal = await BlockService.getBlockedList(user3);
+        const getBlockListResultFinal = await BlockService.getBlockedModelList(user3);
         listApplyToJSON(getBlockListResultFinal);
         console.log("[blockTest.ts] Blocked list for user3 final result:", getBlockListResultFinal);
     
