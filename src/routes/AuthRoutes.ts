@@ -6,23 +6,23 @@ import AuthController from "../controllers/AuthController";
 
 const router = Router();
 
-// Register route
+// Register new user
 router.post('/register', AuthMiddleware.validateRegisterInputs, async (req: Request, res: Response) => {
     await AuthController.register(req, res);
 });
 
-// Log in route
+// LogIn existing user
 router.post('/login', AuthMiddleware.validateLoginInputs, async (req: Request, res: Response) => {
     await AuthController.login(req, res);
 });
 
-// Recover route
-router.post('/recover', AuthMiddleware.validateRecoverInputs, async (req: Request, res: Response) => {
+// Recover forgoted password
+router.post('/recover-password', AuthMiddleware.validateRecoverInputs, async (req: Request, res: Response) => {
     await AuthController.recover(req, res);
 });
 
-// Modify route
-router.post('/modify', AuthMiddleware.validateModifyInputs, async (req: Request, res: Response) => {
+// Update user info (username, email, password)
+router.put('/update-user', AuthMiddleware.validateModifyInputs, async (req: Request, res: Response) => {
     await AuthController.modify(req, res);
 });
 
