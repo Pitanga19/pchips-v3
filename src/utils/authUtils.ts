@@ -65,7 +65,7 @@ export const validateExistingInputs = (authProcess: EAuthProcess, errors: TError
         };
     };
 
-    if (authProcess === EAuthProcess.MODIFY) {
+    if (authProcess === EAuthProcess.UPDATE) {
         console.log('[authUtils] Recover auth existing test');
         if (!id) {
             field = EErrorField.USERNAME;

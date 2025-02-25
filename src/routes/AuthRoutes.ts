@@ -22,8 +22,8 @@ router.post('/recover-password', AuthMiddleware.validateRecoverInputs, async (re
 });
 
 // Update user info (username, email, password)
-router.put('/update-user', AuthMiddleware.validateModifyInputs, async (req: Request, res: Response) => {
-    await AuthController.modify(req, res);
+router.put('/update-user', AuthMiddleware.validateUpdateInputs, async (req: Request, res: Response) => {
+    await AuthController.update(req, res);
 });
 
 export default router;

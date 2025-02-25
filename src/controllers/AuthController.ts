@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import AuthService from "../services/AuthService";
-import { TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
+import { TRegisterBody, TLoginBody, TRecoverBody, TUpdateBody } from "../utils/types/authTypes";
 import { EResponseMessage } from "../utils/enums/statusEnums";
 
 class AuthController {
@@ -42,11 +42,11 @@ class AuthController {
         };
     };
 
-    public static async modify(req: Request, res: Response): Promise<void> {
-        const { id, password, updates }: TModifyBody = req.body;
+    public static async update(req: Request, res: Response): Promise<void> {
+        const { id, password, updates }: TUpdateBody = req.body;
 
         try {
-            const { status, user, errors, message } = await AuthService.modify(id, password, updates);
+            const { status, user, errors, message } = await AuthService.update(id, password, updates);
 
             res.status(status).json({ user, errors, message });
         } catch (error) {

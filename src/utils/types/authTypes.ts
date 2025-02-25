@@ -30,7 +30,7 @@ export type TRecoverBody = {
     findedValue: string,
 };
 
-export type TModifyBody = {
+export type TUpdateBody = {
     id: number,
     password: string,
     updates: TUserUpdates,

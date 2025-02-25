@@ -10,6 +10,6 @@ export enum EAuthProcess {
     REGISTER = 'register',
     LOGIN = 'login',
     RECOVERY = 'recover',
-    MODIFY = 'modify',
+    UPDATE = 'update',
 };
 

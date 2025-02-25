@@ -1,7 +1,7 @@
 // pchips-v3/src/middlewares/AuthMiddleware.ts
 
 import { Request, Response, NextFunction } from "express";
-import { TRegisterBody, TLoginBody, TRecoverBody, TModifyBody } from "../utils/types/authTypes";
+import { TRegisterBody, TLoginBody, TRecoverBody, TUpdateBody } from "../utils/types/authTypes";
 import { EResponseStatus, EResponseMessage } from "../utils/enums/statusEnums";
 import { EAuthProcess } from "../utils/enums/authEnums";
 import { validateUsername, validateEmail, validatePassword, validateExistingInputs, validatEUserFind, validateRepeatPassword, validateExistingUpdates } from "../utils/authUtils";
@@ -69,16 +69,16 @@ class AuthMiddleware {
         next();
     };
 
-    public static validateModifyInputs = (req: Request, res: Response, next: NextFunction): void => {
-        const { id, password, updates, repeatPassword }: TModifyBody = req.body;
+    public static validateUpdateInputs = (req: Request, res: Response, next: NextFunction): void => {
+        const { id, password, updates, repeatPassword }: TUpdateBody = req.body;
         const status = EResponseStatus.BAD_REQUEST;
         const user = null;
         const errors: TErrorList = [];
         const receivedInputs = { id, password, updates, repeatPassword };
-        console.log('\n\nValidating modify inputs ...\n\n');
+        console.log('\n\nValidating update inputs ...\n\n');
         console.log(JSON.stringify(req.body));
 
-        validateExistingInputs(EAuthProcess.MODIFY, errors, receivedInputs);
+        validateExistingInputs(EAuthProcess.UPDATE, errors, receivedInputs);
         validateExistingUpdates(updates);
 
         if (updates) {

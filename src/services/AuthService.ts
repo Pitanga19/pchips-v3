@@ -103,7 +103,7 @@ class AuthService {
         };
     };
 
-    public static async modify(id: number, password: string, updates: TUserUpdates): Promise<TAuthServiceReturn> {
+    public static async update(id: number, password: string, updates: TUserUpdates): Promise<TAuthServiceReturn> {
         const getUserResult = await UserService.getById(id);
         let status = getUserResult.status;
         let errors = getUserResult.errors;
