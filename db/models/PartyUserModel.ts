@@ -41,6 +41,7 @@ PartyUserModel.init(
             },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            unique: "unique_party_user",
         },
         userId: {
             type: DataTypes.INTEGER,
@@ -51,6 +52,7 @@ PartyUserModel.init(
             },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            unique: "unique_party_user",
         },
         isOwner: {
             type: DataTypes.BOOLEAN,
@@ -67,6 +69,13 @@ PartyUserModel.init(
         modelName: 'PartyUserModel',
         tableName: 'party_users',
         timestamps: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ["party_id", "user_id"],
+                name: "unique_party_user",
+            },
+        ],
     },
 );
 

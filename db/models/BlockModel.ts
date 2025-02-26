@@ -53,6 +53,13 @@ BlockModel.init(
         modelName: "BlockModel",
         tableName: "blocks",
         timestamps: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ["blocker_id", "blocked_id"],
+                name: "unique_blocking",
+            },
+        ],
     },
 );
 

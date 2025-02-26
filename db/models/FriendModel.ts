@@ -70,6 +70,7 @@ FriendModel.init(
         timestamps: true,
         hooks: {
             beforeCreate: async (friend: FriendModel): Promise<void> => {
+                // Make minor id be fistUserId
                 if (friend.firstUserId > friend.secondUserId) {
                     const temp = friend.firstUserId;
                     friend.firstUserId = friend.secondUserId;
@@ -77,6 +78,13 @@ FriendModel.init(
                 };
             },
         },
+        indexes: [
+            {
+                unique: true,
+                fields: ["first_user_id", "second_user_id"],
+                name: "unique_friendship",
+            },
+        ],
     },
 );
 
