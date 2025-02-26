@@ -11,6 +11,7 @@ import userTest from '../src/tests/userTest';
 import authTest from '../src/tests/authTest';
 import relationTest from '../src/tests/relationTest';
 import blockTest from '../src/tests/blockTest';
+import partyTest from '../src/tests/partyTest';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -55,6 +56,7 @@ initDatabase()  // Initialize database
         await authTest();
         await relationTest();
         await blockTest();
+        await partyTest();
     })
     .catch((error) => {
         console.error(`Error while initializing the database: ${error}\n`);
