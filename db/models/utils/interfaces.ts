@@ -22,3 +22,15 @@ export interface IBlock {
     blockedId: number,
 };
 
+export interface IParty {
+    id: number,
+    name: string,
+};
+
+export interface IPartyUser {
+    id: number,
+    partyId: number,
+    userId: number,
+    isOwner: boolean,
+    isAdmin: boolean,
+};

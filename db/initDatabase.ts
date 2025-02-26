@@ -3,6 +3,8 @@ import sequelize from "./database"; // Import sequelize object
 import UserModel from "./models/UserModel";
 import FriendModel from "./models/FriendModel";
 import BlockModel from "./models/BlockModel";
+import PartyUserModel from "./models/PartyUserModel";
+import PartyModel from "./models/PartyModel";
 
 const initDatabase = async () => { // Init database function
     // ---------------- RELATIONS   ---------------------------- //
@@ -52,6 +54,30 @@ const initDatabase = async () => { // Init database function
     BlockModel.belongsTo(UserModel, {
         foreignKey: 'blockedId',
         as: 'blocked',
+    });
+
+    // User <-> PartyUser (1:N)
+    UserModel.hasMany(PartyUserModel, {
+        foreignKey: "userId",
+        as: "partyMemberships",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PartyUserModel.belongsTo(UserModel, {
+        foreignKey: "userId",
+        as: "user",
+    });
+
+    // Party <-> PartyUser (1:N)
+    PartyModel.hasMany(PartyUserModel, {
+        foreignKey: "partyId",
+        as: "partyMembers",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PartyUserModel.belongsTo(PartyModel, {
+        foreignKey: "partyId",
+        as: "party",
     });
 
     // ---------------- SYNC DATABASE   ------------------------ //
