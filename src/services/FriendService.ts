@@ -13,7 +13,7 @@ import { checkIsAccepted, checkIsSenderId } from "../utils/relationUtils";
 
 class FriendService {
     public static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         let friendModel: TFriendModelReturn = null;
 
         if (firstUserId > secondUserId) {
@@ -33,7 +33,7 @@ class FriendService {
     public static async create(senderId: number, receiverId: number, errors: TErrorList): Promise<TFriendServiceReturn> {
         let status: EResponseStatus = EResponseStatus.CREATED;
         let message: EResponseMessage = EResponseMessage.CREATED;
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         const firstUserId = Math.min(senderId, receiverId);
         const secondUserId = Math.max(senderId, receiverId);
         let friendModel: TFriendModelReturn = null;
@@ -45,7 +45,7 @@ class FriendService {
                 console.log(`[FriendService] Friend already exists: ${firstUserId} - ${secondUserId}`);
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
-                addToResponseErrors(errors, field, EErrorMessage.EXISTING_RELATIONSHIP);
+                addToResponseErrors(errors, field, EErrorMessage.EXISTING_RELATION);
             } else {
                 status = EResponseStatus.INTERNAL_SERVER_ERROR;
                 message = EResponseMessage.INTERNAL_SERVER_ERROR;
@@ -60,7 +60,7 @@ class FriendService {
     public static async get(senderId: number, receiverId: number, errors: TErrorList, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendServiceReturn> {
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         const firstUserId = Math.min(senderId, receiverId);
         const secondUserId = Math.max(senderId, receiverId);
         const friendModel = await this.find(firstUserId, secondUserId, errors);
@@ -69,19 +69,19 @@ class FriendService {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.NOT_FOUND;
             console.log(`[FriendService] Friend not found: ${firstUserId} - ${secondUserId}`);
-            addToResponseErrors(errors, field, EErrorMessage.RELATIONSHIP_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.RELATION_NOT_FOUND);
         } else {
             if (expectedStatus === EFriendStatus.ACCEPTED && !checkIsAccepted(friendModel)) {
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
                 console.log(`[FriendService] Friend is pending: ${firstUserId} - ${secondUserId}`);
-                addToResponseErrors(errors, field, EErrorMessage.RELATIONSHIP_PENDING);
+                addToResponseErrors(errors, field, EErrorMessage.RELATION_PENDING);
             };
             if (expectedStatus === EFriendStatus.PENDING && checkIsAccepted(friendModel)) {
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
                 console.log(`[FriendService] Friend already accepted: ${firstUserId} - ${secondUserId}`);
-                addToResponseErrors(errors, field, EErrorMessage.RELATIONSHIP_ACCEPTED);
+                addToResponseErrors(errors, field, EErrorMessage.RELATION_ACCEPTED);
             };
             if (needCheckSender && !checkIsSenderId(friendModel, senderId)) {
                 status = EResponseStatus.CONFLICT;

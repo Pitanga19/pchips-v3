@@ -10,7 +10,7 @@ import UserModel from "../../db/models/UserModel";
 
 class BlockService {
     private static async find(blockerId: number, blockedId: number, errors: TErrorList): Promise<TBlockModelReturn> {
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         let blockModel: TBlockModelReturn = null;
 
         if (blockerId === blockedId) {
@@ -25,7 +25,7 @@ class BlockService {
 
     public static async create(blockerId: number, blockedId: number): Promise<TBlockServiceReturn> {
         const errors: TErrorList = [];
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         let status: EResponseStatus = EResponseStatus.CREATED;
         let message: EResponseMessage = EResponseMessage.CREATED;
         let blockModel: TBlockModelReturn = await this.find(blockerId, blockedId, errors);
@@ -48,14 +48,14 @@ class BlockService {
         let status: EResponseStatus = EResponseStatus.SUCCESS;
         let message: EResponseMessage = EResponseMessage.SUCCESS;
         const errors: TErrorList = [];
-        const field = EErrorField.RELATIONSHIP;
+        const field = EErrorField.RELATION;
         const blockModel = await this.find(blockerId, blockedId, errors);
 
         if (!blockerId) {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.NOT_FOUND;
             console.log(`[BlockService] Block not found: ${blockerId} - ${blockedId}`);
-            addToResponseErrors(errors, field, EErrorMessage.RELATIONSHIP_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.RELATION_NOT_FOUND);
         };
 
         return { status, blockModel, errors, message };

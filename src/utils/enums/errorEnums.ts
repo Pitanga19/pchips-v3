@@ -9,7 +9,7 @@ export enum EErrorField {
     FINDED_TYPE = 'finded-type',
     FINDED_VALUE = 'finded-value',
     UPDATES = 'updates',
-    RELATIONSHIP = 'relation',
+    RELATION = 'relation',
 };
 
 export enum EErrorMessage {
@@ -20,17 +20,17 @@ export enum EErrorMessage {
     NOT_EMAIL_FORMAT = 'not-email-format',              // 400 Bad Request
     INVALID_DATA = 'invalid-data',                      // 400 Bad Request
     NOT_SAME_PASSWORD = 'not-same-password',            // 400 Bad Request
-    RELATIONSHIP_ACCEPTED = 'relation-accepted',    // 400 Bad Request
-    RELATIONSHIP_PENDING = 'relation-pending',      // 400 Bad Request
+    RELATION_ACCEPTED = 'relation-accepted',            // 400 Bad Request
+    RELATION_PENDING = 'relation-pending',              // 400 Bad Request
     WRONG_SENDER = 'wrong-sender',                      // 400 Bad Request
     WRONG_PASSWORD = 'wrong-password',                  // 401 Unauthorized
     USER_NOT_FOUND = 'user-not-found',                  // 404 Not Found
-    RELATIONSHIP_NOT_FOUND = 'relation-not-found',  // 404 Not Found
+    RELATION_NOT_FOUND = 'relation-not-found',          // 404 Not Found
     FRIENDLIST_NOT_FOUND = 'friendlist-not-found',      // 404 Not Found
     BLOCK_NOT_FOUND = 'block-not-found',                // 404 Not Found
     EXISTING_USERNAME = 'existing-username',            // 409 Conflict
     EXISTING_EMAIL = 'existing-email',                  // 409 Conflict
-    EXISTING_RELATIONSHIP = 'existing-relation',    // 409 Conflict
+    EXISTING_RELATION = 'existing-relation',            // 409 Conflict
     EXISTING_BLOCK = 'existing-block',                  // 409 Conflict
     SAME_USER = 'same-user',                            // 409 Conflict
     INTERNAL_SERVER_ERROR = 'internal-server-error',    // 500 Internal Server Error
