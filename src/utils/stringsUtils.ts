@@ -12,4 +12,10 @@ export class RegExHandler {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(input);
     };
+
+    // Validates if the input ocntains party name format
+    static isPartyName(input: string): boolean {
+        const regex = /^[A-Za-z0-9 _'-]$/;
+        return regex.test(input);
+    };
 };
