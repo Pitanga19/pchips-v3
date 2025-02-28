@@ -40,6 +40,11 @@ router.post('/transfer-owner', async (req: Request, res: Response) => {
     await PartyController.transferOwner(req, res);
 });
 
+// Rename party
+router.patch('/rename', async (req: Request, res: Response) => {
+    await PartyController.rename(req, res);
+});
+
 // Get all parties of a user
 router.get('/user-parties', async (req: Request, res: Response) => {
     await PartyController.getUserAllParties(req, res);

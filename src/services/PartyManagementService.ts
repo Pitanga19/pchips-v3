@@ -306,6 +306,48 @@ class PartyManagementService {
         return { status, party, partyUser, errors, message };
     };
 
+    public static async rename(actorId: number, partyId: number, newName: string): Promise<TPartyManagementReturn> {
+        const getPartyResult = await PartyService.get(partyId);
+        const { errors } = getPartyResult;
+        let { status, partyModel, message } = getPartyResult;
+        let party: TPartyReturn = null;
+        let partyUser: TPartyUserReturn = null;
+        
+        const { epStatusResult, epMessageResult } = validateExistingParty(partyModel, errors);
+        if (epStatusResult !== null && epMessageResult !== null) {
+            status = epStatusResult;
+            message = epMessageResult;
+        };
+
+        const { partyUserModel } = await PartyUserService.get(partyId, actorId);
+        const { epuStatusResult, epuMessageResult } = validateExistingPartyUser(partyUserModel, errors);
+        if (epuStatusResult !== null && epuMessageResult !== null) {
+            status = epuStatusResult;
+            message = epuMessageResult;
+        } else if (partyUserModel) {
+            partyUser = partyUserModel.toJSON();
+            const { isOwner, isAdmin } = partyUserModel;
+            const { ooaStatusResult, ooaMessageResult } = validateIsOwnerOrAdmin(isOwner, isAdmin, errors);
+            if (ooaStatusResult !== null && ooaMessageResult !== null) {
+                status = ooaStatusResult;
+                message = ooaMessageResult;
+            };
+        };
+
+        if (errors.length === 0) {
+            if (!partyModel) {
+                console.log(`Error renaming party: { partyId: ${partyId} - newName: ${newName} }`);
+                status = EResponseStatus.INTERNAL_SERVER_ERROR;
+                message = EResponseMessage.INTERNAL_SERVER_ERROR;
+            } else {
+                await partyModel.update({ name: newName });
+                party = partyModel.toJSON();
+            };
+        };
+
+        return { status, party, partyUser, errors, message };
+    };
+
     public static async getUserAllParties(userId: number): Promise<TUserPartyListReturn> {
         const getUserResult = await UserService.getById(userId);
         const { errors } = getUserResult;

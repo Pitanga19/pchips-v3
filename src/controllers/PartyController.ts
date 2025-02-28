@@ -3,7 +3,7 @@
 import { Request, Response } from "express";
 import { EResponseMessage } from "../utils/enums/statusEnums";
 import {
-    TPartyCreateBody, TPartyManageBody, TPartyListBody, TPartyMembersBody,
+    TPartyCreateBody, TPartyManageBody, TPartyUpdateBody, TPartyListBody, TPartyMembersBody,
 } from "../utils/types/partyTypes";
 import PartyManagementService from "../services/PartyManagementService";
 
@@ -85,6 +85,18 @@ class PartyController {
 
         try {
             const { status, party, partyUser, errors, message } = await PartyManagementService.transferOwner(actorId, partyId, targetId);
+
+            res.status(status).json({ party, partyUser, errors, message });
+        } catch (error) {
+            res.status(500).json({ error, message: EResponseMessage.INTERNAL_SERVER_ERROR });
+        };
+    };
+
+    public static async rename(req: Request, res: Response): Promise<void> {
+        const { actorId, partyId, newName }:TPartyUpdateBody = req.body;
+
+        try {
+            const { status, party, partyUser, errors, message } = await PartyManagementService.rename(actorId, partyId, newName);
 
             res.status(status).json({ party, partyUser, errors, message });
         } catch (error) {

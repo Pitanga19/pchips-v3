@@ -114,6 +114,12 @@ export type TPartyManageBody = {
     targetId: number,
 };
 
+export type TPartyUpdateBody = {
+    actorId: number,
+    partyId: number,
+    newName: string,
+};
+
 export type TPartyListBody = {
     userId: number,
 };
