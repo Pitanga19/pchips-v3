@@ -102,3 +102,22 @@ export type TPartyUserListReturn = {
     errors: TErrorList,
     message: EResponseMessage,
 };
+
+export type TPartyCreateBody = {
+    partyName: string,
+    userId: number
+};
+
+export type TPartyManageBody = {
+    actorId: number,
+    partyId: number,
+    targetId: number,
+};
+
+export type TPartyListBody = {
+    userId: number,
+};
+
+export type TPartyMembersBody = {
+    partyId: number,
+};
