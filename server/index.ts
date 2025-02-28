@@ -6,7 +6,8 @@ import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
 import AuthRoutes from '../src/routes/AuthRoutes';
-import RelationRoutes from '../src/routes/RelationRoutes'
+import RelationRoutes from '../src/routes/RelationRoutes';
+import PartyRoutes from '../src/routes/PartyRoutes';
 import userTest from '../src/tests/userTest';
 import authTest from '../src/tests/authTest';
 import relationTest from '../src/tests/relationTest';
@@ -32,6 +33,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 app.use('/api/auth', AuthRoutes);           // Register, LogIn, Recover pass, Update user
 app.use('/api/relation', RelationRoutes);   // Friend requests, friends, blocks
+app.use('/api/party', PartyRoutes);         // Parties management, members, list
 
 // ---------------- SOCKETS ------------------------------------ //
 // Simple connection socket
