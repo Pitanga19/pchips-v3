@@ -27,12 +27,12 @@ class PartyUserModel extends Model {
 PartyUserModel.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
         partyId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "parties",
@@ -43,7 +43,7 @@ PartyUserModel.init(
             unique: "unique_party_user",
         },
         userId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "users",

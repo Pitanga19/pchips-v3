@@ -23,12 +23,12 @@ class BlockModel extends Model {
 BlockModel.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
         blockerId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "users",
@@ -38,7 +38,7 @@ BlockModel.init(
             onUpdate: "CASCADE",
         },
         blockedId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "users",

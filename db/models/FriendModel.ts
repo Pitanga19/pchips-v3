@@ -27,12 +27,12 @@ class FriendModel extends Model {
 FriendModel.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
         firstUserId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "users",
@@ -42,7 +42,7 @@ FriendModel.init(
             onUpdate: "CASCADE",
         },
         secondUserId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: "users",
@@ -52,7 +52,7 @@ FriendModel.init(
             onUpdate: "CASCADE",
         },
         senderId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
         status: {
