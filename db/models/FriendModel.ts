@@ -1,9 +1,7 @@
 // pchips-v3/db/models/FriendModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import { EFriendStatus } from "./utils/enums";
-import sequelize from "../database";
-import { IFriend } from "./utils/interfaces";
+import { sequelize, IFriend, EFriendStatus } from "../dbIndex";
 
 class FriendModel extends Model {
     public id!: number;

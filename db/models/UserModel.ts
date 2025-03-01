@@ -1,9 +1,8 @@
 // pchips-v3/db/models/UserModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { IUser } from './utils/interfaces';
+import { sequelize, IUser } from '../dbIndex';
 import bcrypt from 'bcrypt';
-import sequelize from "../database";
 
 class UserModel extends Model {
     public id!: number;

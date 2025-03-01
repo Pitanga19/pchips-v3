@@ -1,8 +1,7 @@
-// db/models/PartyUserModel.ts
+// pchips-v3/db/models/PartyUserModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../database";
-import { IPartyUser } from "./utils/interfaces";
+import { sequelize, IPartyUser } from "../dbIndex";
 
 class PartyUserModel extends Model {
     public id!: number;

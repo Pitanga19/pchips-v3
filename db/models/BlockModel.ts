@@ -1,8 +1,7 @@
-// db/models/BlockModel.ts
+// pchips-v3/db/models/BlockModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../database";
-import { IBlock } from "./utils/interfaces";
+import { sequelize, IBlock } from "../dbIndex";
 
 class BlockModel extends Model {
     public id!: number;

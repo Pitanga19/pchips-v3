@@ -1,3 +1,5 @@
+// pchips-v3/db/initDatabase.ts
+
 import sequelize from "./database"; // Import sequelize object
 // ---------------- IMPORT MODELS   ---------------------------- //
 import UserModel from "./models/UserModel";
