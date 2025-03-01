@@ -15,6 +15,7 @@ export enum EErrorField {
     PARTY_USER = 'party-user',
     PARTY_ACTOR = 'party-actor',
     PARTY_TARGET = 'party-target',
+    SETTING = 'setting',
 };
 
 export enum EErrorMessage {
@@ -35,11 +36,13 @@ export enum EErrorMessage {
     FRIENDLIST_NOT_FOUND = 'friendlist-not-found',          // 404 Not Found
     BLOCK_NOT_FOUND = 'block-not-found',                    // 404 Not Found
     PARTY_NOT_FOUND = 'party-not-found',                    // 404 Not Found
+    SETTING_NOT_FOUND = 'setting-not-found',                // 404 Not Found
     EXISTING_USERNAME = 'existing-username',                // 409 Conflict
     EXISTING_EMAIL = 'existing-email',                      // 409 Conflict
     EXISTING_RELATION = 'existing-relation',                // 409 Conflict
     EXISTING_BLOCK = 'existing-block',                      // 409 Conflict
     EXISTING_PARTY_USER = 'existing-party-user',            // 409 Conflict
+    EXISTING_SETTING = 'existing-setting',                  // 409 Conflict
     SAME_USER = 'same-user',                                // 409 Conflict
     IS_OWNER = 'is-owner',                                  // 409 Conflict
     INTERNAL_SERVER_ERROR = 'internal-server-error',        // 500 Internal Server Error
