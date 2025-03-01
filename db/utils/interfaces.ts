@@ -1,6 +1,6 @@
 // pchips-v3/db/utils/interfaces.ts
 
-import { EFriendStatus } from "../dbIndex";
+import { EFriendStatus, EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, EActionType, ETableSize, EPlayerStatus } from "../dbIndex";
 
 export interface IUser {
     id: number,
@@ -33,4 +33,68 @@ export interface IPartyUser {
     userId: number,
     isOwner: boolean,
     isAdmin: boolean,
+};
+
+export interface ISetting {
+    id: number,
+    gameId: number,
+    tableSize: ETableSize,
+    blindLevel: EBlindLevel,
+    blindIncreaseType: EBlindIncreaseType,
+    blindIncreaseGoal: number,
+    blindIncreaseCount: number,
+    startingChipsType: EStartingChipsType;
+    startingChips: number,
+    rebuyAddon: ERebuyAddon,
+};
+
+export interface IGame {
+    id: number,
+    partyId: number,
+    tableNumber: number,
+    isPaused: boolean,
+};
+
+export interface IHand {
+    id: number,
+    gameId: number,
+    handCount: number,
+};
+
+export interface IRound {
+    id: number,
+    gameId: number,
+    handId: number,
+    roundCount: number,
+};
+
+export interface IAction {
+    id: number,
+    gameId: number,
+    handId: number,
+    roundId: number,
+    playerId: number,
+    actionCount: number,
+    type: EActionType,
+    amount: number,
+};
+
+export interface IPlayer {
+    id: number,
+    userId: number,
+    partyId: number,
+    gameId: number,
+    seatNumber: number,
+    status: EPlayerStatus,
+    chips: number,
+    bettingChips: number,
+};
+
+export interface ISeatManager {
+    id: number,
+    gameId: number,
+    dealerSeat: number,
+    smallBlindSeat: number,
+    bigBlindSeat: number,
+    actionSeat: number,
 };
