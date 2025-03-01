@@ -98,6 +98,12 @@ SettingModel.init({
     modelName: 'SettingModel',
     tableName: 'settings',
     timestamps: true,
+    hooks: {
+        // Use gameId as id for setting
+        beforeCreate: (setting: SettingModel) => {
+            setting.id = setting.gameId;
+        },
+    },
 });
 
 export default SettingModel;
