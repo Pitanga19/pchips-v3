@@ -1,132 +1,136 @@
 // pchips-v3/src/relation/core/RelationService.ts
 
 import {
-    FriendService, BlockService, TRelationFriendReturn, TRelationFriendListReturn, TRelationBlockReturn, TRelationBlockListReturn, TRelationDeleteReturn, TFriendReturn, TBlockModelReturn,
+    FriendService, BlockService, TRelationFriend, TRelationFriendList, TRelationBlock, TRelationBlockList, TRelationDelete,
 } from '../relationIndex';
-import { TErrorList, EResponseStatus, EResponseMessage } from '../../common/commonIndex';
+import { TErrorList, showLog } from '../../common/commonIndex';
 import { EFriendStatus } from '../../../db/dbIndex';
 
+const file = 'RelationService';
+
 class RelationService {
-    public static async sendFriendRequest(senderId: number, receiverId: number): Promise<TRelationFriendReturn> {
-        const errors: TErrorList = [];
-        const friendCreateResult = await FriendService.create(senderId, receiverId, errors);
-        const friendModel = friendCreateResult.friendModel;
-        let friend: TFriendReturn = null;
-        let status = friendCreateResult.status;
-        let message = friendCreateResult.message;
+    public static async sendFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationFriend> {
+        const { friendModel, friendData } = await FriendService.create(errors, senderId, receiverId);
 
-        if (friendModel && errors.length === 0) {
-            console.log(`[RelationService] Friend request succesfully sended: ${senderId} - ${receiverId}`);
-            friend = friendModel.toJSON();
+        if (errors.length === 0 && friendModel && friendData) {
+            showLog(file, 'Friend request succesfully sended', friendData, true);
         };
 
-        return { status, friend, errors, message };
+        return { friendModel, friendData };
     };
 
-    public static async cancelFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
-        return FriendService.delete(senderId, receiverId, EFriendStatus.PENDING, true);
+    public static async cancelFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationDelete> {
+        const { deleted } = await FriendService.delete(errors, senderId, receiverId, EFriendStatus.PENDING, true);
+        const details = { senderId, receiverId };
+
+        if (errors.length === 0 && deleted) {
+            showLog(file, 'Friend request succesfully canceled', details, true);
+        };
+
+        return { deleted };
     };
     
-    public static async rejectFriendRequest(senderId: number, receiverId: number): Promise<TRelationDeleteReturn> {
-        return FriendService.delete(senderId, receiverId, EFriendStatus.PENDING, true);
+    public static async acceptFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationFriend> {
+        const { friendModel, friendData } = await FriendService.get(errors, senderId, receiverId, EFriendStatus.PENDING, true);
+        const updates = { status: EFriendStatus.ACCEPTED };
+
+        if (errors.length === 0 && friendModel && friendData) {
+            await friendModel.update(updates);
+            showLog(file, 'Friend request succesfully accepted', friendData, true);
+        };
+
+        return { friendModel, friendData };
     };
     
-    public static async acceptFriendRequest(senderId: number, receiverId: number): Promise<TRelationFriendReturn> {
-        const errors: TErrorList = [];
-        const friendGetResult = await FriendService.get(senderId, receiverId, errors, EFriendStatus.PENDING, true);
-        const friendModel = friendGetResult.friendModel;
-        let friend: TFriendReturn = null;
-        let status = friendGetResult.status;
-        let message = friendGetResult.message;
+    public static async rejectFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationDelete> {
+        const { deleted } = await FriendService.delete(errors, senderId, receiverId, EFriendStatus.PENDING, true);
+        const details = { senderId, receiverId };
 
-        if (friendModel && errors.length === 0) {
-            await friendModel.update({ status: EFriendStatus.ACCEPTED });
-            console.log(`[RelationService] Friend succesfully accepted: ${senderId} - ${receiverId}`);
-            friend = friendModel.toJSON();
+        if (errors.length === 0 && deleted) {
+            showLog(file, 'Friend request succesfully rejected', details, true);
         };
 
-        return { status, friend, errors, message };
-    };
-        
-    public static async removeFriend(firstUserId: number, secondUserId: number): Promise<TRelationDeleteReturn> {
-        return await FriendService.delete(firstUserId, secondUserId, EFriendStatus.ACCEPTED, false);
+        return { deleted };
     };
 
-    public static async blockUser(blockerId: number, blockedId: number): Promise<TRelationBlockReturn> {
-        const status: EResponseStatus = EResponseStatus.INTERNAL_SERVER_ERROR;
-        const block: TBlockModelReturn = null;
-        const errors: TErrorList = [];
-        const message: EResponseMessage = EResponseMessage.INTERNAL_SERVER_ERROR;
+    public static async removeFriend(errors: TErrorList, firstUserId: number, secondUserId: number): Promise<TRelationDelete> {
+        const { deleted } = await FriendService.delete(errors, firstUserId, secondUserId, EFriendStatus.ACCEPTED, false);
+        const details = { firstUserId, secondUserId };
 
-        const findFriendResult = await FriendService.find(blockerId, blockedId, errors);
-        if (findFriendResult) findFriendResult.destroy();
-
-        if (errors.length > 0) {
-            return { status, block, errors, message };
+        if (errors.length === 0 && deleted) {
+            showLog(file, 'Friend request succesfully rejected', details, true);
         };
 
-        const createBlockResult = await BlockService.create(blockerId, blockedId);
-        if (!createBlockResult.blockModel) {
-            console.log(`[AuthService] Error blocking user: ${blockerId} to ${blockedId}\n`);
-            return {
-                status: createBlockResult.status,
-                block: createBlockResult.blockModel,
-                errors: createBlockResult.errors,
-                message: createBlockResult.message,
-            };
+        return { deleted };
+    };
+
+    public static async blockUser(errors: TErrorList, blockerId: number, blockedId: number): Promise<TRelationBlock> {
+
+        const { friendModel } = await FriendService.get(errors, blockerId, blockedId, EFriendStatus.ACCEPTED, false);
+        if (friendModel) friendModel.destroy();
+
+        const { blockModel, blockData } = await BlockService.create(errors, blockerId, blockedId);
+
+        if (errors.length === 0 && blockModel && blockData) {
+            showLog(file, 'User succesfully blocked', blockData, true);
         };
 
-        console.log(`[AuthService] User successfully blocked: ${blockerId} to ${blockedId}\n`);
-        return {
-            status: createBlockResult.status,
-            block: createBlockResult.blockModel.toJSON(),
-            errors: createBlockResult.errors,
-            message: createBlockResult.message,
+        return { blockModel, blockData };
+    };
+
+    public static async unblockUser(errors: TErrorList, blockerId: number, blockedId: number): Promise<TRelationDelete> {
+        const { deleted } = await BlockService.delete(errors, blockerId, blockedId);
+        const details = { blockerId, blockedId };
+
+        if (errors.length === 0 && deleted) {
+            showLog(file, 'User succesfully unblocked', details, true);
         };
+
+        return { deleted };
     };
 
-    public static async unblockUser(blockerId: number, blockedId: number): Promise<TRelationDeleteReturn> {
-        return await BlockService.delete(blockerId, blockedId);
+    public static async getCompleteFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId);
+
+        if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
+            showLog(file, 'Friends for user', userData, true);
+            showLog(file, 'Friends list getted', friendDataList, true);
+        };
+
+        return { userModel, userData, friendModelList, friendDataList };
     };
 
-    public static async getCompleteFriendList(userId: number): Promise<TRelationFriendListReturn> {
-        const getFriendModelListResult = await FriendService.getFriendModelList(userId);
-        const status = getFriendModelListResult.status;
-        const friendList = getFriendModelListResult.friendModelList.map(f => f.toJSON());
-        const errors = getFriendModelListResult.errors;
-        const message = getFriendModelListResult.message;
+    public static async getAcceptedFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId, EFriendStatus.ACCEPTED);
 
-        return { status, friendList, errors, message };
+        if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
+            showLog(file, 'Friends for user', userData, true);
+            showLog(file, 'Friends list getted', friendDataList, true);
+        };
+
+        return { userModel, userData, friendModelList, friendDataList };
     };
 
-    public static async getAcceptedFriendList(userId: number): Promise<TRelationFriendListReturn> {
-        const getFriendModelListResult = await FriendService.getFriendModelList(userId, EFriendStatus.ACCEPTED);
-        const status = getFriendModelListResult.status;
-        const friendList = getFriendModelListResult.friendModelList.map(f => f.toJSON());
-        const errors = getFriendModelListResult.errors;
-        const message = getFriendModelListResult.message;
+    public static async getPendingFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId, EFriendStatus.PENDING);
 
-        return { status, friendList, errors, message };
+        if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
+            showLog(file, 'Friends for user', userData, true);
+            showLog(file, 'Friends list getted', friendDataList, true);
+        };
+
+        return { userModel, userData, friendModelList, friendDataList };
     };
 
-    public static async getPendingFriendList(userId: number): Promise<TRelationFriendListReturn> {
-        const getFriendModelListResult = await FriendService.getFriendModelList(userId, EFriendStatus.PENDING);
-        const status = getFriendModelListResult.status;
-        const friendList = getFriendModelListResult.friendModelList.map(f => f.toJSON());
-        const errors = getFriendModelListResult.errors;
-        const message = getFriendModelListResult.message;
+    public static async getBlockedList(errors: TErrorList, userId: number): Promise<TRelationBlockList> {
+        const { userModel, userData, blockedModelList, blockedDataList } = await BlockService.getBlockedModelList(errors, userId);
 
-        return { status, friendList, errors, message };
-    };
+        if (errors.length === 0 && userModel && userData && blockedModelList && blockedDataList) {
+            showLog(file, 'Blocked users for user', userData, true);
+            showLog(file, 'Blocked users list getted', blockedDataList, true);
+        };
 
-    public static async getBlockedList(userId: number): Promise<TRelationBlockListReturn> {
-        const getBlockedModelListResult = await BlockService.getBlockedModelList(userId);
-        const status = getBlockedModelListResult.status;
-        const blockedList = getBlockedModelListResult.blockedModelList.map(b => b.toJSON());
-        const errors = getBlockedModelListResult.errors;
-        const message = getBlockedModelListResult.message;
-
-        return { status, blockedList, errors, message };
+        return { userModel, userData, blockedModelList, blockedDataList };
     };
 };
 
