@@ -43,7 +43,7 @@ class FriendService {
                 console.log(`[FriendService] Friend already exists: ${firstUserId} - ${secondUserId}`);
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
-                addToResponseErrors(errors, field, EErrorMessage.EXISTING_RELATION);
+                addToResponseErrors(errors, field, EErrorMessage.ALREADY_EXISTS);
             } else {
                 status = EResponseStatus.INTERNAL_SERVER_ERROR;
                 message = EResponseMessage.INTERNAL_SERVER_ERROR;
@@ -67,7 +67,7 @@ class FriendService {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.NOT_FOUND;
             console.log(`[FriendService] Friend not found: ${firstUserId} - ${secondUserId}`);
-            addToResponseErrors(errors, field, EErrorMessage.RELATION_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         } else {
             if (expectedStatus === EFriendStatus.ACCEPTED && !checkIsAccepted(friendModel)) {
                 status = EResponseStatus.CONFLICT;

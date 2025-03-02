@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import {
-    EAuthProcess, validateUsername, validateEmail, validatePassword, validateExistingInputs, validatEUserFind, validateRepeatPassword, validateExistingUpdates, TRegisterBody, TLoginBody, TRecoverBody, TUpdateBody,
+    EAuthProcess, validateUsername, validateEmail, validatePassword, validateExistingInputs, validateUserFind, validateRepeatPassword, validateExistingUpdates, TRegisterBody, TLoginBody, TRecoverBody, TUpdateBody,
 } from '../authIndex';
 import { TErrorList, EResponseStatus, EResponseMessage } from '../../common/commonIndex';
 
@@ -57,7 +57,7 @@ class AuthMiddleware {
         const receivedInputs = { findedType, findedValue };
         
         validateExistingInputs(EAuthProcess.RECOVERY, errors, receivedInputs);
-        if (findedType) validatEUserFind(errors, findedType);
+        if (findedType) validateUserFind(errors, findedType);
 
         if (errors.length > 0) {
             const message = EResponseMessage.INVALID_DATA;

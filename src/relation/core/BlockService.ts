@@ -55,7 +55,7 @@ class BlockService {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.NOT_FOUND;
             console.log(`[BlockService] Block not found: ${blockerId} - ${blockedId}`);
-            addToResponseErrors(errors, field, EErrorMessage.RELATION_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         };
 
         return { status, blockModel, errors, message };

@@ -20,14 +20,14 @@ class UserService {
             console.log(`[UserService] Username already exist: ${username}`);
             status = EResponseStatus.CONFLICT;
             message = EResponseMessage.INVALID_DATA;
-            addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.EXISTING_USERNAME);
+            addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.ALREADY_EXISTS);
         };
 
         if (getByEmail.userModel) {
             console.log(`[UserService] Email already exist: ${email}`);
             status = EResponseStatus.CONFLICT;
             message = EResponseMessage.INVALID_DATA;
-            addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.EXISTING_EMAIL);
+            addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.ALREADY_EXISTS);
         };
 
         if (errors.length === 0) {
@@ -60,7 +60,7 @@ class UserService {
             userModel = null;
             message = EResponseMessage.INVALID_DATA;
 
-            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
             return { userModel, status, errors, message };
         };
 
@@ -82,7 +82,7 @@ class UserService {
             userModel = null;
             message = EResponseMessage.INVALID_DATA;
             
-            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
             return { userModel, status, errors, message };
         };
 
@@ -104,7 +104,7 @@ class UserService {
             userModel = null;
             message = EResponseMessage.INVALID_DATA;
             
-            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         };
 
         if (errors.length === 0) console.log(`[UserService] User succefully loaded: { email: ${email} }`);
@@ -146,7 +146,7 @@ class UserService {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.INVALID_DATA;
 
-            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         };
         
         if (updates.username) {
@@ -158,7 +158,7 @@ class UserService {
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
 
-                addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.EXISTING_USERNAME);
+                addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.ALREADY_EXISTS);
             };
         };
         
@@ -171,7 +171,7 @@ class UserService {
                 status = EResponseStatus.CONFLICT;
                 message = EResponseMessage.INVALID_DATA;
 
-                addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.EXISTING_EMAIL);
+                addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.ALREADY_EXISTS);
             };
         };
 
@@ -197,7 +197,7 @@ class UserService {
             status = EResponseStatus.NOT_FOUND;
             message = EResponseMessage.INVALID_DATA;
 
-            addToResponseErrors(errors, field, EErrorMessage.USER_NOT_FOUND);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         };
 
         if (userModel !== null) {

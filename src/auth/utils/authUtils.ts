@@ -148,7 +148,7 @@ export const validateCorrectPassword = async (userModel: UserModel, errors: TErr
     return isValidPassword;
 };
 
-export const validatEUserFind = (errors: TErrorList, findedType: EUserFind | string): void => {
+export const validateUserFind = (errors: TErrorList, findedType: EUserFind | string): void => {
     const field = EErrorField.FINDED_TYPE;
     const message = EErrorMessage.INVALID_DATA;
     if (

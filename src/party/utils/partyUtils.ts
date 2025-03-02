@@ -64,7 +64,7 @@ export const validateExistingParty = (partyModel: TPartyModelReturn, errors: TEr
         epStatusResult = EResponseStatus.NOT_FOUND;
         epMessageResult = EResponseMessage.NOT_FOUND;
         const receivedField = EErrorField.PARTY;
-        const receivedMessage = EErrorMessage.PARTY_NOT_FOUND;
+        const receivedMessage = EErrorMessage.NOT_FOUND;
         addToResponseErrors(errors, receivedField, receivedMessage);
     } else {
         epPartyResult = partyModel.toJSON();
@@ -119,7 +119,7 @@ export const validateExistingPartyUser = (partyUserModel: TPartyUserReturn, erro
         epuStatusResult = EResponseStatus.CONFLICT;
         epuMessageResult = EResponseMessage.CONFLICT;
         const receivedField = EErrorField.PARTY_USER;
-        const receivedMessage = EErrorMessage.EXISTING_PARTY_USER;
+        const receivedMessage = EErrorMessage.ALREADY_EXISTS;
         addToResponseErrors(errors, receivedField, receivedMessage);
     };
 
@@ -135,7 +135,7 @@ export const validateExistingUser = (userModel: TUserModelReturn, errors: TError
         euStatusResult = EResponseStatus.CONFLICT;
         euMessageResult = EResponseMessage.CONFLICT;
         const receivedField = EErrorField.PARTY_USER;
-        const receivedMessage = EErrorMessage.USER_NOT_FOUND;
+        const receivedMessage = EErrorMessage.NOT_FOUND;
         addToResponseErrors(errors, receivedField, receivedMessage);
     } else {
         euUserResult = userModel.toJSON();
