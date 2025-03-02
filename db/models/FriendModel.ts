@@ -1,7 +1,8 @@
 // pchips-v3/db/models/FriendModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import { sequelize, IFriend, EFriendStatus } from "../dbIndex";
+import { sequelize, IFriend } from "../dbIndex";
+import { EFriendStatus } from '../utils/enums';
 
 class FriendModel extends Model {
     public id!: number;
@@ -27,12 +28,12 @@ class FriendModel extends Model {
 FriendModel.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
         firstUserId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: "users",
@@ -42,7 +43,7 @@ FriendModel.init(
             onUpdate: "CASCADE",
         },
         secondUserId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: "users",
@@ -52,7 +53,7 @@ FriendModel.init(
             onUpdate: "CASCADE",
         },
         senderId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         status: {

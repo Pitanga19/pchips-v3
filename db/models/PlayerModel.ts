@@ -1,7 +1,8 @@
 // pchips-v3/db/models/PlayerModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { EPlayerStatus, IPlayer, sequelize } from '../dbIndex';
+import { IPlayer, sequelize } from '../dbIndex';
+import { EPlayerStatus } from '../utils/enums';
 
 class PlayerModel extends Model {
     public id!: number;
@@ -32,12 +33,12 @@ class PlayerModel extends Model {
 
 PlayerModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     userId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "users",
@@ -47,7 +48,7 @@ PlayerModel.init({
         onUpdate: "CASCADE",
     },
     partyId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "parties",
@@ -57,7 +58,7 @@ PlayerModel.init({
         onUpdate: "CASCADE",
     },
     gameId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "games",
@@ -67,7 +68,7 @@ PlayerModel.init({
         onUpdate: "CASCADE",
     },
     seatNumber: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     status: {
@@ -77,11 +78,11 @@ PlayerModel.init({
         defaultValue: EPlayerStatus.WAITING_NEXT_HAND,
     },
     chips: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     bettingChips: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
     },

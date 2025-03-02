@@ -22,12 +22,12 @@ class HandModel extends Model {
 
 HandModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     gameId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "games",
@@ -37,7 +37,7 @@ HandModel.init({
         onUpdate: "CASCADE",
     },
     handCount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 }, {

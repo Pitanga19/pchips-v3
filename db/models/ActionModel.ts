@@ -1,7 +1,8 @@
 // pchips-v3/db/models/ActionModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { EActionType, IAction, sequelize } from '../dbIndex';
+import { IAction, sequelize } from '../dbIndex';
+import { EActionType } from '../utils/enums';
 
 class ActionModel extends Model {
     public id!: number;
@@ -32,12 +33,12 @@ class ActionModel extends Model {
 
 ActionModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     gameId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "games",
@@ -47,7 +48,7 @@ ActionModel.init({
         onUpdate: "CASCADE",
     },
     handId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "hands",
@@ -57,7 +58,7 @@ ActionModel.init({
         onUpdate: "CASCADE",
     },
     roundId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "rounds",
@@ -67,7 +68,7 @@ ActionModel.init({
         onUpdate: "CASCADE",
     },
     playerId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "players",
@@ -77,7 +78,7 @@ ActionModel.init({
         onUpdate: "CASCADE",
     },
     actionCount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     type: {
@@ -86,7 +87,7 @@ ActionModel.init({
         allowNull: false,
     },
     amount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 }, {

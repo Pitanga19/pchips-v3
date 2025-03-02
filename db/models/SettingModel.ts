@@ -1,7 +1,8 @@
 // pchips-v3/db/models/SettingModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { sequelize, ISetting, EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, ETableSize } from '../dbIndex';
+import { sequelize, ISetting } from '../dbIndex';
+import { EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, ETableSize } from '../utils/enums';
 
 class SettingModel extends Model {
     public id!: number;
@@ -36,12 +37,12 @@ class SettingModel extends Model {
 
 SettingModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     gameId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "games",
@@ -51,12 +52,12 @@ SettingModel.init({
         onUpdate: "CASCADE",
     },
     blindLevel: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: EBlindLevel.NL10,
     },
     tableSize: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: ETableSize.TEN_MAX,
     },

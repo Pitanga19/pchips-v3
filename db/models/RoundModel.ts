@@ -24,12 +24,12 @@ class RoundModel extends Model {
 
 RoundModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     gameId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "games",
@@ -39,7 +39,7 @@ RoundModel.init({
         onUpdate: "CASCADE",
     },
     handId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "hands",
@@ -49,7 +49,7 @@ RoundModel.init({
         onUpdate: "CASCADE",
     },
     roundCount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 }, {

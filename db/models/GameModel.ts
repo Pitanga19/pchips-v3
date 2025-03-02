@@ -24,12 +24,12 @@ class GameModel extends Model {
 
 GameModel.init({
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
     partyId: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: "parties",
@@ -39,7 +39,7 @@ GameModel.init({
         onUpdate: "CASCADE",
     },
     tableNumber: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     isPaused: {
