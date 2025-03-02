@@ -2,13 +2,14 @@
 
 export enum EErrorField {
     ID = 'id',
+    UPDATES = 'updates',
+    USER = 'user',
     USERNAME = 'username',
     EMAIL = 'email',
     PASSWORD = 'password',
     REPEAT_PASSWORD = 'repeat-password',
     FINDED_TYPE = 'finded-type',
     FINDED_VALUE = 'finded-value',
-    UPDATES = 'updates',
     RELATION = 'relation',
     PARTY = 'party',
     PARTY_NAME = 'party-name',
@@ -32,7 +33,7 @@ export enum EErrorMessage {
     WRONG_PASSWORD = 'wrong-password',                      // 401 Unauthorized
     INSUFFICIENT_PERMISSIONS = 'insufficient-permissions',  // 401 Unauthorized
     NOT_FOUND = 'not-found',                                // 404 Not Found
-    ALREADY_EXISTS = 'already-exists',                      // 409 Conflict
+    ALREADY_EXIST = 'already-exists',                      // 409 Conflict
     SAME_USER = 'same-user',                                // 409 Conflict
     IS_OWNER = 'is-owner',                                  // 409 Conflict
     INTERNAL_SERVER_ERROR = 'internal-server-error',        // 500 Internal Server Error

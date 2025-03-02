@@ -25,7 +25,7 @@ export const errorStatusMap: Record<EErrorMessage, EResponseStatus> = {
 
     [EErrorMessage.NOT_FOUND]: EResponseStatus.NOT_FOUND,
 
-    [EErrorMessage.ALREADY_EXISTS]: EResponseStatus.CONFLICT,
+    [EErrorMessage.ALREADY_EXIST]: EResponseStatus.CONFLICT,
     [EErrorMessage.SAME_USER]: EResponseStatus.CONFLICT,
     [EErrorMessage.IS_OWNER]: EResponseStatus.CONFLICT,
 
