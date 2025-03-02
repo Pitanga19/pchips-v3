@@ -1,102 +1,129 @@
 // pchips-v3/src/relation/core/FriendService.ts
 
 import {
-    TFriendModelReturn, TRelationDeleteReturn, TFriendModelListReturn, TFriendServiceReturn, checkIsAccepted, checkIsSenderId,
+    TFriendModel, TRelationDelete, TFriendList, TFriendService, checkIsAccepted, checkIsSenderId, TFriendFindData, TFriendFindResult, TFriendData, TFriendUpdates,
 } from '../relationIndex';
 import {
-    addToResponseErrors, TErrorList, EErrorField, EErrorMessage, EResponseStatus, EResponseMessage
+    addToResponseErrors, TErrorList, EErrorField, EErrorMessage, showLog,
 } from '../../common/commonIndex';
 import { UserModel, FriendModel, EFriendStatus } from '../../../db/dbIndex';
 import { Op } from 'sequelize';
+import { TUserDataList, TUserModelList, UserService } from '../../auth/authIndex';
+
+const file = 'FriendService';
+const field = EErrorField.FRIEND;
 
 class FriendService {
-    public static async find(firstUserId: number, secondUserId: number, errors: TErrorList): Promise<TFriendModelReturn> {
-        const field = EErrorField.RELATION;
-        let friendModel: TFriendModelReturn = null;
-
-        if (firstUserId > secondUserId) {
-            [firstUserId, secondUserId] = [secondUserId, firstUserId];
-        };
+    // Find friendship
+    public static async findFriend(errors: TErrorList, data: TFriendFindData): Promise<TFriendFindResult> {
+        let { firstUserId, secondUserId } = data;
+        let friendModel: TFriendModel = null;
+        let friendData: TFriendData = null;
 
         if (firstUserId === secondUserId) {
-            console.log(`[FriendService] Is same ID: ${firstUserId}`);
+            showLog(file, 'Is same ID', { firstUserId, secondUserId }, false);
             addToResponseErrors(errors, field, EErrorMessage.SAME_USER);
         } else {
+            if (firstUserId > secondUserId) {
+                [firstUserId, secondUserId] = [secondUserId, firstUserId];
+            };
+
             friendModel = await FriendModel.findOne({ where: { firstUserId, secondUserId } });
+            if (friendModel) friendData = friendModel.toJSON();
         };
 
-        return friendModel;
+        return { friendModel, friendData };
     };
 
-    public static async create(senderId: number, receiverId: number, errors: TErrorList): Promise<TFriendServiceReturn> {
-        let status: EResponseStatus = EResponseStatus.CREATED;
-        let message: EResponseMessage = EResponseMessage.CREATED;
-        const field = EErrorField.RELATION;
-        const firstUserId = Math.min(senderId, receiverId);
-        const secondUserId = Math.max(senderId, receiverId);
-        let friendModel: TFriendModelReturn = null;
-        
-        try {
-            friendModel = await FriendModel.create({ firstUserId, secondUserId, senderId });
-        } catch (error: any) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
-                console.log(`[FriendService] Friend already exists: ${firstUserId} - ${secondUserId}`);
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-                addToResponseErrors(errors, field, EErrorMessage.ALREADY_EXISTS);
-            } else {
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-                console.log(`[FriendService] Error creating Friend: ${firstUserId} - ${secondUserId}`);
-                addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
-            };
-        };        
-
-        return { status, friendModel, errors, message };
-    };
-
-    public static async get(senderId: number, receiverId: number, errors: TErrorList, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendServiceReturn> {
-        let status: EResponseStatus = EResponseStatus.SUCCESS;
-        let message: EResponseMessage = EResponseMessage.SUCCESS;
-        const field = EErrorField.RELATION;
-        const firstUserId = Math.min(senderId, receiverId);
-        const secondUserId = Math.max(senderId, receiverId);
-        const friendModel = await this.find(firstUserId, secondUserId, errors);
-        
-        if (!friendModel) {
-            status = EResponseStatus.NOT_FOUND;
-            message = EResponseMessage.NOT_FOUND;
-            console.log(`[FriendService] Friend not found: ${firstUserId} - ${secondUserId}`);
+    // Validate find result
+    private static validateFindResult(errors: TErrorList, data: TFriendFindData, findResult: TFriendFindResult, shouldExists: boolean): void {
+        if (shouldExists && !findResult.friendModel) {
+            showLog(file, 'Friend not found', data, false);
             addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
-        } else {
+        } else if (!shouldExists && findResult.friendModel) {
+            showLog(file, 'Friend already exist', data, false);
+            addToResponseErrors(errors, field, EErrorMessage.ALREADY_EXIST);
+        };
+    };
+
+    // Find friendship and validate
+    public static async find(errors: TErrorList, data: TFriendFindData, shouldExists: boolean): Promise<TFriendService> {
+        const findResult = await this.findFriend(errors, data);
+        this.validateFindResult(errors, data, findResult, shouldExists);
+        return findResult;
+    };
+
+    public static async create(errors: TErrorList, senderId: number, receiverId: number): Promise<TFriendService> {
+        const firstUserId = Math.min(senderId, receiverId);
+        const secondUserId = Math.max(senderId, receiverId);
+        const findData = { firstUserId, secondUserId };
+        const findResult = await this.find(errors, findData, false);
+        let friendModel: TFriendModel = null;
+        let friendData: TFriendData = null;
+
+        if (errors.length === 0) {
+            friendModel = await FriendModel.create({ firstUserId, secondUserId, senderId });
+
+            if (!friendModel) {
+                showLog(file, 'Error creating friend', { senderId, receiverId }, false);
+                addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
+            } else {
+                friendData = friendModel.toJSON();
+                showLog(file, 'Friend successfully created', friendData, true);
+            };
+        };
+
+        return { friendModel, friendData };
+    };
+
+    public static async get(errors: TErrorList, senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendService> {
+        const firstUserId = Math.min(senderId, receiverId);
+        const secondUserId = Math.max(senderId, receiverId);
+        const findData = { firstUserId, secondUserId };
+        const { friendModel, friendData} = await this.find(errors, findData, true);
+
+        if (friendModel) {
             if (expectedStatus === EFriendStatus.ACCEPTED && !checkIsAccepted(friendModel)) {
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-                console.log(`[FriendService] Friend is pending: ${firstUserId} - ${secondUserId}`);
+                showLog(file, 'Friend is pending', findData, false);
                 addToResponseErrors(errors, field, EErrorMessage.RELATION_PENDING);
             };
+
             if (expectedStatus === EFriendStatus.PENDING && checkIsAccepted(friendModel)) {
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-                console.log(`[FriendService] Friend already accepted: ${firstUserId} - ${secondUserId}`);
+                showLog(file, 'Friend is already accepted', findData, false);
                 addToResponseErrors(errors, field, EErrorMessage.RELATION_ACCEPTED);
             };
+
             if (needCheckSender && !checkIsSenderId(friendModel, senderId)) {
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-                console.log(`[FriendService] Wrong sender: ${firstUserId}`);
+                showLog(file, 'Wrong sender', findData, false);
                 addToResponseErrors(errors, field, EErrorMessage.WRONG_SENDER);
             };
         };
 
-        return { status, friendModel, errors, message };
+        return { friendModel, friendData };
     };
 
-    public static async getFriendModelList(userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendModelListReturn> {
-        const errors: TErrorList = [];
-        let status: EResponseStatus = EResponseStatus.SUCCESS;
-        let message: EResponseMessage = EResponseMessage.SUCCESS;
-        let friendModelList: UserModel[] = [];
+    public static async update(errors: TErrorList, senderId: number, receiverId: number, updates: TFriendUpdates, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TFriendService> {
+        const firstUserId = Math.min(senderId, receiverId);
+        const secondUserId = Math.max(senderId, receiverId);
+        const getFriendResult = await this.get(errors, firstUserId, secondUserId, expectedStatus, needCheckSender);
+        const { friendModel } = getFriendResult;
+        let { friendData } = getFriendResult;
+
+        if (errors.length === 0 && friendModel && friendData) {
+            showLog(file, 'Friend successfully loaded', friendData, true);
+            
+            await friendModel.update(updates);
+            friendData = friendModel.toJSON();
+            showLog(file, 'Friend successfully updated', friendData, true);
+        };
+
+        return { friendModel, friendData };
+    };
+
+    public static async getFriendModelList(errors: TErrorList, userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendList> {
+        const { userModel, userData } = await UserService.getById(errors, userId);
+        let friendModelList: TUserModelList = [];
+        let friendDataList: TUserDataList = [];
 
         const whereCondition: any = {
             [Op.or]: [{ firstUserId: userId }, { secondUserId: userId }],
@@ -106,7 +133,7 @@ class FriendService {
             whereCondition.status = friendStatus;
         };
 
-        const friendList = await FriendModel.findAll({
+        const friendshipList = await FriendModel.findAll({
             where: whereCondition,
             include: [
                 { model: UserModel, as: 'firstUser', required: false },
@@ -114,30 +141,33 @@ class FriendService {
             ],
         });
         
-        friendModelList = friendList.map(f => 
+        friendModelList = friendshipList.map(f => 
             f.firstUserId === userId ? f.dataValues.secondUser : f.dataValues.firstUser
         ).filter(Boolean);
+        friendDataList = friendModelList.map(f => f.toJSON());
 
-        console.log('[FriendService] Friends succesfully loaded\n', { status, friendModelList: friendModelList.map(f => f.toJSON()), errors, message });
+        showLog(file, 'Friends successfully loaded', friendDataList, true);
 
-        return { status, friendModelList, errors, message };
+        return { userModel, userData, friendModelList, friendDataList };
     };
 
-    public static async delete(senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationDeleteReturn> {
-        const errors: TErrorList = [];
-        const friendGetResult = await this.get(senderId, receiverId, errors, expectedStatus, needCheckSender);
-        const friendModel = friendGetResult.friendModel;
-        let status = friendGetResult.status;
-        let message = friendGetResult.message;
-        let value = false;
-    
-        if (friendModel && errors.length === 0) {
+    public static async delete(errors: TErrorList, senderId: number, receiverId: number, expectedStatus: EFriendStatus, needCheckSender: boolean): Promise<TRelationDelete> {
+        const firstUserId = Math.min(senderId, receiverId);
+        const secondUserId = Math.max(senderId, receiverId);
+        const getFriendResult = await this.get(errors, firstUserId, secondUserId, expectedStatus, needCheckSender);
+        const { friendModel } = getFriendResult;
+        let { friendData } = getFriendResult;
+        let deleted: boolean = false;
+
+        if (errors.length === 0 && friendModel && friendData) {
+            showLog(file, 'Friend successfully loaded', friendData, true);
+            
             await friendModel.destroy();
-            value = true;
-            console.log(`[FriendService] Friend successfully deleted: ${senderId} - ${receiverId}`);
+            deleted = true;
+            showLog(file, 'Friend successfully deleted.', { firstUserId, secondUserId }, true);
         };
-    
-        return { status, value, errors, message };
+
+        return { deleted };
     };
 };
 
