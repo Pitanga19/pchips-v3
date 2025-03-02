@@ -1,25 +1,45 @@
 // pchips-v3/src/auth/utils/authUtils.ts
 
-import { TAuthBody, TUserUpdates, EAuthProcess, EUserFind } from '../authIndex';
+import { TAuthBody, TUserUpdates, EAuthProcess, EUserFindType, ESafeword } from '../authIndex';
 import {
-    addToResponseErrors, RegExHandler, TErrorList, EErrorField, EErrorMessage,
+    addToResponseErrors, RegExHandler, TErrorList, EErrorField, EErrorMessage, showLog,
 } from '../../common/commonIndex';
 import { UserModel } from '../../../db/dbIndex';
 
-export const validateExistingInputs = (authProcess: EAuthProcess, errors: TErrorList, receivedBody: TAuthBody): void => {
-    const id = receivedBody.id;
-    const username = receivedBody.username;
-    const email = receivedBody.email;
-    const password = receivedBody.password;
-    const repeatPassword = receivedBody.repeatPassword;
-    const findedType = receivedBody.findedType;
-    const findedValue = receivedBody.findedValue;
-    const updates = receivedBody.updates;
+const file = 'authUtils';
+
+export const validateCorrectPassword = async (errors: TErrorList, userModel: UserModel, password: string): Promise<boolean> => {
+    const field = EErrorField.PASSWORD;
+    const message = EErrorMessage.WRONG_PASSWORD;
+    const isValidPassword: boolean = await userModel.comparePassword(password);
+
+    if (!isValidPassword) {
+        showLog(file, 'Wrong password', { userData: userModel.toJSON() }, false);
+        addToResponseErrors(errors, field, message);
+    };
+
+    return isValidPassword;
+};
+
+export const validateCorrectSafeword = (errors: TErrorList, safeword: ESafeword, userSafeword: string): boolean => {
+    let isCorrectSafeword = safeword === userSafeword;
+    if (!isCorrectSafeword) {
+        addToResponseErrors(errors, EErrorField.SAFEWORD, EErrorMessage.WRONG_SAFEWORD);
+    };
+
+    return isCorrectSafeword;
+};
+
+export const validateExistingInputs = (errors: TErrorList, authProcess: EAuthProcess, receivedBody: TAuthBody): void => {
+    const {
+        id, username, email, password, repeatPassword, updates, findedType, findedValue, safeword,
+    } = receivedBody;
+
     const message = EErrorMessage.DATA_IS_MISSING;
     let field: EErrorField;
 
     if (authProcess === EAuthProcess.REGISTER) {
-        console.log('[authUtils] Register auth existing test');
+        console.log('[authUtils] Running register inputs existing test ...');
         if (!username) {
             field = EErrorField.USERNAME;
             addToResponseErrors(errors, field, message);
@@ -39,7 +59,7 @@ export const validateExistingInputs = (authProcess: EAuthProcess, errors: TError
     };
 
     if (authProcess === EAuthProcess.LOGIN) {
-        console.log('[authUtils] Login auth existing test');
+        console.log('[authUtils] Running login inputs existing test ...');
         if (!username) {
             field = EErrorField.USERNAME;
             addToResponseErrors(errors, field, message);
@@ -50,22 +70,10 @@ export const validateExistingInputs = (authProcess: EAuthProcess, errors: TError
         };
     };
 
-    if (authProcess === EAuthProcess.RECOVERY) {
-        console.log('[authUtils] Recover auth existing test');
-        if (!findedType || findedType === EUserFind.NULL) {
-            field = EErrorField.FINDED_TYPE;
-            addToResponseErrors(errors, field, message);
-        };
-        if (!findedValue) {
-            field = EErrorField.FINDED_VALUE;
-            addToResponseErrors(errors, field, message);
-        };
-    };
-
     if (authProcess === EAuthProcess.UPDATE) {
-        console.log('[authUtils] Recover auth existing test');
+        console.log('[authUtils] Running update inputs existing test ...');
         if (!id) {
-            field = EErrorField.USERNAME;
+            field = EErrorField.ID;
             addToResponseErrors(errors, field, message);
         };
         if (!password) {
@@ -80,6 +88,34 @@ export const validateExistingInputs = (authProcess: EAuthProcess, errors: TError
                 field = EErrorField.REPEAT_PASSWORD;
                 addToResponseErrors(errors, field, message);
             };
+        };
+    };
+
+    if (authProcess === EAuthProcess.RECOVER_PASSWORD) {
+        console.log('[authUtils] Running recover password inputs existing test ...');
+        if (!findedType || findedType === EUserFindType.NULL) {
+            field = EErrorField.FINDED_TYPE;
+            addToResponseErrors(errors, field, message);
+        };
+        if (!findedValue) {
+            field = EErrorField.FINDED_VALUE;
+            addToResponseErrors(errors, field, message);
+        };
+    };
+
+    if (authProcess === EAuthProcess.DELETE_ACCOUNT) {
+        console.log('[authUtils] Running delete account inputs existing test ...');
+        if (!id) {
+            field = EErrorField.ID;
+            addToResponseErrors(errors, field, message);
+        };
+        if (!password) {
+            field = EErrorField.PASSWORD;
+            addToResponseErrors(errors, field, message);
+        };
+        if (!safeword) {
+            field = EErrorField.SAFEWORD;
+            addToResponseErrors(errors, field, message);
         };
     };
 };
@@ -135,26 +171,13 @@ export const validateRepeatPassword = (errors: TErrorList, password: string, rep
     };
 };
 
-export const validateCorrectPassword = async (userModel: UserModel, errors: TErrorList, password: string): Promise<boolean> => {
-    const field = EErrorField.PASSWORD;
-    const message = EErrorMessage.WRONG_PASSWORD;
-    const isValidPassword: boolean = await userModel.comparePassword(password);
-
-    if (!isValidPassword) {
-        console.log('[AuthService] Wrong password!\n');
-        addToResponseErrors(errors, field, message);
-    };
-
-    return isValidPassword;
-};
-
-export const validateUserFind = (errors: TErrorList, findedType: EUserFind | string): void => {
+export const validateUserFindType = (errors: TErrorList, findedType: EUserFindType | string): void => {
     const field = EErrorField.FINDED_TYPE;
     const message = EErrorMessage.INVALID_DATA;
     if (
-        findedType === EUserFind.USERNAME ||
-        findedType === EUserFind.EMAIL ||
-        findedType === EUserFind.NULL
+        findedType === EUserFindType.USERNAME ||
+        findedType === EUserFindType.EMAIL ||
+        findedType === EUserFindType.NULL
     ) {
         return;
     } else {
@@ -164,6 +187,6 @@ export const validateUserFind = (errors: TErrorList, findedType: EUserFind | str
 
 export const validateExistingUpdates = (updates: TUserUpdates): void => {
     Object.keys(updates).forEach(key => {
-        if (updates[key] === '') delete updates[key];
+        if (updates[key as keyof TUserUpdates] === '') delete updates[key as keyof TUserUpdates];
     });
 };

@@ -1,15 +1,10 @@
 // pchips-v3/src/auth/utils/authTypes.ts
 
-import { TUserUpdates, EUserFind } from '../authIndex';
-import { TErrorList, EResponseMessage, EResponseStatus } from '../../common/commonIndex';
-import { IUser } from '../../../db/dbIndex';
+import { TUserUpdates, EUserFindType, TUserService } from '../authIndex';
+import { TDeleteReturn } from '../../common/commonIndex';
 
-export type TAuthServiceReturn = {
-    status: EResponseStatus,
-    user: IUser | null,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TAuthService = TUserService;
+export type TAuthDeleteService = TDeleteReturn;
 
 export type TRegisterBody = {
     username: string,
@@ -23,11 +18,6 @@ export type TLoginBody = {
     password: string,
 };
 
-export type TRecoverBody = {
-    findedType: EUserFind,
-    findedValue: string,
-};
-
 export type TUpdateBody = {
     id: number,
     password: string,
@@ -35,14 +25,15 @@ export type TUpdateBody = {
     repeatPassword: string,
 };
 
-export type TAuthBody = {
-    id?: number,
-    username?: string,
-    email?: string,
-    password?: string,
-    repeatPassword?: string,
-    findedType?: EUserFind,
-    findedValue?: string,
-    updates?: TUserUpdates,
+export type TRecoverPasswordBody = {
+    findedType: EUserFindType,
+    findedValue: string,
 };
 
+export type TDeleteAccountBody = {
+    id: number,
+    password: string,
+    safeword: string,
+};
+
+export type TAuthBody = Partial<TRegisterBody & TLoginBody & TUpdateBody & TRecoverPasswordBody & TDeleteAccountBody>;
