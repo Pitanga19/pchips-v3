@@ -1,91 +1,100 @@
-// pchips-v3/src/relation/tests/relationTest.ts
+// pchips-v3/src/relation/tests/${file}
 
+import { showLog, TErrorList } from '../../common/commonIndex';
 import { RelationService } from '../relationIndex';
 
-const applyToJSON = (result: any) => {
-    result.friendModel ? result.friendModel = result.friendModel.toJSON() : null;
-};
-
-const listApplyToJSON = (list: any) => {
-    list.friendModelList ? list.friendModelList = list.friendModelList.map((f: any) => f.toJSON()) : null;
-};
+const file = 'relationTest';
 
 const relationTest = async () => {
-    const user2 = 2;
-    const user3 = 3;
-    const user4 = 4;
-    const user5 = 5;
-
-    try {
-        console.log('\n\n\n[relationTest.ts] Starting tests ...');
-        
-        // Enviar solicitud de amistad
-        console.log('\n\n\n[relationTest.ts] Sending friend requests ...');
-        const sendRequestResult2to3 = await RelationService.sendFriendRequest(user2, user3);
-        applyToJSON(sendRequestResult2to3);
-        console.log('[relationTest.ts] Send Friend Request Result:', sendRequestResult2to3);
-        const sendRequestResult2to4 = await RelationService.sendFriendRequest(user2, user4);
-        applyToJSON(sendRequestResult2to4);
-        console.log('[relationTest.ts] Send Friend Request Result:', sendRequestResult2to4);
-        const sendRequestResult3to4 = await RelationService.sendFriendRequest(user3, user4);
-        applyToJSON(sendRequestResult3to4);
-        console.log('[relationTest.ts] Send Friend Request Result:', sendRequestResult3to4);
-        const sendRequestResult3to5 = await RelationService.sendFriendRequest(user3, user5);
-        applyToJSON(sendRequestResult3to5);
-        console.log('[relationTest.ts] Send Friend Request Result:', sendRequestResult3to5);
-        
-        // Aceptar solicitud de amistad
-        console.log('\n\n\n[relationTest.ts] Accepting friend request ...');
-        const acceptRequestResult2to3 = await RelationService.acceptFriendRequest(user2, user3);
-        applyToJSON(acceptRequestResult2to3);
-        console.log('[relationTest.ts] Accept Friend Request Result:', acceptRequestResult2to3);
-        const acceptRequestResult2to4 = await RelationService.acceptFriendRequest(user2, user4);
-        applyToJSON(acceptRequestResult2to4);
-        console.log('[relationTest.ts] Accept Friend Request Result:', acceptRequestResult2to4);
-        
-        // Obtener lista de amigos aceptados
-        console.log('\n\n\n[relationTest.ts] Getting accepted friends list ...');
-        const acceptedFriends2init = await RelationService.getAcceptedFriendList(user2);
-        applyToJSON(acceptedFriends2init);
-        listApplyToJSON(acceptedFriends2init);
-        console.log('[relationTest.ts] Accepted Friends for 2:', acceptedFriends2init);
-        
-        // Cancelar solicitud de amistad
-        console.log('\n\n\n[relationTest.ts] Canceling friend request ...');
-        const cancelRequestResult = await RelationService.cancelFriendRequest(user3, user4);
-        applyToJSON(cancelRequestResult);
-        console.log(' Friend Request Result:', cancelRequestResult);
-        
-        // Rechazar solicitud de amistad
-        console.log('\n\n\n[relationTest.ts] Rejecting friend request ...');
-        const rejectRequestResult = await RelationService.rejectFriendRequest(user3, user5);
-        applyToJSON(rejectRequestResult);
-        console.log(' Friend Request Result:', rejectRequestResult);
-        
-        // Eliminar un amigo
-        console.log('\n\n\n[relationTest.ts] Removing friend ...');
-        const removeFriendResult = await RelationService.removeFriend(user2, user4);
-        applyToJSON(removeFriendResult);
-        console.log('[relationTest.ts] Remove Friend Result:', removeFriendResult);
-        
-        // Obtener lista de amigos aceptados
-        console.log('\n\n\n[relationTest.ts] Getting accepted friends list ...');
-        const acceptedFriends2end = await RelationService.getAcceptedFriendList(user2);
-        applyToJSON(acceptedFriends2end);
-        listApplyToJSON(acceptedFriends2end);
-        console.log('[relationTest.ts] Accepted Friends for 2:', acceptedFriends2end);
-        
-        // Obtener lista de amigos aceptados
-        console.log('\n\n\n[relationTest.ts] Getting accepted friends list ...');
-        const acceptedFriends3 = await RelationService.getAcceptedFriendList(user3);
-        applyToJSON(acceptedFriends3);
-        listApplyToJSON(acceptedFriends3);
-        console.log('[relationTest.ts] Accepted Friends for 3:', acceptedFriends3);
+    console.log(`\n\n\n\n\n[${file}] Starting tests ...`);
     
-        console.log('\n\n\n[relationTest.ts] Tests finished.');
-    } catch (error) {
-        console.error('\n\n\n[relationTest.ts] An error occurred:', error);
-    };
+    // Users id data
+    const usersIds = [1, 2, 3, 4, 5];
+    
+    // Global errors test
+    const errors: TErrorList = [];
+
+    // Send friend requests
+    console.log(`\n\n\n[${file}] Sending friend requests ...`);
+    const sendFriendRequest1to2 = await RelationService.sendFriendRequest(errors, usersIds[0], usersIds[1]);
+    showLog(file, `Send friend request 1 to 2 result`, sendFriendRequest1to2, true);
+
+    const sendFriendRequest1to3 = await RelationService.sendFriendRequest(errors, usersIds[0], usersIds[2]);
+    showLog(file, `Send friend request 1 to 3 result`, sendFriendRequest1to3, true);
+
+    const sendFriendRequest2to3 = await RelationService.sendFriendRequest(errors, usersIds[1], usersIds[2]);
+    showLog(file, `Send friend request 2 to 3 result`, sendFriendRequest2to3, true);
+
+    const sendFriendRequest3to4 = await RelationService.sendFriendRequest(errors, usersIds[2], usersIds[3]);
+    showLog(file, `Send friend request 3 to 4 result`, sendFriendRequest3to4, true);
+
+    const sendFriendRequest3to5 = await RelationService.sendFriendRequest(errors, usersIds[2], usersIds[4]);
+    showLog(file, `Send friend request 3 to 5 result`, sendFriendRequest3to5, true);
+
+    const sendFriendRequest4to5 = await RelationService.sendFriendRequest(errors, usersIds[3], usersIds[4]);
+    showLog(file, `Send friend request 4 to 5 result`, sendFriendRequest4to5, true);
+
+    // Accept friend requests
+    console.log(`\n\n\n[${file}] Accepting friend request ...`);
+    const acceptFriendRequest1to3 = await RelationService.acceptFriendRequest(errors, usersIds[0], usersIds[2]);
+    showLog(file, `Accept friend request 1 to 3 result`, acceptFriendRequest1to3, true);
+
+    const acceptFriendRequest2to3 = await RelationService.acceptFriendRequest(errors, usersIds[1], usersIds[2]);
+    showLog(file, `Accept friend request 2 to 3 result`, acceptFriendRequest2to3, true);
+
+    const acceptFriendRequest3to4 = await RelationService.acceptFriendRequest(errors, usersIds[2], usersIds[3]);
+    showLog(file, `Accept friend request 3 to 4 result`, acceptFriendRequest3to4, true);
+
+    // Reject friend requests
+    console.log(`\n\n\n[${file}] Rejecting friend request ...`);
+    const rejectFriendRequest4to5 = await RelationService.rejectFriendRequest(errors, usersIds[3], usersIds[4]);
+    showLog(file, `Reject friend request 4 to 5 result`, rejectFriendRequest4to5, true);
+    
+    // Cancel friend request
+    console.log(`\n\n\n[${file}] Canceling friend request ...`);
+    const cancelFriendRequest1to2 = await RelationService.cancelFriendRequest(errors, usersIds[0], usersIds[1]);
+    showLog(file, `Cancel friend request 1 to 2 result`, cancelFriendRequest1to2, true);
+    
+    // Remove friend
+    console.log(`\n\n\n[${file}] Removing friend ...`);
+    const removeFriend2to3 = await RelationService.removeFriend(errors, usersIds[1], usersIds[2]);
+    showLog(file, `Remove friend 2 to 3 result`, removeFriend2to3, true);
+    
+    // Get accepted friends list
+    console.log(`\n\n\n[${file}] Getting accepted friends list ...`);
+    const acceptedFriendsFor3 = await RelationService.getAcceptedFriendList(errors, usersIds[2]);
+    showLog(file, `Accepted friends for 3 result`, acceptedFriendsFor3, true);
+    
+    // Get pending friends list
+    console.log(`\n\n\n[${file}] Getting pending friends list ...`);
+    const pendingFriendsFor3 = await RelationService.getPendingFriendList(errors, usersIds[2]);
+    showLog(file, `Pending friends for 3 result`, pendingFriendsFor3, true);
+
+    // Block user
+    console.log(`\n\n\n[${file}] Blocking user ...`);
+    const block2to3 = await RelationService.blockUser(errors, usersIds[1], usersIds[2]);
+    showLog(file, `Block user 2 to 3 result`, block2to3, true);
+
+    const block3to2 = await RelationService.blockUser(errors, usersIds[2], usersIds[1]);
+    showLog(file, `Block user 3 to 2 result`, block3to2, true);
+
+    const block3to4 = await RelationService.blockUser(errors, usersIds[2], usersIds[3]);
+    showLog(file, `Block user 3 to 4 result`, block3to4, true);
+
+    const block3to5 = await RelationService.blockUser(errors, usersIds[2], usersIds[4]);
+    showLog(file, `Block user 3 to 5 result`, block3to5, true);
+
+    // Unblock user
+    console.log(`\n\n\n[${file}] Unlocking user ...`);
+    const unblock3to5 = await RelationService.unblockUser(errors, usersIds[2], usersIds[4]);
+    showLog(file, `Unlock user 3 to 5 result`, unblock3to5, true);
+    
+    // Get blocked users list
+    console.log(`\n\n\n[${file}] Getting blocked users list ...`);
+    const blockedUsersFor3 = await RelationService.getBlockedList(errors, usersIds[2]);
+    showLog(file, `Blocked users for 3 result`, blockedUsersFor3, true);
+
+    console.log(`\n\n\n[${file}] Tests finished.`);
 };
 
 // Llamada a la función

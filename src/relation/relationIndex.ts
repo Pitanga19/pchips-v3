@@ -6,6 +6,5 @@ export { default as RelationService } from './core/RelationService';
 export { default as RelationController } from './core/RelationController';
 export { default as RelationRoutes } from './core/RelationRoutes';
 export { default as relationTest } from './tests/relationTest';
-export { default as blockTest } from './tests/blockTest';
 export * from './utils/relationTypes';
 export * from './utils/relationUtils';

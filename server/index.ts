@@ -6,7 +6,7 @@ import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
 import { AuthRoutes, authTest } from '../src/auth/authIndex';
-import { RelationRoutes, relationTest, blockTest } from '../src/relation/relationIndex';
+import { RelationRoutes, relationTest } from '../src/relation/relationIndex';
 import { PartyRoutes, partyTest } from '../src/party/partyIndex';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
@@ -51,7 +51,6 @@ initDatabase()  // Initialize database
 
         await authTest();
         await relationTest();
-        await blockTest();
         await partyTest();
     })
     .catch((error) => {
