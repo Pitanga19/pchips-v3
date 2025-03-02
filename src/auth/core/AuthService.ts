@@ -1,137 +1,88 @@
 // pchips-v3/src/auth/core/AuthService.ts
 
-import {
-    UserService, validateCorrectPassword, EUserFind, TAuthServiceReturn, TUserModelReturn, TUserServiceReturn, TUserUpdates,
-} from '../authIndex';
-import { EResponseStatus, EResponseMessage, EErrorField, EErrorMessage } from '../../common/commonIndex';
-import { IUser } from '../../../db/dbIndex';
+import { UserService, validateCorrectPassword, EUserFindType, TAuthService, TUserService, TUserUpdates, TAuthDeleteService } from '../authIndex';
+import { EErrorField, EErrorMessage, TErrorList, showLog, addToResponseErrors } from '../../common/commonIndex';
+
+const file = 'AuthService'
 
 class AuthService {
-    public static async register(username: string, email: string, password: string): Promise<TAuthServiceReturn> {
-        const createUserResult = await UserService.create(username, email, password);
-        if (!createUserResult.userModel) {
-            console.log(`[AuthService] Error creating user: ${username}\n`);
-            return {
-                status: createUserResult.status,
-                user: createUserResult.userModel,
-                errors: createUserResult.errors,
-                message: createUserResult.message,
-            };
-        };
+    public static async register(errors: TErrorList, username: string, email: string, password: string): Promise<TAuthService> {
+        const { userModel, userData } = await UserService.create(errors, username, email, password);
 
-        console.log(`[AuthService] User successfully start to register: ${username}\n`);
-        return {
-            status: createUserResult.status,
-            user: createUserResult.userModel.toJSON(),
-            errors: createUserResult.errors,
-            message: createUserResult.message,
-        };
-    };
-
-    public static async login(username: string, password: string): Promise<TAuthServiceReturn> {
-        const getUserResult = await UserService.getByUsername(username);
-        const errors = getUserResult.errors;
-        let status = getUserResult.status;
-        let message = getUserResult.message;
-        let user = null;
-
-        if (!getUserResult.userModel) {
-            console.log(`[AuthService] User not found: ${username}\n`);
-            return { status, user, errors, message };
-        };
-
-        const userModel = getUserResult.userModel;
-        const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
-        if (!isCorrectPassword) {
-            console.log(`[AuthService] Wrong password: ${username}\n`);
-            status = EResponseStatus.UNAUTHORIZED;
-            message = EResponseMessage.INVALID_DATA;
-            return { status, user, errors, message };
-        };
-        
-        user = userModel.toJSON();
-        console.log(`[AuthService] User successfully logged in: ${username}\n`);
-        return {
-            status: getUserResult.status,
-            user,
-            errors: getUserResult.errors,
-            message: getUserResult.message,
-        };
-    };
-
-    public static async recover(findedType: EUserFind, findedData: string): Promise<TAuthServiceReturn> {
-        let getUserResult: TUserServiceReturn;
-        let user: IUser | null = null;
-        if (findedType === EUserFind.USERNAME) {
-            getUserResult = await UserService.getByUsername(findedData);
-        } else if (findedType === EUserFind.EMAIL) {
-            getUserResult = await UserService.getByEmail(findedData);
-        } else if (findedType === EUserFind.NULL) {
-            const error = { field: EErrorField.FINDED_TYPE, message: EErrorMessage.DATA_IS_MISSING };
-            return {
-                user: null,
-                status: EResponseStatus.BAD_REQUEST,
-                errors: [error],
-                message: EResponseMessage.INVALID_DATA,
-            };
+        if (errors.length === 0) {
+            showLog(file, 'User successfully registered', { username, email, password }, true);
         } else {
-            return {
-                user: null,
-                status: EResponseStatus.INTERNAL_SERVER_ERROR,
-                errors: [],
-                message: EResponseMessage.INTERNAL_SERVER_ERROR,
+            showLog(file, 'Error registering user', { username, email, password }, false);
+        };
+        
+        return { userModel, userData };
+    };
+
+    public static async login(errors: TErrorList, username: string, password: string): Promise<TAuthService> {
+        let { userModel, userData } = await UserService.getByUsername(errors, username);
+
+        if (userModel) {
+            const isCorrectPassword = await validateCorrectPassword(errors, userModel, password);
+            if (!isCorrectPassword) {
+                userModel = null;
+                userData = null;
             };
         };
 
-        if (!getUserResult.userModel) {
-            console.log(`[AuthService] User not found: ${findedData}\n`);
+        if (errors.length === 0) {
+            showLog(file, 'User successfully logged in', { username }, true);
+        } else {
+            showLog(file, 'Error logging in user', { username }, false);
         };
 
-        if (getUserResult.userModel !== null) {
-            user = getUserResult.userModel.toJSON(); 
-        };
-
-        console.log(`[AuthService] User successfully start to recover password: ${findedData}\n`);
-        return {
-            status: getUserResult.status,
-            user,
-            errors: getUserResult.errors,
-            message: getUserResult.message,
-        };
+        return { userModel, userData };
     };
 
-    public static async update(id: number, password: string, updates: TUserUpdates): Promise<TAuthServiceReturn> {
-        const getUserResult = await UserService.getById(id);
-        let status = getUserResult.status;
-        let errors = getUserResult.errors;
-        let message = getUserResult.message;
-        let userModel: TUserModelReturn = null;
-        let user = null;
+    public static async update(errors: TErrorList, id: number, password: string, updates: TUserUpdates): Promise<TAuthService> {
+        const updateUserResult = await UserService.update(errors, id, password, updates);
 
-        if (!getUserResult.userModel) {
-            console.log(`[AuthService] User not found: ${id}\n`);
-            return { status, user, errors, message };
+        if (errors.length === 0) {
+            showLog(file, 'User successfully updated', updates, true);
+        } else {
+            showLog(file, 'Error updating user', { id }, false);
         };
 
-        userModel = getUserResult.userModel;
-        const isCorrectPassword = await validateCorrectPassword(userModel, errors, password);
-        if (!isCorrectPassword) {
-            console.log(`[AuthService] Wrong password: ${id}\n`);
-            return { status, user, errors, message };
-        };
-        
-        console.log(`[AuthService] User successfully loaded, updating: ${id}\n`);
-        const updateResult = await UserService.update(id, updates);
+        return updateUserResult;
+    };
 
-        userModel = updateResult.userModel;
-        if (userModel) {
-            user = userModel.toJSON();
-        };
-        status = updateResult.status;
-        errors = updateResult.errors;
-        message = updateResult.message;
+    public static async recoverPassword(errors: TErrorList, findedType: EUserFindType, findedData: string): Promise<TAuthService> {
+        let getUserResult: TUserService = { userModel: null, userData: null };
+        const field = EErrorField.FINDED_TYPE;
 
-        return { status, user, errors, message };
+        if (findedType === EUserFindType.USERNAME) {
+            getUserResult = await UserService.getByUsername(errors, findedData);
+        } else if (findedType === EUserFindType.EMAIL) {
+            getUserResult = await UserService.getByEmail(errors, findedData);
+        } else if (findedType === EUserFindType.NULL) {
+            addToResponseErrors(errors, field, EErrorMessage.DATA_IS_MISSING);
+        } else {
+            addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
+        };
+
+        if (errors.length === 0) {
+            showLog(file, 'Email successfully sent to recover password', { findedType, findedData }, true);
+        } else {
+            showLog(file, 'Error recovering password', { findedType, findedData }, false);
+        };
+
+        return getUserResult;
+    };
+
+    public static async deleteAccount(errors: TErrorList, id: number, password: string, safeword: string): Promise<TAuthDeleteService> {
+        const deleteUserResult = await UserService.delete(errors, id, password, safeword);
+
+        if (errors.length === 0) {
+            showLog(file, 'User successfully deleted', { id }, true);
+        } else {
+            showLog(file, 'Error deleting user', { id }, false);
+        };
+
+        return deleteUserResult
     };
 };
 
