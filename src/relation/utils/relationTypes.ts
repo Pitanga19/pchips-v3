@@ -1,79 +1,59 @@
 // pchips-v3/src/relation/utils/relationTypes.ts
 
-import { EResponseStatus, EResponseMessage, TErrorList } from '../../common/commonIndex';
-import { UserModel, FriendModel, BlockModel, IUser, IFriend, IBlock } from '../../../db/dbIndex';
+import { FriendModel, BlockModel, IFriend, IBlock, EFriendStatus } from '../../../db/dbIndex';
+import { TDeleteReturn } from '../../common/commonIndex';
+import { TUserData, TUserDataList, TUserModel, TUserModelList } from '../../auth/authIndex';
 
-export type TUserModelList = UserModel[];
-export type TUserList = IUser[];
+export type TFriendModel = FriendModel | null;
+export type TFriendData = IFriend | null;
 
-export type TFriendModelReturn = FriendModel | null;
-export type TFriendReturn = IFriend | null;
-
-export type TBlockModelReturn = BlockModel | null;
-export type TBlockReturn = IBlock | null;
-
-export type TFriendServiceReturn = {
-    status: EResponseStatus,
-    friendModel: TFriendModelReturn,
-    errors: TErrorList,
-    message: EResponseMessage,
+export type TFriendUpdates = { status: EFriendStatus };
+export type TFriendFindData = {
+    firstUserId: number,
+    secondUserId: number,
 };
 
-export type TFriendModelListReturn = {
-    status: EResponseStatus,
+export type TFriendFindResult = TFriendService;
+
+export type TFriendService = {
+    friendModel: TFriendModel,
+    friendData: TFriendData,
+};
+
+export type TFriendList = {
+    userModel: TUserModel,
+    userData: TUserData,
     friendModelList: TUserModelList,
-    errors: TErrorList,
-    message: EResponseMessage,
+    friendDataList: TUserDataList,
 };
 
-export type TBlockServiceReturn = {
-    status: EResponseStatus,
-    blockModel: TBlockModelReturn,
-    errors: TErrorList,
-    message: EResponseMessage,
+export type TBlockModel = BlockModel | null;
+export type TBlockData = IBlock | null;
+
+export type TBlockFindData = Partial<IBlock>;
+export type TBlockFindResult = TBlockService;
+
+export type TBlockService = {
+    blockModel: TBlockModel,
+    blockData: TBlockData,
 };
 
-export type TBlockModelListReturn = {
-    status: EResponseStatus,
+export type TBlockList = {
+    userModel: TUserModel,
+    userData: TUserData,
     blockedModelList: TUserModelList,
-    errors: TErrorList,
-    message: EResponseMessage,
+    blockedDataList: TUserDataList,
 };
 
-export type TRelationFriendReturn = {
-    status: EResponseStatus,
-    friend: TFriendReturn,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TRelationFriend = TFriendService;
 
-export type TRelationFriendListReturn = {
-    status: EResponseStatus,
-    friendList: TUserList,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TRelationFriendList = TFriendList;
 
-export type TRelationBlockReturn = {
-    status: EResponseStatus,
-    block: TBlockReturn,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TRelationBlock = TBlockService;
 
-export type TRelationBlockListReturn = {
-    status: EResponseStatus,
-    blockedList: TUserList,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TRelationBlockList = TBlockList;
 
-export type TRelationDeleteReturn = {
-    status: EResponseStatus,
-    value: boolean,
-    errors: TErrorList,
-    message: EResponseMessage,
-};
+export type TRelationDelete = TDeleteReturn;
 
 export type TRelationFriendBody = {
     senderId: number,
