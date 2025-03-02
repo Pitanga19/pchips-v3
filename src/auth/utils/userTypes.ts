@@ -1,27 +1,31 @@
 // pchips-v3/src/auth/utils/userTypes.ts
 
-import { EResponseStatus, EResponseMessage, TErrorList } from '../../common/commonIndex';
-import { UserModel } from '../../../db/dbIndex';
+import { IUser, UserModel } from '../../../db/dbIndex';
+import { TDeleteReturn } from '../../common/commonIndex';
 
-export type TUserModelReturn = UserModel | null;
+export type TUserModelList = UserModel[];
+export type TUserDataList = IUser[];
 
-export type TUserServiceReturn = {
-    status: EResponseStatus,
-    userModel: TUserModelReturn,
-    errors: TErrorList,
-    message: EResponseMessage,
+export type TUserModel = UserModel | null;
+export type TUserData = IUser | null;
+
+export type TUserUpdates = Partial<IUser> & { password?: string };
+export type TUserFindData = Omit<Partial<IUser>, "password">;
+
+export type TUserFindResult = {
+    userById: TUserService,
+    userByUsername: TUserService,
+    userByEmail: TUserService,
 };
 
-export type TUserDeleteReturn = {
-    status: EResponseStatus,
-    value: boolean,
-    errors: TErrorList,
-    message: EResponseMessage,
+export type TUserService = {
+    userModel: TUserModel,
+    userData: TUserData,
 };
 
-export type TUserUpdates = {
-    username?: string;
-    email?: string;
-    password?: string;
-    [key: string]: string | undefined;
+export type TUserList = {
+    userModelList: TUserModelList,
+    userDataList: TUserDataList,
 };
+
+export type TUserDelete = TDeleteReturn;

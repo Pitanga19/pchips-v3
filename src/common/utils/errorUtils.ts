@@ -21,6 +21,7 @@ export const errorStatusMap: Record<EErrorMessage, EResponseStatus> = {
     [EErrorMessage.WRONG_SENDER]: EResponseStatus.BAD_REQUEST,
 
     [EErrorMessage.WRONG_PASSWORD]: EResponseStatus.UNAUTHORIZED,
+    [EErrorMessage.WRONG_SAFEWORD]: EResponseStatus.UNAUTHORIZED,
     [EErrorMessage.INSUFFICIENT_PERMISSIONS]: EResponseStatus.UNAUTHORIZED,
 
     [EErrorMessage.NOT_FOUND]: EResponseStatus.NOT_FOUND,

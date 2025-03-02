@@ -8,6 +8,7 @@ export enum EErrorField {
     EMAIL = 'email',
     PASSWORD = 'password',
     REPEAT_PASSWORD = 'repeat-password',
+    SAFEWORD = 'safeword',
     FINDED_TYPE = 'finded-type',
     FINDED_VALUE = 'finded-value',
     RELATION = 'relation',
@@ -31,6 +32,7 @@ export enum EErrorMessage {
     RELATION_PENDING = 'relation-pending',                  // 400 Bad Request
     WRONG_SENDER = 'wrong-sender',                          // 400 Bad Request
     WRONG_PASSWORD = 'wrong-password',                      // 401 Unauthorized
+    WRONG_SAFEWORD = 'wrong-safeword',                      // 401 Unauthorized
     INSUFFICIENT_PERMISSIONS = 'insufficient-permissions',  // 401 Unauthorized
     NOT_FOUND = 'not-found',                                // 404 Not Found
     ALREADY_EXIST = 'already-exists',                      // 409 Conflict

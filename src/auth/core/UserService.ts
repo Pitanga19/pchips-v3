@@ -1,210 +1,157 @@
 // pchips-v3/src/auth/core/UserService.ts
 
-import { TUserServiceReturn, TUserDeleteReturn, TUserUpdates} from '../authIndex';
-import {
-    addToResponseErrors, EErrorField, EErrorMessage, EResponseMessage, EResponseStatus, TErrorList,
-} from '../../common/commonIndex';
+import { TUserService, TUserDelete, TUserUpdates, TUserData, TUserModel, TUserFindData, TUserFindResult, validateCorrectPassword, ESafeword, validateCorrectSafeword} from '../authIndex';
+import { addToResponseErrors, EErrorField, EErrorMessage, extractToJSON, showLog, TErrorList } from '../../common/commonIndex';
 import { UserModel } from '../../../db/dbIndex';
+const file = 'UserService';
 
 class UserService {
+    // Find user
+    private static async findUser(data: TUserFindData): Promise<TUserFindResult> {
+        let userById: TUserService = { userModel: null, userData: null };
+        let userByUsername: TUserService = { userModel: null, userData: null };
+        let userByEmail: TUserService = { userModel: null, userData: null };
+        const { id, username, email } = data;
+
+        if (id) {
+            const userModel = await UserModel.findByPk(id);
+            const userData = extractToJSON(userModel);
+            userById = { userModel, userData };
+        };
+        if (username) {
+            const userModel = await UserModel.findOne({ where: { username } });
+            const userData = extractToJSON(userModel);
+            userByUsername = { userModel, userData };
+        };
+        if (email) {
+            const userModel = await UserModel.findOne({ where: { email } });
+            const userData = extractToJSON(userModel);
+            userByEmail = { userModel, userData };
+        };
+
+        return { userById, userByUsername, userByEmail };
+    };
+
+    // Validate find result
+    private static validateFindResult(errors: TErrorList, data: TUserFindData, findResult: TUserFindResult, shouldExists: boolean): void {
+        const { userById, userByUsername, userByEmail } = findResult;
+    
+        if (shouldExists && !userById.userModel && !userByUsername.userModel && !userByEmail.userModel) {
+            showLog(file, 'User not found', data, false);
+            addToResponseErrors(errors, EErrorField.USER, EErrorMessage.NOT_FOUND);
+        } else if (!shouldExists) {
+            const { id, username, email } = data;
+            const logMessage = 'User already exist';
+            if (userById.userModel) {
+                showLog(file, logMessage, { id }, false);
+                addToResponseErrors(errors, EErrorField.ID, EErrorMessage.ALREADY_EXIST);
+            };
+            if (userByUsername.userModel) {
+                showLog(file, logMessage, { username }, false);
+                addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.ALREADY_EXIST);
+            };
+            if (userByEmail.userModel) {
+                showLog(file, logMessage, { email }, false);
+                addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.ALREADY_EXIST);
+            };
+        };
+    };
+
+    // Find user and validate
+    public static async find(errors: TErrorList, data: TUserFindData, shouldExists: boolean): Promise<TUserFindResult> {
+        const findResult = await this.findUser(data);
+        this.validateFindResult(errors, data, findResult, shouldExists);
+        return findResult;
+    };
+
     // Create user
-    public static async create(username: string, email: string, password: string): Promise<TUserServiceReturn> {
-        const getByUsername = await this.getByUsername(username);
-        const getByEmail = await this.getByEmail(email);
-        const errors: TErrorList = [];
-        let status = EResponseStatus.CREATED;
-        let userModel: UserModel | null = null;
-        let message = EResponseMessage.CREATED;
-
-        if (getByUsername.userModel) {
-            console.log(`[UserService] Username already exist: ${username}`);
-            status = EResponseStatus.CONFLICT;
-            message = EResponseMessage.INVALID_DATA;
-            addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.ALREADY_EXISTS);
-        };
-
-        if (getByEmail.userModel) {
-            console.log(`[UserService] Email already exist: ${email}`);
-            status = EResponseStatus.CONFLICT;
-            message = EResponseMessage.INVALID_DATA;
-            addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.ALREADY_EXISTS);
-        };
+    public static async create(errors: TErrorList, username: string, email: string, password: string): Promise<TUserService> {
+        const findResult = await this.find(errors, { username, email }, false);
+        let userModel: TUserModel = null;
+        let userData: TUserData = null;
 
         if (errors.length === 0) {
             userModel = await UserModel.create({ username, email, password });
 
             if (!userModel) {
-                console.log(`[UserService] Error creating user: ${username}`);
-                const status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                const message = EResponseMessage.INTERNAL_SERVER_ERROR;
-                return { userModel, status, errors: [], message };
+                showLog(file, 'Error creating user', { username, email }, false);
+                addToResponseErrors(errors, EErrorField.USER, EErrorMessage.INTERNAL_SERVER_ERROR);
+            } else {
+                userData = userModel.toJSON();
+                showLog(file, 'User successfully created', userData, true);
             };
-            
-            console.log(`[UserService] User successfully created: ${JSON.stringify(userModel.toJSON())}`);
         };
 
-        return { userModel, status, errors, message };
+        return { userModel, userData };
     };
 
     // Get user by id
-    public static async getById(id: number): Promise<TUserServiceReturn> {
-        let userModel = await UserModel.findByPk(id);
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
-        const field: EErrorField = EErrorField.ID;
-        const errors: TErrorList = [];
-        
-        if (!userModel) {
-            console.log(`[UserService] User not found: { id: ${id} }`);
-            status = EResponseStatus.NOT_FOUND;
-            userModel = null;
-            message = EResponseMessage.INVALID_DATA;
+    public static async getById(errors: TErrorList, id: number): Promise<TUserService> {
+        let { userById } = await this.find(errors, { id }, true);
 
-            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
-            return { userModel, status, errors, message };
-        };
-
-        if (errors.length === 0) console.log(`[UserService] User succefully loaded: { id: ${id} }`);
-        return { userModel, status, errors, message };
+        if (errors.length === 0) showLog(file, 'User successfully loaded', { id }, true);
+        return userById;
     };
 
     // Get user by username
-    public static async getByUsername(username: string): Promise<TUserServiceReturn> {
-        let userModel = await UserModel.findOne({ where: { username } });
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
-        const field: EErrorField = EErrorField.USERNAME;
-        const errors: TErrorList = [];
-        
-        if (!userModel) {
-            console.log(`[UserService] User not found: { username: ${username} }`);
-            status = EResponseStatus.NOT_FOUND;
-            userModel = null;
-            message = EResponseMessage.INVALID_DATA;
-            
-            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
-            return { userModel, status, errors, message };
-        };
+    public static async getByUsername(errors: TErrorList, username: string): Promise<TUserService> {
+        let { userByUsername } = await this.find(errors, { username }, true);
 
-        if (errors.length === 0) console.log(`[UserService] User succefully loaded: { username: ${username} }`);
-        return { userModel, status, errors, message };
+        if (errors.length === 0) showLog(file, 'User successfully loaded', { username }, true);
+        return userByUsername;
     };
 
     // Get user by email
-    public static async getByEmail(email: string): Promise<TUserServiceReturn> {
-        let userModel = await UserModel.findOne({ where: { email } });
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
-        const field: EErrorField = EErrorField.EMAIL;
-        const errors: TErrorList = [];
-        
-        if (!userModel) {
-            console.log(`[UserService] User not found: { email: ${email} }`);
-            status = EResponseStatus.NOT_FOUND;
-            userModel = null;
-            message = EResponseMessage.INVALID_DATA;
-            
-            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
-        };
+    public static async getByEmail(errors: TErrorList, email: string): Promise<TUserService> {
+        let { userByEmail } = await this.find(errors, { email }, true);
 
-        if (errors.length === 0) console.log(`[UserService] User succefully loaded: { email: ${email} }`);
-        return { userModel, status, errors, message };
+        if (errors.length === 0) showLog(file, 'User successfully loaded', { email }, true);
+        return userByEmail;
     };
 
-    public static async validatePassword(user: UserModel, password: string): Promise<TUserServiceReturn> {
-        let status = EResponseStatus.SUCCESS;
-        let userModel: UserModel | null = user;
-        let message = EResponseMessage.SUCCESS;
-        const field = EErrorField.PASSWORD;
-        const errors: TErrorList = [];
-        const isValidPassword: boolean = await userModel.comparePassword(password);
+    // Update user after password validate
+    public static async update(errors: TErrorList, id: number, password: string, updates: TUserUpdates): Promise<TUserService> {
+        const { userById } = await this.find(errors, { id }, true);
+        const { userModel } = userById;
+        let { userData } = userById;
 
-        if (!isValidPassword) {
-            console.log('[AuthService] Wrong password!\n');
-            status = EResponseStatus.UNAUTHORIZED;
-            userModel = null;
-            message = EResponseMessage.INVALID_DATA;
-
-            addToResponseErrors(errors, field, EErrorMessage.WRONG_PASSWORD);
+        if (errors.length === 0 && (updates.username || updates.email)) {
+            await this.find(errors, updates, false);
         };
 
-        if (errors.length === 0) console.log('[AuthService] Is correct password!\n');
-        return { userModel, status, errors, message };
-    };
+        if (errors.length === 0 && userModel && userData) {
+            showLog(file, 'User successfully loaded', userData, true);
 
-    // Update user
-    public static async update(id: number, updates: TUserUpdates): Promise<TUserServiceReturn> {
-        let userModel = await UserModel.findByPk(id);
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
-        const field: EErrorField = EErrorField.ID;
-        const errors: TErrorList = [];
-        
-        if (!userModel) {
-            console.log(`[UserService] User not found: { id: ${id} }`);
-            userModel = null;
-            status = EResponseStatus.NOT_FOUND;
-            message = EResponseMessage.INVALID_DATA;
-
-            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
-        };
-        
-        if (updates.username) {
-            const getByUsername = await this.getByUsername(updates.username);
-
-            if (getByUsername.userModel) {
-                console.log(`[UserService] Username already exist: ${updates.username}`);
-                userModel = null;
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-
-                addToResponseErrors(errors, EErrorField.USERNAME, EErrorMessage.ALREADY_EXISTS);
-            };
-        };
-        
-        if (updates.email) {
-            const getByEmail = await this.getByEmail(updates.email);
-
-            if (getByEmail.userModel) {
-                console.log(`[UserService] Email already exist: ${updates.email}`);
-                userModel = null;
-                status = EResponseStatus.CONFLICT;
-                message = EResponseMessage.INVALID_DATA;
-
-                addToResponseErrors(errors, EErrorField.EMAIL, EErrorMessage.ALREADY_EXISTS);
+            const isCorrectPassword = await validateCorrectPassword(errors, userModel, password);
+            if (isCorrectPassword) {
+                await userModel.update(updates);
+                userData = userModel.toJSON();
+                showLog(file, 'User successfully updated', userData, true);
             };
         };
 
-        if (userModel !== null && errors.length === 0) {
-            console.log(`[UserService] User succefully loaded: { id: ${id} }`);
-            await userModel.update(updates);
-        };
-        return { userModel, status, errors, message };
+        return { userModel, userData };
     };
 
     // Delete user
-    public static async delete(id: number): Promise<TUserDeleteReturn> {
-        const userModel = await UserModel.findByPk(id);
-        const field: EErrorField = EErrorField.ID;
-        const errors: TErrorList = [];
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
-        let value: boolean = true;
-        
-        if (!userModel) {
-            console.log(`[UserService] User not found: { id: ${id} }`);
-            value = false;
-            status = EResponseStatus.NOT_FOUND;
-            message = EResponseMessage.INVALID_DATA;
+    public static async delete(errors: TErrorList, id: number, password: string, safeword: string): Promise<TUserDelete> {
+        const { userById } = await this.find(errors, { id }, true);
+        const { userModel } = userById;
+        let deleted: boolean = false;
 
-            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
+        if (errors.length === 0 && userModel) {
+            showLog(file, 'User successfully loaded', { id }, true);
+
+            const isCorrectPassword = await validateCorrectPassword(errors, userModel, password);
+            const isCorrectSafeword = validateCorrectSafeword(errors, ESafeword.DELETE_ACCOUNT, safeword);
+            if (isCorrectPassword && isCorrectSafeword) {
+                await userModel.destroy();
+                deleted = true;
+                showLog(file, 'User successfully deleted', { id }, true);
+            };
         };
 
-        if (userModel !== null) {
-            console.log(`[UserService] User succefully loaded: { id: ${id} }`);
-            await userModel.destroy();
-        };
-        return { value, status, errors, message };
+        return { deleted };
     };
 };
 
