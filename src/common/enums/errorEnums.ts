@@ -11,6 +11,8 @@ export enum EErrorField {
     SAFEWORD = 'safeword',
     FINDED_TYPE = 'finded-type',
     FINDED_VALUE = 'finded-value',
+    FRIEND = 'friend',
+    BLOCK = 'block',
     RELATION = 'relation',
     PARTY = 'party',
     PARTY_NAME = 'party-name',
