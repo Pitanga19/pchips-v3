@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
-import { AuthRoutes, userTest, authTest } from '../src/auth/authIndex';
+import { AuthRoutes, authTest } from '../src/auth/authIndex';
 import { RelationRoutes, relationTest, blockTest } from '../src/relation/relationIndex';
 import { PartyRoutes, partyTest } from '../src/party/partyIndex';
 
@@ -49,7 +49,6 @@ initDatabase()  // Initialize database
             console.log(`[index.ts] Server is running on http://localhost:${PORT}\n`);
         });
 
-        await userTest();
         await authTest();
         await relationTest();
         await blockTest();
