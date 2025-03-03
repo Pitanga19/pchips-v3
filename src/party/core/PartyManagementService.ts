@@ -213,12 +213,11 @@ class PartyManagementService {
 
     public static async transferOwner(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageTarget> {
         const findData = { actorId, partyId, targetId };
-        let partyActorModel: TPartyUserModel = null;
-        let partyActorData: TPartyUserData = null;
-        let partyTargetModel: TPartyUserModel = null;
-        let partyTargetData: TPartyUserData = null;
 
-        const { actorModel, actorData, targetModel, targetData, partyModel, partyData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
+        const findResult = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData } = findResult;
+        let { partyActorModel, partyActorData, partyTargetModel, partyTargetData } = findResult;
+
         const updatesMakeOwner: TPartyUserUpdates = { isOwner: true };
         const updatesRemoveOwner: TPartyUserUpdates = { isOwner: false };
 
