@@ -2,6 +2,8 @@
 
 import {
     FriendService, BlockService, TRelationFriend, TRelationFriendList, TRelationBlock, TRelationBlockList, TRelationDelete,
+    TFriendData,
+    TFriendModel,
 } from '../relationIndex';
 import { TErrorList, showLog } from '../../common/commonIndex';
 import { EFriendStatus } from '../../../db/dbIndex';
@@ -10,10 +12,18 @@ const file = 'RelationService';
 
 class RelationService {
     public static async sendFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationFriend> {
-        const { friendModel, friendData } = await FriendService.create(errors, senderId, receiverId);
+        BlockService.validateExistence(errors, senderId, receiverId);
+        let friendModel: TFriendModel = null;
+        let friendData: TFriendData = null;
 
-        if (errors.length === 0 && friendModel && friendData) {
-            showLog(file, 'Friend request succesfully sended', friendData, true);
+        if (errors.length === 0) {
+            const createResult = await FriendService.create(errors, senderId, receiverId);
+            friendModel = createResult.friendModel;
+            friendData = createResult.friendData;
+
+            if (friendModel && friendData) {
+                showLog(file, 'Friend request succesfully sended', friendData, true);
+            };
         };
 
         return { friendModel, friendData };
@@ -31,11 +41,14 @@ class RelationService {
     };
     
     public static async acceptFriendRequest(errors: TErrorList, senderId: number, receiverId: number): Promise<TRelationFriend> {
-        const { friendModel, friendData } = await FriendService.get(errors, senderId, receiverId, EFriendStatus.PENDING, true);
+        const getFriendResult = await FriendService.get(errors, senderId, receiverId, EFriendStatus.PENDING, true);
+        const { friendModel } = getFriendResult;
+        let { friendData } = getFriendResult;
         const updates = { status: EFriendStatus.ACCEPTED };
 
         if (errors.length === 0 && friendModel && friendData) {
             await friendModel.update(updates);
+            friendData = friendModel.toJSON();
             showLog(file, 'Friend request succesfully accepted', friendData, true);
         };
 
@@ -65,9 +78,9 @@ class RelationService {
     };
 
     public static async blockUser(errors: TErrorList, blockerId: number, blockedId: number): Promise<TRelationBlock> {
-
-        const { friendModel } = await FriendService.get(errors, blockerId, blockedId, EFriendStatus.ACCEPTED, false);
-        if (friendModel) friendModel.destroy();
+        const findFriendData = { firstUserId: blockerId, secondUserId: blockedId };
+        const { friendModel } = await FriendService.findFriend(errors, findFriendData);
+        if (friendModel) await friendModel.destroy();
 
         const { blockModel, blockData } = await BlockService.create(errors, blockerId, blockedId);
 
