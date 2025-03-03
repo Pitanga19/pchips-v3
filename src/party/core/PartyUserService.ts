@@ -1,104 +1,149 @@
 // pchips-v3/src/party/core/PartyUserService.ts
 
-import {
-    TPartyUserListConditions, TPartyUserDeleteReturn, TPartyUserModelListReturn, TPartyUserModelReturn, TPartyUserServiceReturn, TPartyUserUpdates, TUserPartyModelListReturn, TUserPartyListConditions,
-} from '../partyIndex';
-import { EResponseMessage, EResponseStatus, TErrorList } from '../../common/commonIndex';
 import { UserModel, PartyModel, PartyUserModel } from '../../../db/dbIndex';
+import {
+    TPartyUserListConditions, TPartyUserDelete, TPartyUserModel, TPartyUserService, TPartyUserUpdates, TUserPartyListConditions, TPartyUserData, TPartyModelList, TPartyDataList, TUserParties, TPartyMembers, TPartyService, PartyService, TPartyData, TPartyModel,
+} from '../partyIndex';
+import {
+    addToResponseErrors, EErrorField, EErrorMessage, showLog, TErrorList,
+} from '../../common/commonIndex';
+import { TUserData, TUserDataList, TUserModel, TUserModelList, TUserService, UserService } from '../../auth/authIndex';
+
+const file = 'PartyUserService';
+const field = EErrorField.PARTY_USER;
 
 class PartyUserService {
-    public static async create(partyId: number, userId: number, isOwner: boolean = false): Promise<TPartyUserServiceReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.CREATED;
-        let message = EResponseMessage.CREATED;
+    private static async findPartyUser(partyId: number, userId: number): Promise<TPartyUserService> {
+        const partyUserModel: TPartyUserModel = await PartyUserModel.findOne({ where: { partyId, userId }});
+        const partyUserData: TPartyUserData = partyUserModel ? partyUserModel.toJSON() : null;
 
-        const partyUserModel: TPartyUserModelReturn = await PartyUserModel.create({ partyId, userId, isOwner, isAdmin: false });
-
-        if (!partyUserModel) {
-            console.log(`[PartyUserService] Error creating partyUser: { partyId: ${partyId} - userId: ${userId} }`);
-            status = EResponseStatus.INTERNAL_SERVER_ERROR;
-            message = EResponseMessage.INTERNAL_SERVER_ERROR;
-        } else {
-            console.log(`[PartyUserService] Successfully create partyUser: { partyId: ${partyId} - userId: ${userId} }`);
-        };
-
-        return { status, partyUserModel, errors, message };
+        return { partyUserModel, partyUserData };
     };
 
-    public static async get(partyId: number, userId: number): Promise<TPartyUserServiceReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
+    private static validateFindResult(errors: TErrorList, findResult: TPartyUserService, partyId: number, userId: number, shouldExist: boolean): void {
+        const { partyUserModel } = findResult;
 
-        const partyUserModel: TPartyUserModelReturn = await PartyUserModel.findOne({ where: { partyId, userId }});
-
-        if (!partyUserModel) {
-            console.log(`[PartyUserService] PartyUser not found: { partyId: ${partyId} - userId: ${userId} }`);
-            status = EResponseStatus.NOT_FOUND;
-            message = EResponseMessage.INVALID_DATA;
-        } else {
-            console.log(`[PartyUserService] Successfully get partyUser: { partyId: ${partyId} - userId: ${userId} }`);
+        if (shouldExist && !partyUserModel) {
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
+            showLog(file, 'PartyUser not found', { partyId, userId }, false);
+        } else if (!shouldExist && partyUserModel) {
+            addToResponseErrors(errors, field, EErrorMessage.ALREADY_EXIST);
+            showLog(file, 'PartyUser already exists', { partyId, userId }, false);
         };
-
-        return { status, partyUserModel, errors, message };
     };
 
-    public static async update(partyId: number, userId: number, updates: TPartyUserUpdates): Promise<TPartyUserServiceReturn> {
-        const { status, partyUserModel, errors, message } = await this.get(partyId, userId);
+    public static async find(errors: TErrorList, partyId: number, userId: number, shouldExist: boolean): Promise<TPartyUserService> {
+        const findResult = await this.findPartyUser(partyId, userId);
+        this.validateFindResult(errors, findResult, partyId, userId, shouldExist);
+
+        return findResult;
+    };
+
+    public static async create(errors: TErrorList, partyId: number, userId: number, isOwner: boolean = false): Promise<TPartyUserService> {
+        let { partyUserModel, partyUserData } = await this.find(errors, partyId, userId, false);
         
-        if (partyUserModel) {
+        if (errors.length === 0) {
+            partyUserModel = await PartyUserModel.create({ partyId, userId, isOwner });
+
+            if (partyUserModel) {
+                partyUserData = partyUserModel.toJSON();
+                showLog(file, 'PartyUser successfully created', partyUserData, true);
+            } else {
+                showLog(file, 'Error creating PartyUser', { partyId, userId }, false);
+                addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
+            };
+        };
+
+        return { partyUserModel, partyUserData };
+    };
+
+    public static async get(errors: TErrorList, partyId: number, userId: number): Promise<TPartyUserService> {
+        let { partyUserModel, partyUserData } = await this.find(errors, partyId, userId, true);
+        
+        if (errors.length === 0 && partyUserData) {
+            showLog(file, 'PartyUser successfully retrieved', partyUserData, true);
+        };
+
+        return { partyUserModel, partyUserData };
+    };
+
+    public static async update(errors: TErrorList, partyId: number, userId: number, updates: TPartyUserUpdates): Promise<TPartyUserService> {
+        const getPartyUserResult = await this.get(errors, partyId, userId);
+        const { partyUserModel } = getPartyUserResult;
+        let { partyUserData } = getPartyUserResult;
+
+        if (errors.length === 0 && partyUserModel && partyUserData) {
             await partyUserModel.update(updates);
-            console.log(`[PartyUserService] Successfully update partyUser: { partyId: ${partyId} - userId: ${userId} }`);
+            partyUserData = partyUserModel.toJSON();
+            showLog(file, 'PartyUser successfully updated', partyUserData, true);
         };
 
-        return { status, partyUserModel, errors, message };
+        return { partyUserModel, partyUserData };
     };
 
-    public static async delete(partyId: number, userId: number): Promise<TPartyUserDeleteReturn> {
-        const { status, partyUserModel, errors, message } = await this.get(partyId, userId);
-        let value: boolean = false;
+    public static async getUserParties(errors: TErrorList, conditions: TUserPartyListConditions): Promise<TUserParties> {
+        const { userId } = conditions;
+        let userModel: TUserModel = null;
+        let userData: TUserData = null;
+        let partyModelList: TPartyModelList = [];
+        let partyDataList: TPartyDataList = [];
         
-        if (partyUserModel) {
-            await partyUserModel.destroy();
-            value = true;
-            console.log(`[PartyUserService] Successfully delete partyUser: { partyId: ${partyId} - userId: ${userId} }`);
+        let userResult: TUserService = { userModel, userData };
+        if (userId) userResult = await UserService.getById(errors, userId);
+
+        if (errors.length === 0 && userResult.userModel && userResult.userData) {
+            const partyUserModelList = await PartyUserModel.findAll({
+                where: conditions,
+                include: [
+                    { model: PartyModel, as: 'party', required: false },
+                ],
+            });
+
+            partyModelList = partyUserModelList.map(pu => pu.dataValues.party);
+            partyDataList = partyModelList.map(p => p.toJSON());
         };
 
-        return { status, value, errors, message };
+        return { userModel, userData, partyModelList, partyDataList };
     };
 
-    public static async getUserParties(conditions: TUserPartyListConditions): Promise<TUserPartyModelListReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
+    public static async getPartyMembers(errors: TErrorList, conditions: TPartyUserListConditions): Promise<TPartyMembers> {
+        const { partyId } = conditions;
+        let partyModel: TPartyModel = null;
+        let partyData: TPartyData = null;
+        let userModelList: TUserModelList = [];
+        let userDataList: TUserDataList = [];
+        
+        let partyResult: TPartyService = { partyModel, partyData };
+        if (partyId) partyResult = await PartyService.get(errors, partyId);
 
-        const partyUserModelList = await PartyUserModel.findAll({
-            where: conditions,
-            include: [
-                { model: PartyModel, as: 'party', required: false },
-            ],
-        });
+        if (errors.length === 0 && partyResult.partyModel && partyResult.partyData) {
+            const partyUserModelList = await PartyUserModel.findAll({
+                where: conditions,
+                include: [
+                    { model: UserModel, as: 'user', required: false },
+                ],
+            });
 
-        const partyModelList = partyUserModelList.map(pu => pu.dataValues.party);
+            userModelList = partyUserModelList.map(pu => pu.dataValues.user);
+            userDataList = userModelList.map(u => u.toJSON());
+        };
 
-        return { status, partyModelList, errors, message }
+        return { partyModel, partyData, userModelList, userDataList };
     };
 
-    public static async getPartyUsers(conditions: TPartyUserListConditions): Promise<TPartyUserModelListReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
+    public static async delete(errors: TErrorList, partyId: number, userId: number): Promise<TPartyUserDelete> {
+        const getPartyUserResult = await this.get(errors, partyId, userId);
+        const { partyUserModel } = getPartyUserResult;
+        let { partyUserData } = getPartyUserResult;
+        let deleted = false;
 
-        const partyUserModelList = await PartyUserModel.findAll({
-            where: conditions,
-            include: [
-                { model: UserModel, as: 'user', required: false },
-            ],
-        });
+        if (errors.length === 0 && partyUserModel && partyUserData) {
+            await partyUserModel.destroy();
+            deleted = true;
+            showLog(file, 'PartyUser successfully deleted', partyUserData, true);
+        };
 
-        const userModelList = partyUserModelList.map(pu => pu.dataValues.user);
-
-        return { status, userModelList, errors, message }
+        return { deleted };
     };
 };
 
