@@ -12,9 +12,9 @@ class PartyService {
         const partyModel: TPartyModel = await PartyModel.findByPk(id);
         let partyData: TPartyData = null;
 
-        if (partyModel && !shouldExist) {
+        if (partyModel) {
             partyData = partyModel.toJSON();
-            showLog(file, 'Party already exists', partyData, false);
+            if (!shouldExist) showLog(file, 'Party already exists', partyData, false);
         } else if (shouldExist && !partyModel) {
             showLog(file, 'Party not found', { id }, false);
             addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
