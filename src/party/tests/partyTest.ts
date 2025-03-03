@@ -44,7 +44,7 @@ const partyTest = async () => {
     errors = showAndResetErrors(errors, file);
 
     // Transfer owner
-    console.log(`\n\n\n[${file}] Transferring owner ...`);
+    console.log(`\n\n\n[${file}] Transfering owner ...`);
     const transferOwner = await PartyManagementService.transferOwner(errors, usersIds[0], partyId, usersIds[1]);
     showLog(file, `Transfer owner to user 1 result`, transferOwner, true);
     errors = showAndResetErrors(errors, file);
@@ -63,8 +63,14 @@ const partyTest = async () => {
 
     // User leaves party
     console.log(`\n\n\n[${file}] User leaving party ...`);
-    const leaveParty = await PartyManagementService.leave(errors, usersIds[1], partyId);
-    showLog(file, `User 1 leaves party result`, leaveParty, true);
+    const userLeaveParty = await PartyManagementService.leave(errors, usersIds[0], partyId);
+    showLog(file, `User 1 leaves party result`, userLeaveParty, true);
+    errors = showAndResetErrors(errors, file);
+
+    // Owner leaves party
+    console.log(`\n\n\n[${file}] Owner leaving party ...`);
+    const ownerLeaveParty = await PartyManagementService.leave(errors, usersIds[1], partyId);
+    showLog(file, `User 1 leaves party result`, ownerLeaveParty, false);
     errors = showAndResetErrors(errors, file);
 
     // Get user all parties
