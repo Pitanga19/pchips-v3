@@ -94,7 +94,7 @@ PlayerModel.init({
     indexes: [
         {
             unique: true,
-            fields: ["userId", "partyId"],
+            fields: ["user_id", "party_id"],
             name: "unique_player_in_party",
         },
     ],
