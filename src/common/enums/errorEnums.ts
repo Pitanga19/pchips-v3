@@ -15,6 +15,8 @@ export enum EErrorField {
     BLOCK = 'block',
     RELATION = 'relation',
     PARTY = 'party',
+    ACTOR = 'actor',
+    TARGET = 'target',
     PARTY_NAME = 'party-name',
     PARTY_USER = 'party-user',
     PARTY_ACTOR = 'party-actor',

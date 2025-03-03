@@ -1,12 +1,8 @@
 // pchips-v3/src/party/utils/partyUtils.ts
 
-import {
-    PartyUserService, TPartyModelReturn, TPartyUserReturn, TUserPartyPermissions,
-} from '../partyIndex';
-import {
-    addToResponseErrors, TErrorList, EResponseMessage, EResponseStatus, EErrorField, EErrorMessage,
-} from '../../common/commonIndex';
-import { TUserModelReturn } from '../../auth/authIndex';
+import { TUserPartyPermissions } from '../partyIndex';
+import { addToResponseErrors, TErrorList, EErrorField, EErrorMessage } from '../../common/commonIndex';
+import { IPartyUser } from '../../../db/dbIndex';
 
 export const validatePartyName = (errors: TErrorList, partyName: string): void => {
     const field = EErrorField.PARTY_NAME;
@@ -21,28 +17,8 @@ export const validatePartyName = (errors: TErrorList, partyName: string): void =
     };
 };
 
-export const checkPermissions = async (partyId: number, userId: number): Promise<TUserPartyPermissions> => {
-    let isOwner: boolean = false;
-    let isAdmin: boolean = false;
-
-    const { partyUserModel } = await PartyUserService.get(partyId, userId);
-
-    if (partyUserModel) {
-        isOwner = partyUserModel.isOwner;
-        isAdmin = partyUserModel.isAdmin;
-    };
-
-    return { isOwner, isAdmin };
-};
-
-export const validateDifferentUsers = (firstUserId: number, secondUserId: number, errors: TErrorList) => {
-    let duStatusResult = null;
-    let duMessageResult = null;
-
+export const validateDifferentUsers = (errors: TErrorList, firstUserId: number, secondUserId: number): void => {
     if (firstUserId === secondUserId) {
-        duStatusResult = EResponseStatus.CONFLICT;
-        duMessageResult = EResponseMessage.CONFLICT;
-
         const actorField = EErrorField.PARTY_ACTOR;
         const actorMessage = EErrorMessage.SAME_USER;
         addToResponseErrors(errors, actorField, actorMessage);
@@ -51,95 +27,30 @@ export const validateDifferentUsers = (firstUserId: number, secondUserId: number
         const targetMessage = EErrorMessage.SAME_USER;
         addToResponseErrors(errors, targetField, targetMessage);
     };
-
-    return { duStatusResult, duMessageResult };
 };
 
-export const validateExistingParty = (partyModel: TPartyModelReturn, errors: TErrorList) => {
-    let epStatusResult = null;
-    let epMessageResult = null;
-    let epPartyResult = null;
+export const validateIsOwnerOrAdmin = (errors: TErrorList, data: IPartyUser): void => {
+    const { isOwner, isAdmin } = data;
 
-    if (!partyModel) {
-        epStatusResult = EResponseStatus.NOT_FOUND;
-        epMessageResult = EResponseMessage.NOT_FOUND;
-        const receivedField = EErrorField.PARTY;
-        const receivedMessage = EErrorMessage.NOT_FOUND;
-        addToResponseErrors(errors, receivedField, receivedMessage);
-    } else {
-        epPartyResult = partyModel.toJSON();
-    };
-
-    return { epStatusResult, epMessageResult, epPartyResult };
-};
-
-export const validateIsOwnerOrAdmin = (isOwner: boolean, isAdmin: boolean, errors: TErrorList) => {
-    let ooaStatusResult = null;
-    let ooaMessageResult = null;
-
-    if (!isOwner || !isAdmin) {
-        ooaStatusResult = EResponseStatus.UNAUTHORIZED;
-        ooaMessageResult = EResponseMessage.UNAUTHORIZED;
+    if (!(isOwner || isAdmin)) {
         const receivedField = EErrorField.PARTY_ACTOR;
         const receivedMessage = EErrorMessage.INSUFFICIENT_PERMISSIONS;
         addToResponseErrors(errors, receivedField, receivedMessage);
     };
-
-    return { ooaStatusResult, ooaMessageResult };
 };
 
-export const validateIsOwner = (isOwner: boolean, expected: boolean, errors: TErrorList) => {
-    let isoStatusResult = null;
-    let isoMessageResult = null;
+export const validateIsOwner = (errors: TErrorList, data: Partial<IPartyUser>, expected: boolean): void => {
+    const { isOwner } = data;
 
     if (expected === true && !isOwner) {
-        isoStatusResult = EResponseStatus.UNAUTHORIZED;
-        isoMessageResult = EResponseMessage.UNAUTHORIZED;
         const receivedField = EErrorField.PARTY_ACTOR;
         const receivedMessage = EErrorMessage.INSUFFICIENT_PERMISSIONS;
         addToResponseErrors(errors, receivedField, receivedMessage);
     };
 
     if (expected === false && isOwner) {
-        isoStatusResult = EResponseStatus.UNAUTHORIZED;
-        isoMessageResult = EResponseMessage.UNAUTHORIZED;
         const receivedField = EErrorField.PARTY_ACTOR;
         const receivedMessage = EErrorMessage.IS_OWNER;
         addToResponseErrors(errors, receivedField, receivedMessage);
     };
-
-    return { isoStatusResult, isoMessageResult };
-};
-
-export const validateExistingPartyUser = (partyUserModel: TPartyUserReturn, errors: TErrorList) => {
-    let epuStatusResult = null;
-    let epuMessageResult = null;
-
-    if (partyUserModel) {
-        epuStatusResult = EResponseStatus.CONFLICT;
-        epuMessageResult = EResponseMessage.CONFLICT;
-        const receivedField = EErrorField.PARTY_USER;
-        const receivedMessage = EErrorMessage.ALREADY_EXISTS;
-        addToResponseErrors(errors, receivedField, receivedMessage);
-    };
-
-    return { epuStatusResult, epuMessageResult };
-};
-
-export const validateExistingUser = (userModel: TUserModelReturn, errors: TErrorList) => {
-    let euStatusResult = null;
-    let euMessageResult = null;
-    let euUserResult = null;
-
-    if (!userModel) {
-        euStatusResult = EResponseStatus.CONFLICT;
-        euMessageResult = EResponseMessage.CONFLICT;
-        const receivedField = EErrorField.PARTY_USER;
-        const receivedMessage = EErrorMessage.NOT_FOUND;
-        addToResponseErrors(errors, receivedField, receivedMessage);
-    } else {
-        euUserResult = userModel.toJSON();
-    };
-
-    return { euStatusResult, euMessageResult, euUserResult };
 };
