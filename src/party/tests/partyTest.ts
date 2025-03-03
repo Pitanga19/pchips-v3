@@ -1,36 +1,95 @@
-// pchips-v3/src/party/test/partyTest.ts
+import { showLog, TErrorList } from '../../common/commonIndex';
+import PartyManagementService from '../core/PartyManagementService';
 
-import { PartyService, PartyUserService } from '../partyIndex';
+const file = 'partyManagementTest';
 
-export const partyTest = async () => {
-    console.log('\n\n\n[partyTest.ts] Starting tests ...');
-    const users = [2, 3, 4, 5, 6];
+const partyTest = async () => {
+    console.log(`\n\n\n\n\n[${file}] Starting tests ...`);
     
-    console.log('\n\n\n[partyTest.ts] Creating test party ...');
-    const { partyModel } = await PartyService.create('test');
-    await PartyService.create('other party');
-    await PartyService.create('some party');
-    console.log(`Party succesfully created: ${JSON.stringify(partyModel)}`);
-    
-    console.log('\n\n\n[partyTest.ts] Creating partyUsers ...');
-    for (const u of users) {
-        const { partyUserModel } = await PartyUserService.create(1, u);
-        await PartyUserService.create(2, u);
-        await PartyUserService.create(3, u);
-        console.log(`[partyTest.ts] PartyUser succesfully created: ${JSON.stringify(partyUserModel)}\n`);
-    };
-    
-    console.log('\n\n\n[partyTest.ts] Listing user 2 parties ...');
-    const conditionsUserParties = { userId: 2, isOwner: false, isAdmin: false };
-    const { partyModelList } = await PartyUserService.getUserParties(conditionsUserParties);
-    console.log(`[partyTest.ts] Party list for user 2: ${JSON.stringify(partyModelList)}`)
-    
-    console.log('\n\n\n[partyTest.ts] Listing test party users ...');
-    const conditionsPartyUsers = { partyId: 1, isOwner: false, isAdmin: false };
-    const { userModelList } = await PartyUserService.getPartyUsers(conditionsPartyUsers);
-    console.log(`[partyTest.ts] User list for party test: ${JSON.stringify(userModelList)}`)
+    // Users id data
+    const usersIds = [1, 2, 3, 4, 5];
 
-    console.log('\n\n\n[partyTest.ts] Test finished.');
+    // Party id data
+    const partyId = 1;
+    
+    // Global errors test
+    const errors: TErrorList = [];
+
+    // Create party
+    console.log(`\n\n\n[${file}] Creating party ...`);
+    const createParty = await PartyManagementService.create(errors, usersIds[0], 'Party 1');
+    showLog(file, `Create party result`, createParty, true);
+
+    // Add users to party
+    console.log(`\n\n\n[${file}] Adding users to party ...`);
+    const addUser1 = await PartyManagementService.addUser(errors, usersIds[0], partyId, usersIds[1]);
+    showLog(file, `Add user 1 to party result`, addUser1, true);
+
+    const addUser2 = await PartyManagementService.addUser(errors, usersIds[0], partyId, usersIds[2]);
+    showLog(file, `Add user 2 to party result`, addUser2, true);
+
+    // Assign admin
+    console.log(`\n\n\n[${file}] Assigning admin ...`);
+    const assignAdmin = await PartyManagementService.assignAdmin(errors, usersIds[0], partyId, usersIds[1]);
+    showLog(file, `Assign admin to user 1 result`, assignAdmin, true);
+
+    // Remove admin
+    console.log(`\n\n\n[${file}] Removing admin ...`);
+    const removeAdmin = await PartyManagementService.removeAdmin(errors, usersIds[0], partyId, usersIds[1]);
+    showLog(file, `Remove admin from user 1 result`, removeAdmin, true);
+
+    // Transfer owner
+    console.log(`\n\n\n[${file}] Transferring owner ...`);
+    const transferOwner = await PartyManagementService.transferOwner(errors, usersIds[0], partyId, usersIds[1]);
+    showLog(file, `Transfer owner to user 1 result`, transferOwner, true);
+
+    // Rename party
+    console.log(`\n\n\n[${file}] Renaming party ...`);
+    const renameParty = await PartyManagementService.update(errors, usersIds[1], partyId, { name: 'New Party Name' });
+    showLog(file, `Rename party result`, renameParty, true);
+
+    // Remove user from party
+    console.log(`\n\n\n[${file}] Removing user from party ...`);
+    const removeUser = await PartyManagementService.removeUser(errors, usersIds[1], partyId, usersIds[2]);
+    showLog(file, `Remove user 2 from party result`, removeUser, true);
+
+    // User leaves party
+    console.log(`\n\n\n[${file}] User leaving party ...`);
+    const leaveParty = await PartyManagementService.leave(errors, usersIds[1], partyId);
+    showLog(file, `User 1 leaves party result`, leaveParty, true);
+
+    // Get user all parties
+    console.log(`\n\n\n[${file}] Getting user all parties ...`);
+    const userAllParties = await PartyManagementService.getUserAllParties(errors, usersIds[0]);
+    showLog(file, `User 0 all parties result`, userAllParties, true);
+
+    // Get user admin parties
+    console.log(`\n\n\n[${file}] Getting user admin parties ...`);
+    const userAdminParties = await PartyManagementService.getUserAdminParties(errors, usersIds[0]);
+    showLog(file, `User 0 admin parties result`, userAdminParties, true);
+
+    // Get user owner parties
+    console.log(`\n\n\n[${file}] Getting user owner parties ...`);
+    const userOwnerParties = await PartyManagementService.getUserOwnerParties(errors, usersIds[0]);
+    showLog(file, `User 0 owner parties result`, userOwnerParties, true);
+
+    // Get party members
+    console.log(`\n\n\n[${file}] Getting party members ...`);
+    const partyMembers = await PartyManagementService.getPartyMembers(errors, partyId);
+    showLog(file, `Party members result`, partyMembers, true);
+
+    // Get party admins
+    console.log(`\n\n\n[${file}] Getting party admins ...`);
+    const partyAdmins = await PartyManagementService.getPartyAdmins(errors, partyId);
+    showLog(file, `Party admins result`, partyAdmins, true);
+
+    // Get party owners
+    console.log(`\n\n\n[${file}] Getting party owners ...`);
+    const partyOwners = await PartyManagementService.getPartyOwners(errors, partyId);
+    showLog(file, `Party owners result`, partyOwners, true);
+
+    console.log(`\n\n\n[${file}] Tests finished.`);
 };
 
+// Llamada a la función
 export default partyTest;
