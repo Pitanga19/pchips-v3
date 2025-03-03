@@ -1,485 +1,360 @@
 // pchips-v3/src/party/core/PartyManagementService.ts
 
 import {
-    PartyService, PartyUserService, validatePartyName, checkPermissions,validateDifferentUsers, validateExistingParty, validateIsOwnerOrAdmin, validateIsOwner, validateExistingPartyUser, validateExistingUser, TPartyReturn, TUserReturn, TPartyUserReturn, TPartyUserUpdates, TPartyList, TUserList, TPartyManagementReturn, TPartyUserDeleteManagementReturn, TUserPartyListReturn, TPartyUserListReturn,
+    PartyService, PartyUserService, validatePartyName, validateIsOwnerOrAdmin, validateIsOwner, TPartyUserUpdates, TPartyManagement, TPartyModel, TPartyData, TPartyUserModel, TPartyUserData, TPartyManageTarget, TPartyManageDelete, TPartyManagementFindData, TPartyManageLeave, TUserParties, TPartyModelList, TPartyDataList, TPartyMembers, EPartyManagementFindType,
+    TPartyUpdates,
 } from '../partyIndex';
-import { TErrorList, EResponseStatus, EResponseMessage } from '../../common/commonIndex';
-import { UserService } from '../../auth/authIndex';
+import { TErrorList, addToResponseErrors, EErrorField, EErrorMessage } from '../../common/commonIndex';
+import { TUserData, TUserDataList, TUserModel, TUserModelList, UserService } from '../../auth/authIndex';
 
 class PartyManagementService {
-    public static async create(partyName: string, userId: number): Promise<TPartyManagementReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.CREATED;
-        let message = EResponseMessage.CREATED;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
+    private static async find(errors: TErrorList, data: TPartyManagementFindData, findType: EPartyManagementFindType, shouldExistPartyTarget: boolean = false) {
+        const { actorId, targetId, partyId } = data;
+
+        let actorModel: TUserModel = null;
+        let actorData: TUserData = null;
+        let targetModel: TUserModel = null;
+        let targetData: TUserData = null;
+        let partyModel: TPartyModel = null;
+        let partyData: TPartyData = null;
+        let partyActorModel: TPartyUserModel = null;
+        let partyActorData: TPartyUserData = null;
+        let partyTargetModel: TPartyUserModel = null;
+        let partyTargetData: TPartyUserData = null;
+
+        if (actorId) {
+            const getActorResult = await UserService.getById(errors, actorId);
+            actorModel = getActorResult.userModel;
+            actorData = getActorResult.userData;
+        };
+
+        if (findType === EPartyManagementFindType.FIND_PARTY || findType === EPartyManagementFindType.FIND_TARGET) {
+            if (partyId) {
+                const getPartyResult = await PartyService.get(errors, partyId);
+                partyModel = getPartyResult.partyModel;
+                partyData = getPartyResult.partyData;
+            };
+    
+            if (actorId && partyId && actorModel && partyModel) {
+                const getPartyActorResult = await PartyUserService.get(errors, partyId, actorId);
+                partyActorData = getPartyActorResult.partyUserData;
+                partyActorModel = getPartyActorResult.partyUserModel;
+            };
+        };
+
+        if (findType === EPartyManagementFindType.FIND_TARGET) {
+            if (targetId) {
+                const getTargetResult = await UserService.getById(errors, targetId);
+                targetModel = getTargetResult.userModel;
+                targetData = getTargetResult.userData;
+            };
+    
+            if (targetId && partyId && targetModel && partyModel && shouldExistPartyTarget) {
+                const getPartyTargetResult = await PartyUserService.get(errors, partyId, targetId);
+                partyTargetData = getPartyTargetResult.partyUserData;
+                partyTargetModel = getPartyTargetResult.partyUserModel;
+            };
+        };
+
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, partyTargetData, partyTargetModel };
+    };
+
+    public static async create(errors: TErrorList, actorId: number, partyName: string): Promise<TPartyManagement> {
+        const findData = { actorId };
+        let partyModel: TPartyModel = null;
+        let partyData: TPartyData = null;
+        let partyActorModel: TPartyUserModel = null;
+        let partyActorData: TPartyUserData = null;
 
         validatePartyName(errors, partyName);
+        const { actorModel, actorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_ACTOR);
 
-        if (errors.length === 0) {
-            const { partyModel } = await PartyService.create(partyName);
-            if (!partyModel) {
-                console.log(`Error creating party: { party: ${partyName} - userId: ${userId} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                party = partyModel.toJSON();
-                const partyId = party.id;
-                
-                const { partyUserModel } = await PartyUserService.create(partyId, userId, true);
-                if (!partyUserModel) {
-                    console.log(`Error user creating party-user: { partyId: ${partyId} - userId: ${userId} }`);
-                    status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                    message = EResponseMessage.INTERNAL_SERVER_ERROR;
-                } else {
-                    partyUser = partyUserModel.toJSON();
-                };
-            };
+        if (errors.length === 0 && actorModel) {
+            const createPartyResult = await PartyService.create(errors, partyName);
+            partyModel = createPartyResult.partyModel;
+            partyData = createPartyResult.partyData;
         };
 
-        return { status, party, partyUser, errors, message };
+        if (errors.length === 0 && partyModel && actorModel) {
+            const createPartyUserResult = await PartyUserService.create(errors, partyModel.id, actorModel.id, true);
+            partyActorModel = createPartyUserResult.partyUserModel;
+            partyActorData = createPartyUserResult.partyUserData;
+        };
+
+        return { actorModel, actorData, partyModel, partyData, partyActorModel, partyActorData };
     };
 
-    public static async addUser(actorId: number, partyId: number, targetId: number): Promise<TPartyManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
+    public static async addUser(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageTarget> {
+        const findData = { actorId, partyId, targetId };
+        let partyTargetModel: TPartyUserModel = null;
+        let partyTargetData: TPartyUserData = null;
 
-        const { duStatusResult, duMessageResult } = validateDifferentUsers(actorId, targetId, errors);
-        if (duStatusResult !== null && duMessageResult !== null) {
-            status = duStatusResult;
-            message = duMessageResult;
-        };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET);
+
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!targetModel) addToResponseErrors(errors, EErrorField.TARGET, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
         } else {
-            party = epPartyResult;
-        };
-        
-        const { partyUserModel } = await PartyUserService.get(partyId, targetId);
-        const { epuStatusResult, epuMessageResult } = validateExistingPartyUser(partyUserModel, errors);
-        if (epuStatusResult !== null && epuMessageResult !== null) {
-            status = epuStatusResult;
-            message = epuMessageResult;
-        };
-
-        const { isOwner, isAdmin } = await checkPermissions(partyId, actorId);
-        const { ooaStatusResult, ooaMessageResult } = validateIsOwnerOrAdmin(isOwner, isAdmin, errors);
-        if (ooaStatusResult !== null && ooaMessageResult !== null) {
-            status = ooaStatusResult;
-            message = ooaMessageResult;
+            validateIsOwnerOrAdmin(errors, partyActorData);
         };
 
         if (errors.length === 0) {
-            const { partyUserModel } = await PartyUserService.create(partyId, targetId);
-
-            if (!partyUserModel) {
-                console.log(`Error adding user to party: { partyId: ${partyId} - userId: ${targetId} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                partyUser = partyUserModel.toJSON();
-            };
+            const createPartyTargetResult = await PartyUserService.create(errors, partyId, targetId);
+            partyTargetModel = createPartyTargetResult.partyUserModel;
+            partyTargetData = createPartyTargetResult.partyUserData;
         };
 
-        return { status, party, partyUser, errors, message };
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, partyTargetModel, partyTargetData };
     };
 
-    public static async removeUser(actorId: number, partyId: number, targetId: number): Promise<TPartyUserDeleteManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let value: boolean = false;
+    public static async removeUser(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageDelete> {
+        const findData = { actorId, partyId, targetId };
+        let deleted: boolean = false;
 
-        const { duStatusResult, duMessageResult } = validateDifferentUsers(actorId, targetId, errors);
-        if (duStatusResult !== null && duMessageResult !== null) {
-            status = duStatusResult;
-            message = duMessageResult;
-        };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
+
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!targetModel) addToResponseErrors(errors, EErrorField.TARGET, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
         } else {
-            party = epPartyResult;
-        };
-
-        const { isOwner, isAdmin } = await checkPermissions(partyId, actorId);
-        const { ooaStatusResult, ooaMessageResult } = validateIsOwnerOrAdmin(isOwner, isAdmin, errors);
-        if (ooaStatusResult !== null && ooaMessageResult !== null) {
-            status = ooaStatusResult;
-            message = ooaMessageResult;
+            validateIsOwnerOrAdmin(errors, partyActorData);
         };
 
         if (errors.length === 0) {
-            const deletePartyUserResult = await PartyUserService.delete(partyId, targetId);
-            status = deletePartyUserResult.status;
-            value = deletePartyUserResult.value;
-            message = deletePartyUserResult.message;
-            errors.push(...deletePartyUserResult.errors);
+            const deleteTargetResult = await PartyUserService.delete(errors, partyId, targetId);
+            deleted = deleteTargetResult.deleted;
         };
 
-        return { status, party, value, errors, message };
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, deleted };
     };
 
-    public static async leave(actorId: number, partyId: number): Promise<TPartyUserDeleteManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let value: boolean = false;
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+    public static async leave(errors: TErrorList, actorId: number, partyId: number): Promise<TPartyManageLeave> {
+        const findData = { actorId, partyId };
+        let deleted: boolean = false;
+
+        const { actorModel, actorData, partyModel, partyData, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET);
+
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
         } else {
-            party = epPartyResult;
-        };
-
-        const { isOwner } = await checkPermissions(partyId, actorId);
-        const { isoStatusResult, isoMessageResult } = validateIsOwner(isOwner, false, errors);
-        if (isoStatusResult !== null && isoMessageResult !== null) {
-            status = isoStatusResult;
-            message = isoMessageResult;
+            validateIsOwner(errors, partyActorData, false);
         };
 
         if (errors.length === 0) {
-            const deletePartyUserResult = await PartyUserService.delete(partyId, actorId);
-            status = deletePartyUserResult.status;
-            value = deletePartyUserResult.value;
-            message = deletePartyUserResult.message;
-            errors.push(...deletePartyUserResult.errors);
+            const deleteActorResult = await PartyUserService.delete(errors, partyId, actorId);
+            deleted = deleteActorResult.deleted;
         };
 
-        return { status, party, value, errors, message };
+        return { actorModel, actorData, partyModel, partyData, deleted };
     };
 
-    public static async assignAdmin(actorId: number, partyId: number, targetId: number): Promise<TPartyManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
+    public static async assignAdmin(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageTarget> {
+        const findData = { actorId, partyId, targetId };
+        let partyTargetModel: TPartyUserModel = null;
+        let partyTargetData: TPartyUserData = null;
+
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
         const updates: TPartyUserUpdates = { isAdmin: true };
 
-        const { duStatusResult, duMessageResult } = validateDifferentUsers(actorId, targetId, errors);
-        if (duStatusResult !== null && duMessageResult !== null) {
-            status = duStatusResult;
-            message = duMessageResult;
-        };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
-        } else {
-            party = epPartyResult;
-        };
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!targetModel) addToResponseErrors(errors, EErrorField.TARGET, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
 
-        const { isOwner } = await checkPermissions(partyId, actorId);
-        const { isoStatusResult, isoMessageResult } = validateIsOwner(isOwner, true, errors);
-        if (isoStatusResult !== null && isoMessageResult !== null) {
-            status = isoStatusResult;
-            message = isoMessageResult;
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
+        } else {
+            validateIsOwner(errors, partyActorData, true);
         };
 
         if (errors.length === 0) {
-            const { partyUserModel } = await PartyUserService.update(partyId, targetId, updates);
-
-            if (!partyUserModel) {
-                console.log(`Error assigning admin: { partyId: ${partyId} - userId: ${targetId} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                partyUser = partyUserModel.toJSON();
-            };
+            const updateTargetResult = await PartyUserService.update(errors, partyId, targetId, updates);
+            partyTargetModel = updateTargetResult.partyUserModel;
+            partyTargetData = updateTargetResult.partyUserData;
         };
 
-        return { status, party, partyUser, errors, message };
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, partyTargetModel, partyTargetData };
     };
 
-    public static async removeAdmin(actorId: number, partyId: number, targetId: number): Promise<TPartyManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
+    public static async removeAdmin(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageTarget> {
+        const findData = { actorId, partyId, targetId };
+        let partyTargetModel: TPartyUserModel = null;
+        let partyTargetData: TPartyUserData = null;
+
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
         const updates: TPartyUserUpdates = { isAdmin: false };
 
-        const { duStatusResult, duMessageResult } = validateDifferentUsers(actorId, targetId, errors);
-        if (duStatusResult !== null && duMessageResult !== null) {
-            status = duStatusResult;
-            message = duMessageResult;
-        };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!targetModel) addToResponseErrors(errors, EErrorField.TARGET, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
         } else {
-            party = epPartyResult;
-        };
-
-        const { isOwner } = await checkPermissions(partyId, actorId);
-        const { isoStatusResult, isoMessageResult } = validateIsOwner(isOwner, true, errors);
-        if (isoStatusResult !== null && isoMessageResult !== null) {
-            status = isoStatusResult;
-            message = isoMessageResult;
+            validateIsOwner(errors, partyActorData, true);
         };
 
         if (errors.length === 0) {
-            const { partyUserModel } = await PartyUserService.update(partyId, targetId, updates);
-
-            if (!partyUserModel) {
-                console.log(`Error assigning admin: { partyId: ${partyId} - userId: ${targetId} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                partyUser = partyUserModel.toJSON();
-            };
+            const updateTargetResult = await PartyUserService.update(errors, partyId, targetId, updates);
+            partyTargetModel = updateTargetResult.partyUserModel;
+            partyTargetData = updateTargetResult.partyUserData;
         };
 
-        return { status, party, partyUser, errors, message };
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, partyTargetModel, partyTargetData };
     };
 
-    public static async transferOwner(actorId: number, partyId: number, targetId: number): Promise<TPartyManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
-        const updateMakeOwner: TPartyUserUpdates = { isOwner: true };
-        const updateRemoveOwner: TPartyUserUpdates = { isOwner: false };
+    public static async transferOwner(errors: TErrorList, actorId: number, partyId: number, targetId: number): Promise<TPartyManageTarget> {
+        const findData = { actorId, partyId, targetId };
+        let partyActorModel: TPartyUserModel = null;
+        let partyActorData: TPartyUserData = null;
+        let partyTargetModel: TPartyUserModel = null;
+        let partyTargetData: TPartyUserData = null;
 
-        const { duStatusResult, duMessageResult } = validateDifferentUsers(actorId, targetId, errors);
-        if (duStatusResult !== null && duMessageResult !== null) {
-            status = duStatusResult;
-            message = duMessageResult;
-        };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+        const { actorModel, actorData, targetModel, targetData, partyModel, partyData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET, true);
+        const updatesMakeOwner: TPartyUserUpdates = { isOwner: true };
+        const updatesRemoveOwner: TPartyUserUpdates = { isOwner: false };
+
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!targetModel) addToResponseErrors(errors, EErrorField.TARGET, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
         } else {
-            party = epPartyResult;
-        };
-
-        const { isOwner } = await checkPermissions(partyId, actorId);
-        const { isoStatusResult, isoMessageResult } = validateIsOwner(isOwner, true, errors);
-        if (isoStatusResult !== null && isoMessageResult !== null) {
-            status = isoStatusResult;
-            message = isoMessageResult;
+            validateIsOwner(errors, partyActorData, true);
         };
 
         if (errors.length === 0) {
-            const addOwnerResult = await PartyUserService.update(partyId, targetId, updateMakeOwner);
-            const removeOwnerResult = await PartyUserService.update(partyId, actorId, updateRemoveOwner);
-
-            if (!addOwnerResult.partyUserModel || !removeOwnerResult.partyUserModel) {
-                console.log(`Error transfering owner: { partyId: ${partyId} - userId: ${targetId} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                partyUser = addOwnerResult.partyUserModel.toJSON();
-            };
+            const updateTargetResult = await PartyUserService.update(errors, partyId, targetId, updatesMakeOwner);
+            partyTargetModel = updateTargetResult.partyUserModel;
+            partyTargetData = updateTargetResult.partyUserData;
+            const updateActorResult = await PartyUserService.update(errors, partyId, actorId, updatesRemoveOwner);
+            partyActorModel = updateActorResult.partyUserModel;
+            partyActorData = updateActorResult.partyUserData;
         };
 
-        return { status, party, partyUser, errors, message };
+        return { actorModel, actorData, targetModel, targetData, partyModel, partyData, partyActorModel, partyActorData, partyTargetModel, partyTargetData };
     };
 
-    public static async rename(actorId: number, partyId: number, newName: string): Promise<TPartyManagementReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let partyUser: TPartyUserReturn = null;
-        
-        const { epStatusResult, epMessageResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
+    public static async update(errors: TErrorList, actorId: number, partyId: number, updates: TPartyUpdates): Promise<TPartyManagement> {
+        const findData = { actorId, partyId };
+        let partyData: TPartyData = null;
+
+        const { actorModel, actorData, partyModel, partyActorModel, partyActorData } = await this.find(errors, findData, EPartyManagementFindType.FIND_TARGET);
+
+        if (!actorModel) addToResponseErrors(errors, EErrorField.ACTOR, EErrorMessage.NOT_FOUND);
+        if (!partyModel) addToResponseErrors(errors, EErrorField.PARTY, EErrorMessage.NOT_FOUND);
+
+        if (!partyActorData) {
+            addToResponseErrors(errors, EErrorField.PARTY_ACTOR, EErrorMessage.NOT_FOUND);
+        } else {
+            validateIsOwnerOrAdmin(errors, partyActorData);
         };
 
-        const { partyUserModel } = await PartyUserService.get(partyId, actorId);
-        const { epuStatusResult, epuMessageResult } = validateExistingPartyUser(partyUserModel, errors);
-        if (epuStatusResult !== null && epuMessageResult !== null) {
-            status = epuStatusResult;
-            message = epuMessageResult;
-        } else if (partyUserModel) {
-            partyUser = partyUserModel.toJSON();
-            const { isOwner, isAdmin } = partyUserModel;
-            const { ooaStatusResult, ooaMessageResult } = validateIsOwnerOrAdmin(isOwner, isAdmin, errors);
-            if (ooaStatusResult !== null && ooaMessageResult !== null) {
-                status = ooaStatusResult;
-                message = ooaMessageResult;
-            };
+        if (errors.length === 0 && partyModel) {
+            await partyModel.update(updates);
+            partyData = partyModel.toJSON();
         };
 
-        if (errors.length === 0) {
-            if (!partyModel) {
-                console.log(`Error renaming party: { partyId: ${partyId} - newName: ${newName} }`);
-                status = EResponseStatus.INTERNAL_SERVER_ERROR;
-                message = EResponseMessage.INTERNAL_SERVER_ERROR;
-            } else {
-                await partyModel.update({ name: newName });
-                party = partyModel.toJSON();
-            };
-        };
-
-        return { status, party, partyUser, errors, message };
+        return { actorModel, actorData, partyModel, partyData, partyActorModel, partyActorData };
     };
 
-    public static async getUserAllParties(userId: number): Promise<TUserPartyListReturn> {
-        const getUserResult = await UserService.getById(userId);
-        const { errors } = getUserResult;
-        let { status, userModel, message } = getUserResult;
-        let user: TUserReturn = null;
-        let partyList: TPartyList = [];
+    public static async getUserAllParties(errors: TErrorList, userId: number): Promise<TUserParties> {
+        const { userModel, userData } = await UserService.getById(errors, userId);
         const conditions = { userId };
-
-        const { euStatusResult, euMessageResult, euUserResult } = validateExistingUser(userModel, errors);
-        if (euStatusResult !== null && euMessageResult !== null) {
-            status = euStatusResult;
-            message = euMessageResult;
-        } else {
-            user = euUserResult;
-        };
+        let partyModelList: TPartyModelList = [];
+        let partyDataList: TPartyDataList = [];
 
         if (errors.length === 0) {
-            const { partyModelList } = await PartyUserService.getUserParties(conditions);
-            partyList = partyModelList.map(p => p.toJSON());
+            const getPartiesResult = await PartyUserService.getUserParties(errors, conditions);
+            partyModelList = getPartiesResult.partyModelList;
+            partyDataList = getPartiesResult.partyDataList;
         };
 
-        return { status, user, partyList, errors, message };
+        return { userModel, userData, partyModelList, partyDataList };
     };
 
-    public static async getUserAdminParties(userId: number): Promise<TUserPartyListReturn> {
-        const getUserResult = await UserService.getById(userId);
-        const { errors } = getUserResult;
-        let { status, userModel, message } = getUserResult;
-        let user: TUserReturn = null;
-        let partyList: TPartyList = [];
+    public static async getUserAdminParties(errors: TErrorList, userId: number): Promise<TUserParties> {
+        const { userModel, userData } = await UserService.getById(errors, userId);
         const conditions = { userId, isAdmin: true };
-
-        const { euStatusResult, euMessageResult, euUserResult } = validateExistingUser(userModel, errors);
-        if (euStatusResult !== null && euMessageResult !== null) {
-            status = euStatusResult;
-            message = euMessageResult;
-        } else {
-            user = euUserResult;
-        };
+        let partyModelList: TPartyModelList = [];
+        let partyDataList: TPartyDataList = [];
 
         if (errors.length === 0) {
-            const { partyModelList } = await PartyUserService.getUserParties(conditions);
-            partyList = partyModelList.map(p => p.toJSON());
+            const getPartiesResult = await PartyUserService.getUserParties(errors, conditions);
+            partyModelList = getPartiesResult.partyModelList;
+            partyDataList = getPartiesResult.partyDataList;
         };
 
-        return { status, user, partyList, errors, message };
+        return { userModel, userData, partyModelList, partyDataList };
     };
 
-    public static async getUserOwnerParties(userId: number): Promise<TUserPartyListReturn> {
-        const getUserResult = await UserService.getById(userId);
-        const { errors } = getUserResult;
-        let { status, userModel, message } = getUserResult;
-        let user: TUserReturn = null;
-        let partyList: TPartyList = [];
+    public static async getUserOwnerParties(errors: TErrorList, userId: number): Promise<TUserParties> {
+        const { userModel, userData } = await UserService.getById(errors, userId);
         const conditions = { userId, isOwner: true };
-
-        const { euStatusResult, euMessageResult, euUserResult } = validateExistingUser(userModel, errors);
-        if (euStatusResult !== null && euMessageResult !== null) {
-            status = euStatusResult;
-            message = euMessageResult;
-        } else {
-            user = euUserResult;
-        };
+        let partyModelList: TPartyModelList = [];
+        let partyDataList: TPartyDataList = [];
 
         if (errors.length === 0) {
-            const { partyModelList } = await PartyUserService.getUserParties(conditions);
-            partyList = partyModelList.map(p => p.toJSON());
+            const getPartiesResult = await PartyUserService.getUserParties(errors, conditions);
+            partyModelList = getPartiesResult.partyModelList;
+            partyDataList = getPartiesResult.partyDataList;
         };
 
-        return { status, user, partyList, errors, message };
+        return { userModel, userData, partyModelList, partyDataList };
     };
 
-    public static async getPartyMembers(partyId: number): Promise<TPartyUserListReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let userList: TUserList = [];
+    public static async getPartyMembers(errors: TErrorList, partyId: number): Promise<TPartyMembers> {
+        const { partyModel, partyData } = await PartyService.get(errors, partyId);
         const conditions = { partyId };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
-        } else {
-            party = epPartyResult;
-        };
+        let userModelList: TUserModelList = [];
+        let userDataList: TUserDataList = [];
 
         if (errors.length === 0) {
-            const { userModelList } = await PartyUserService.getPartyUsers(conditions);
-            userList = userModelList.map(u => u.toJSON());
+            const getMembersResult = await PartyUserService.getPartyMembers(errors, conditions);
+            userModelList = getMembersResult.userModelList;
+            userDataList = getMembersResult.userDataList;
         };
 
-        return { status, party, userList, errors, message };
+        return { partyModel, partyData, userModelList, userDataList };
     };
 
-    public static async getPartyAdmins(partyId: number): Promise<TPartyUserListReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let userList: TUserList = [];
+    public static async getPartyAdmins(errors: TErrorList, partyId: number): Promise<TPartyMembers> {
+        const { partyModel, partyData } = await PartyService.get(errors, partyId);
         const conditions = { partyId, isAdmin: true };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
-        } else {
-            party = epPartyResult;
-        };
+        let userModelList: TUserModelList = [];
+        let userDataList: TUserDataList = [];
 
         if (errors.length === 0) {
-            const { userModelList } = await PartyUserService.getPartyUsers(conditions);
-            userList = userModelList.map(u => u.toJSON());
+            const getMembersResult = await PartyUserService.getPartyMembers(errors, conditions);
+            userModelList = getMembersResult.userModelList;
+            userDataList = getMembersResult.userDataList;
         };
 
-        return { status, party, userList, errors, message };
+        return { partyModel, partyData, userModelList, userDataList };
     };
 
-    public static async getPartyOwners(partyId: number): Promise<TPartyUserListReturn> {
-        const getPartyResult = await PartyService.get(partyId);
-        const { errors } = getPartyResult;
-        let { status, partyModel, message } = getPartyResult;
-        let party: TPartyReturn = null;
-        let userList: TUserList = [];
+    public static async getPartyOwners(errors: TErrorList, partyId: number): Promise<TPartyMembers> {
+        const { partyModel, partyData } = await PartyService.get(errors, partyId);
         const conditions = { partyId, isOwner: true };
-        
-        const { epStatusResult, epMessageResult, epPartyResult } = validateExistingParty(partyModel, errors);
-        if (epStatusResult !== null && epMessageResult !== null) {
-            status = epStatusResult;
-            message = epMessageResult;
-        } else {
-            party = epPartyResult;
-        };
+        let userModelList: TUserModelList = [];
+        let userDataList: TUserDataList = [];
 
         if (errors.length === 0) {
-            const { userModelList } = await PartyUserService.getPartyUsers(conditions);
-            userList = userModelList.map(u => u.toJSON());
+            const getMembersResult = await PartyUserService.getPartyMembers(errors, conditions);
+            userModelList = getMembersResult.userModelList;
+            userDataList = getMembersResult.userDataList;
         };
 
-        return { status, party, userList, errors, message };
+        return { partyModel, partyData, userModelList, userDataList };
     };
 };
 
