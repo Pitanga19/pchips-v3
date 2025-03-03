@@ -1,70 +1,81 @@
 // pchips-v3/src/party/core/PartyService.ts
 
-import { TPartyDeleteReturn, TPartyModelReturn, TPartyServiceReturn } from '../partyIndex';
-import { EResponseMessage, EResponseStatus, TErrorList } from '../../common/commonIndex';
+import { TPartyData, TPartyDelete, TPartyModel, TPartyService, TPartyUpdates } from '../partyIndex';
+import { addToResponseErrors, EErrorField, EErrorMessage, showLog, TErrorList } from '../../common/commonIndex';
 import { PartyModel } from '../../../db/dbIndex';
 
+const file = 'PartyService';
+const field = EErrorField.PARTY;
+
 class PartyService {
-    public static async create(name: string): Promise<TPartyServiceReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.CREATED;
-        let message = EResponseMessage.CREATED;
+    private static async find(errors: TErrorList, id: number, shouldExist: boolean): Promise<TPartyService> {
+        const partyModel: TPartyModel = await PartyModel.findByPk(id);
+        let partyData: TPartyData = null;
 
-        const partyModel: TPartyModelReturn = await PartyModel.create({ name });
-
-        if (!partyModel) {
-            console.log(`[PartyService] Error creating party: ${name}`);
-            status = EResponseStatus.INTERNAL_SERVER_ERROR;
-            message = EResponseMessage.INTERNAL_SERVER_ERROR;
-        } else {
-            console.log(`[PartyService] Successfully create party: ${name}`);
+        if (partyModel && !shouldExist) {
+            partyData = partyModel.toJSON();
+            showLog(file, 'Party already exists', partyData, false);
+        } else if (shouldExist && !partyModel) {
+            showLog(file, 'Party not found', { id }, false);
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
         };
 
-        return { status, partyModel, errors, message };
+        return { partyModel, partyData };
     };
 
-    public static async get(id: number): Promise<TPartyServiceReturn> {
-        const errors: TErrorList = [];
-        let status = EResponseStatus.SUCCESS;
-        let message = EResponseMessage.SUCCESS;
+    public static async create(errors: TErrorList, name: string): Promise<TPartyService> {
+        const partyModel: TPartyModel = await PartyModel.create({ name });
+        let partyData: TPartyData = null;
 
-        const partyModel: TPartyModelReturn = await PartyModel.findByPk(id);
-
-        if (!partyModel) {
-            console.log(`[PartyService] Party not found: ${id}`);
-            status = EResponseStatus.NOT_FOUND;
-            message = EResponseMessage.INVALID_DATA;
-        } else {
-            console.log(`[PartyService] Successfully get party: ${partyModel.name}`);
-        };
-
-        return { status, partyModel, errors, message };
-    };
-
-    public static async rename(id: number, name: string): Promise<TPartyServiceReturn> {
-        const { status, partyModel, errors, message } = await this.get(id);
-        
         if (partyModel) {
-            const oldName: string = partyModel.name;
-            await partyModel.update({ name });
-            console.log(`[PartyService] Successfully rename party: ${oldName} to ${name}`);
+            partyData = partyModel.toJSON();
+            showLog(file, 'Party successfully created', partyData, true);
+        } else {
+            showLog(file, 'Error creating party', { name }, false);
+            addToResponseErrors(errors, field, EErrorMessage.INTERNAL_SERVER_ERROR);
         };
 
-        return { status, partyModel, errors, message };
+        return { partyModel, partyData };
     };
 
-    public static async delete(id: number): Promise<TPartyDeleteReturn> {
-        const { status, partyModel, errors, message } = await this.get(id);
-        let value: boolean = false;
-        
-        if (partyModel) {
-            const partyName: string = partyModel.name;
+    public static async get(errors: TErrorList, id: number): Promise<TPartyService> {
+        const findResult = await this.find(errors, id, true);
+        const { partyModel, partyData } = findResult;
+
+        if (errors.length === 0 && partyData) {
+            showLog(file, 'Party successfully retrieved', partyData, true);
+        };
+
+        return { partyModel, partyData };
+    };
+
+    public static async update(errors: TErrorList, id: number, updates: TPartyUpdates): Promise<TPartyService> {
+        const getPartyResult = await this.get(errors, id);
+        const { partyModel } = getPartyResult;
+        let { partyData } = getPartyResult;
+
+        if (errors.length === 0 && partyModel && partyData) {
+            await partyModel.update(updates);
+            partyData = partyModel.toJSON();
+            showLog(file, 'Party successfully updated', partyData, true);
+        };
+
+        return { partyModel, partyData };
+    };
+
+    public static async delete(errors: TErrorList, id: number): Promise<TPartyDelete> {
+        const getPartyResult = await this.get(errors, id);
+        const { partyModel } = getPartyResult;
+        let { partyData } = getPartyResult;
+        let deleted = false;
+
+        if (errors.length === 0 && partyModel && partyData) {
             await partyModel.destroy();
-            value = true;
-            console.log(`[PartyService] Successfully delete party: ${partyName}`);
+            deleted = true;
+            showLog(file, 'Party successfully deleted', partyData, true);
         };
 
-        return { status, value, errors, message };
+        return { deleted };
     };
 };
 
