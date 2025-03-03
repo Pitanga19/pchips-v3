@@ -49,7 +49,7 @@ export const validateIsOwner = (errors: TErrorList, data: Partial<IPartyUser>, e
     };
 
     if (expected === false && isOwner) {
-        const receivedField = EErrorField.PARTY_ACTOR;
+        const receivedField = EErrorField.ACTOR;
         const receivedMessage = EErrorMessage.IS_OWNER;
         addToResponseErrors(errors, receivedField, receivedMessage);
     };
