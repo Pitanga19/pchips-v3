@@ -5,7 +5,7 @@ import { IGame, sequelize } from '../dbIndex';
 
 class GameModel extends Model {
     public id!: number;
-    public partyId!: number;
+    public roomId!: number;
     public tableNumber!: number;
     public isPaused!: boolean;
 
@@ -15,7 +15,7 @@ class GameModel extends Model {
     public toJSON(): IGame {
         return {
             id: this.id,
-            partyId: this.partyId,
+            roomId: this.roomId,
             tableNumber: this.tableNumber,
             isPaused: this.isPaused,
         };
@@ -28,11 +28,11 @@ GameModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    partyId: {
+    roomId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "parties",
+            model: "rooms",
             key: "id",
         },
         onDelete: "CASCADE",

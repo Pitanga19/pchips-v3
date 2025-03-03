@@ -13,8 +13,8 @@ export class RegExHandler {
         return regex.test(input);
     };
 
-    // Validates if the input ocntains party name format
-    static isPartyName(input: string): boolean {
+    // Validates if the input ocntains room name format
+    static isRoomName(input: string): boolean {
         const regex = /^[A-Za-z0-9 _'-]$/;
         return regex.test(input);
     };

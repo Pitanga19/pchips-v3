@@ -1,11 +1,11 @@
-// pchips-v3/db/models/PartyUserModel.ts
+// pchips-v3/db/models/RoomUserModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import { sequelize, IPartyUser } from "../dbIndex";
+import { sequelize, IRoomUser } from "../dbIndex";
 
-class PartyUserModel extends Model {
+class RoomUserModel extends Model {
     public id!: number;
-    public partyId!: number;
+    public roomId!: number;
     public userId!: number;
     public isOwner!: boolean;
     public isAdmin!: boolean;
@@ -13,10 +13,10 @@ class PartyUserModel extends Model {
     createdAt!: Date;
     updatedAt!: Date;
 
-    public toJSON(): IPartyUser {
+    public toJSON(): IRoomUser {
         return {
             id: this.id,
-            partyId: this.partyId,
+            roomId: this.roomId,
             userId: this.userId,
             isOwner: this.isOwner,
             isAdmin: this.isAdmin,
@@ -24,23 +24,23 @@ class PartyUserModel extends Model {
     };
 };
 
-PartyUserModel.init(
+RoomUserModel.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        partyId: {
+        roomId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: "parties",
+                model: "rooms",
                 key: "id",
             },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
-            unique: "unique_party_user",
+            unique: "unique_room_user",
         },
         userId: {
             type: DataTypes.INTEGER,
@@ -51,7 +51,7 @@ PartyUserModel.init(
             },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
-            unique: "unique_party_user",
+            unique: "unique_room_user",
         },
         isOwner: {
             type: DataTypes.BOOLEAN,
@@ -65,17 +65,17 @@ PartyUserModel.init(
         },
     }, {
         sequelize,
-        modelName: 'PartyUserModel',
-        tableName: 'party_users',
+        modelName: 'RoomUserModel',
+        tableName: 'room_users',
         timestamps: true,
         indexes: [
             {
                 unique: true,
-                fields: ["party_id", "user_id"],
-                name: "unique_party_user",
+                fields: ["room_id", "user_id"],
+                name: "unique_room_user",
             },
         ],
     },
 );
 
-export default PartyUserModel;
+export default RoomUserModel;

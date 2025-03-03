@@ -67,15 +67,15 @@ const recoverScreen = document.getElementById('recover-container');
 const menuScreen = document.getElementById('menu-container');
 const profileScreen = document.getElementById('profile-container');
 const friendsScreen = document.getElementById('friends-container');
-const friendToPartyScreen = document.getElementById('friend_to_party-container');
+const friendToRoomScreen = document.getElementById('friend_to_room-container');
 const newFriendScreen = document.getElementById('new_friend-container');
-const partiesScreen = document.getElementById('parties-container');
-const partyScreen = document.getElementById('party-container');
-const partyAddFriendScreen = document.getElementById('party_add_friend-container');
-const createNewPartyScreen = document.getElementById('create_new_party-container');
+const roomsScreen = document.getElementById('rooms-container');
+const roomScreen = document.getElementById('room-container');
+const roomAddFriendScreen = document.getElementById('room_add_friend-container');
+const createNewRoomScreen = document.getElementById('create_new_room-container');
 const settingsScreen = document.getElementById('settings-container');
 const gameScreen = document.getElementById('game-container');
-const allScreens = [registerScreen, loginScreen, recoverScreen, menuScreen, profileScreen, friendsScreen, friendToPartyScreen, newFriendScreen, partiesScreen, partyScreen, partyAddFriendScreen, createNewPartyScreen, settingsScreen, gameScreen];
+const allScreens = [registerScreen, loginScreen, recoverScreen, menuScreen, profileScreen, friendsScreen, friendToRoomScreen, newFriendScreen, roomsScreen, roomScreen, roomAddFriendScreen, createNewRoomScreen, settingsScreen, gameScreen];
 
 // ---------------- INIT FUNCTIONS  ---------------------------- //
 
@@ -299,7 +299,7 @@ recoverBackButton.addEventListener('click', e => {
 
 // ---------------- MENU SCRIPTS    ---------------------------- //
 menuNewGameButton = document.getElementById('menu-new_game-button');
-menuPartiesButton = document.getElementById('menu-parties-button');
+menuRoomsButton = document.getElementById('menu-rooms-button');
 menuFriendsButton = document.getElementById('menu-friends-button');
 menuProfileButton = document.getElementById('menu-profile-button');
 
@@ -308,9 +308,9 @@ menuNewGameButton.addEventListener('click', e => {
     navigateToScreen(settingsScreen);
 });
 
-menuPartiesButton.addEventListener('click', e => {
+menuRoomsButton.addEventListener('click', e => {
     e.preventDefault();
-    navigateToScreen(partiesScreen);
+    navigateToScreen(roomsScreen);
 });
 
 menuFriendsButton.addEventListener('click', e => {

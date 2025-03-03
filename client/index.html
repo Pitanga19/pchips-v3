@@ -94,7 +94,7 @@
             <h1 class="menu-title">Poker Chips</h1>
             <ul class="menu-ul">
                 <li class="menu-li"><input type="button" value="New Game" class="menu-button button" id="menu-new_game-button"></li>
-                <li class="menu-li"><input type="button" value="Parties" class="menu-button button" id="menu-parties-button"></li>
+                <li class="menu-li"><input type="button" value="Rooms" class="menu-button button" id="menu-rooms-button"></li>
                 <li class="menu-li"><input type="button" value="Friends" class="menu-button button" id="menu-friends-button"></li>
                 <li class="menu-li"><input type="button" value="Profile" class="menu-button button" id="menu-profile-button"></li>
             </ul>
@@ -176,12 +176,12 @@
             <ul class="friends-ul" id="friends_list-ul"><!-- Friends here -->
                 <li class="friends-li" id="example_friend1-li">
                     <strong class="friends-strong" id="example_friend1-strong">FriendUsername</strong>
-                    <input type="button" value="Add to party" class="friends-button add_friend-button">
+                    <input type="button" value="Add to room" class="friends-button add_friend-button">
                     <input type="button" value="Remove" class="friends-button remove-button">
                 </li>
                 <li class="friends-li" id="example_friend2-li">
                     <strong class="friends-strong" id="example_friend1-strong">OtherFriend</strong>
-                    <input type="button" value="Add to party" class="friends-button add_friend-button" id="add_to_party2-button">
+                    <input type="button" value="Add to room" class="friends-button add_friend-button" id="add_to_room2-button">
                     <input type="button" value="Remove" class="friends-button remove-button">
                 </li>
             </ul>
@@ -191,38 +191,38 @@
             </div>
         </div>
 
-        <div class="main-div" id="friend_to_party-container">
-            <h2 class="main-h2">Add friend to party</h2>
+        <div class="main-div" id="friend_to_room-container">
+            <h2 class="main-h2">Add friend to room</h2>
             <h3 class="ftp-h3" id="ftp-username"><!-- Friend username here -->FriendUsername is current in ...</h3>
-            <ul class="ftp-ul" id="ftp-current_parties"><!-- Friend current parties here -->
+            <ul class="ftp-ul" id="ftp-current_rooms"><!-- Friend current rooms here -->
                 <li class="fpt-li ftp-current">
-                    ExampleParty
+                    ExampleRoom
                 </li>
                 <li class="fpt-li ftp-current">
-                    OtherParty
+                    OtherRoom
                 </li>
             </ul>
             <form class="ftp-form" id="to_add-form">
-                <h3 class="ftp-h3" id="ftp-username">Adding <!-- Friend username here -->FriendUsername to party ...</h3>
+                <h3 class="ftp-h3" id="ftp-username">Adding <!-- Friend username here -->FriendUsername to room ...</h3>
                 <input
                     type="text"
-                    name="party-find-party"
+                    name="room-find-room"
                     placeholder="find by name ..."
-                    id="ftp-find_party-input"
+                    id="ftp-find_room-input"
                     class="ftp-input"
                 >
-                <ul class="ftp-ul" id="ftp-to_add_parties"><!-- Friend avalible parties to add here -->
+                <ul class="ftp-ul" id="ftp-to_add_rooms"><!-- Friend avalible rooms to add here -->
                     <li class="fpt-li ftp-to_add">
                         <input type="checkbox" name="ftp-example1" id="ftp-example1" class="ftp-checkbox">
-                        <label for="ftp-example1" class="ftp-label ftp-current-label"><!-- Party name -->AvalibleParty</label>
+                        <label for="ftp-example1" class="ftp-label ftp-current-label"><!-- Room name -->AvalibleRoom</label>
                     </li>
                     <li class="fpt-li ftp-to_add">
                         <input type="checkbox" name="ftp-example2" id="ftp-example2" class="ftp-checkbox">
-                        <label for="ftp-example2" class="ftp-label ftp-current-label"><!-- Party name -->OtherAvParty</label>
+                        <label for="ftp-example2" class="ftp-label ftp-current-label"><!-- Room name -->OtherAvRoom</label>
                     </li>
                     <li class="fpt-li ftp-to_add">
                         <input type="checkbox" name="ftp-example3" id="ftp-example3" class="ftp-checkbox">
-                        <label for="ftp-example3" class="ftp-label ftp-current-label"><!-- Party name -->AnotherParty</label>
+                        <label for="ftp-example3" class="ftp-label ftp-current-label"><!-- Room name -->AnotherRoom</label>
                     </li>
                 </ul>
             </form>
@@ -259,69 +259,69 @@
             </div>
         </div>
 
-        <div class="main-div" id="parties-container">
-            <h2 class="main-h2">My Parties</h2>
-            <form class="parties-form" id="parties-find_party-form">
+        <div class="main-div" id="rooms-container">
+            <h2 class="main-h2">My Rooms</h2>
+            <form class="rooms-form" id="rooms-find_room-form">
                 <input
                     type="text"
-                    name="parties-find-party"
+                    name="rooms-find-room"
                     placeholder="find by name ..."
-                    id="parties-find_party-input"
-                    class="parties-input"
+                    id="rooms-find_room-input"
+                    class="rooms-input"
                 >
             </form>
-            <ul class="parties-ul" id="parties-ul"><!-- Parties here -->
-                <li class="parties-li">
-                    <label for="parties-example1" class="parties-label"><!-- Party name -->MyParty</label>
-                    <input type="button" value="See" class="parties-button" id="see_example1-button">
-                    <input type="button" value="Remove" class="parties-button" id="remove_example1-button">
+            <ul class="rooms-ul" id="rooms-ul"><!-- Rooms here -->
+                <li class="rooms-li">
+                    <label for="rooms-example1" class="rooms-label"><!-- Room name -->MyRoom</label>
+                    <input type="button" value="See" class="rooms-button" id="see_example1-button">
+                    <input type="button" value="Remove" class="rooms-button" id="remove_example1-button">
                 </li>
-                <li class="parties-li">
-                    <label for="party-example1" class="parties-label"><!-- Party name -->OtherParty</label>
-                    <input type="button" value="See" class="parties-button" id="see_example1-button">
-                    <input type="button" value="Remove" class="parties-button" id="remove_example1-button">
+                <li class="rooms-li">
+                    <label for="room-example1" class="rooms-label"><!-- Room name -->OtherRoom</label>
+                    <input type="button" value="See" class="rooms-button" id="see_example1-button">
+                    <input type="button" value="Remove" class="rooms-button" id="remove_example1-button">
                 </li>
             </ul>
-            <div class="parties-div" id="parties_navigation-div">
-                <input type="button" value="New Party +" class="button" id="parties_create_party-button">
-                <input type="button" value="Back" class="button" id="parties_back-button">
+            <div class="rooms-div" id="rooms_navigation-div">
+                <input type="button" value="New Room +" class="button" id="rooms_create_room-button">
+                <input type="button" value="Back" class="button" id="rooms_back-button">
             </div>
         </div>
 
-        <div class="main-div" id="party-container">
-            <h2 class="main-h2"><!-- Party name here -->Party Screen</h2>
-            <h3 class="main-h3">Users in party</h3>
-            <ul class="party-ul" id="party_users-ul"><!-- Party users here -->
-                <li class="party_users-li" id="example_friend1-li">
-                    <label for="party-example1" class="party_users-label party-current-label">
+        <div class="main-div" id="room-container">
+            <h2 class="main-h2"><!-- Room name here -->Room Screen</h2>
+            <h3 class="main-h3">Users in room</h3>
+            <ul class="room-ul" id="room_users-ul"><!-- Room users here -->
+                <li class="room_users-li" id="example_friend1-li">
+                    <label for="room-example1" class="room_users-label room-current-label">
                         <!-- User here -->MaybeFriend
                     </label>
                 </li>
-                <li class="party_users-li" id="example_friend1-li">
-                    <label for="party_users-example2" class="party-label party_users-current-label">
+                <li class="room_users-li" id="example_friend1-li">
+                    <label for="room_users-example2" class="room-label room_users-current-label">
                         <!-- User here -->MaybeNotFriend
                     </label>
-                    <input type="button" value="Add +" class="party-button" id="party_ex2_add_friend-button">
+                    <input type="button" value="Add +" class="room-button" id="room_ex2_add_friend-button">
                 </li>
             </ul>
-            <div class="party-div" id="party_navigation-div">
-                <input type="button" value="Party Table" class="button" id="party_table-button">
-                <input type="button" value="Add users" class="button" id="party_add_users-button">
-                <input type="button" value="Back" class="button" id="party_back-button">
+            <div class="room-div" id="room_navigation-div">
+                <input type="button" value="Room Table" class="button" id="room_table-button">
+                <input type="button" value="Add users" class="button" id="room_add_users-button">
+                <input type="button" value="Back" class="button" id="room_back-button">
             </div>
         </div>
 
-        <div class="main-div" id="party_add_friend-container">
-            <h2 class="main-h2">Add user to <!-- Party name here -->PartyName</h2>
+        <div class="main-div" id="room_add_friend-container">
+            <h2 class="main-h2">Add user to <!-- Room name here -->RoomName</h2>
             <input
                 type="text"
-                name="party-find-user"
+                name="room-find-user"
                 placeholder="find by username ..."
                 id="paf-find_user-input"
-                class="create_new_party-input"
+                class="create_new_room-input"
             >
-            <h3 class="party_add_friend-h3" id="party_add_friend_users-h3"></h3>
-            <ul class="paf_users-ul" id="paf-users-ul"><!-- Party users here -->
+            <h3 class="room_add_friend-h3" id="room_add_friend_users-h3"></h3>
+            <ul class="paf_users-ul" id="paf-users-ul"><!-- Room users here -->
                 <li class="paf_users-li" id="example_friend1-li">
                     <input type="checkbox" name="paf_users-example1" id="paf_users-example1" class="paf_users-checkbox">
                     <label for="paf-example1" class="paf_users-label cnp-current-label">
@@ -335,43 +335,43 @@
                     </label>
                 </li>
             </ul>
-            <div class="party_add_friend-div" id="party_add_friend-navigation-div">
-                <input type="submit" value="Done" class="form-submit button" id="party_add_friend-submit">
-                <input type="button" value="Back" class="button" id="party_add_friend-back-button">
+            <div class="room_add_friend-div" id="room_add_friend-navigation-div">
+                <input type="submit" value="Done" class="form-submit button" id="room_add_friend-submit">
+                <input type="button" value="Back" class="button" id="room_add_friend-back-button">
             </div>
         </form>
         </div>
 
-        <div class="main-div" id="create_new_party-container">
-            <h2 class="main-h2">Create New Party</h2>
-            <form class="create_new_party-form">
-                <ul class="create_new_party-ul">
-                    <h3 class="create_new_party-h3">
-                        <!-- Party name preview here ... -->Preview New Party Name
+        <div class="main-div" id="create_new_room-container">
+            <h2 class="main-h2">Create New Room</h2>
+            <form class="create_new_room-form">
+                <ul class="create_new_room-ul">
+                    <h3 class="create_new_room-h3">
+                        <!-- Room name preview here ... -->Preview New Room Name
                     </h3>
-                    <li class="create_new_party-li" id="new_party_name-li">
-                        <label for="new-party-name" class="create_new_party-label" id="new_party_name-label">
+                    <li class="create_new_room-li" id="new_room_name-li">
+                        <label for="new-room-name" class="create_new_room-label" id="new_room_name-label">
                             Name: 
                         </label>
                         <input
                             type="text"
-                            name="new-party-name"
-                            placeholder="new party name ..."
-                            id="new-party-name"
-                            class="create_new_party-input"
+                            name="new-room-name"
+                            placeholder="new room name ..."
+                            id="new-room-name"
+                            class="create_new_room-input"
                         >
                     </li>
-                    <li class="create_new_party-li" id="create_new_party_users-li">
-                        <h3 class="create_new_party-h3">Add friends to party ...</h3>
+                    <li class="create_new_room-li" id="create_new_room_users-li">
+                        <h3 class="create_new_room-h3">Add friends to room ...</h3>
                         <input
                             type="text"
-                            name="party-find-user"
+                            name="room-find-user"
                             placeholder="find by username ..."
-                            id="party-find_user-input"
-                            class="create_new_party-input"
+                            id="room-find_user-input"
+                            class="create_new_room-input"
                         >
-                        <h3 class="create_new_party-h3" id="create-new_party_users-h3"></h3>
-                        <ul class="cnp_users-ul" id="cnp-users-ul"><!-- Party users here -->
+                        <h3 class="create_new_room-h3" id="create-new_room_users-h3"></h3>
+                        <ul class="cnp_users-ul" id="cnp-users-ul"><!-- Room users here -->
                             <li class="cnp_users-li" id="example_friend1-li">
                                 <input type="checkbox" name="cnp_users-example1" id="cnp_users-example1" class="cnp_users-checkbox">
                                 <label for="cnp-example1" class="cnp_users-label cnp-current-label">
@@ -388,40 +388,40 @@
                     </li>
                 </ul>
             </form>
-            <div class="party-div" id="party_navigation-div">
-                <input type="button" value="Create" class="button" id="party_create_party-button">
-                <input type="button" value="Back" class="button" id="party_back-button">
+            <div class="room-div" id="room_navigation-div">
+                <input type="button" value="Create" class="button" id="room_create_room-button">
+                <input type="button" value="Back" class="button" id="room_back-button">
             </div>
         </div>
 
         <div class="main-div" id="settings-container">
             <h2 class="main-h2">Game Settings</h2>
-            <div class="settings-div" id="party_settings-div">
-                <form class="party_settings-form" id="party_settings-select_party-form">
-                    <h3 class="ftp-h3" id="ftp-username">Party:</h3>
+            <div class="settings-div" id="room_settings-div">
+                <form class="room_settings-form" id="room_settings-select_room-form">
+                    <h3 class="ftp-h3" id="ftp-username">Room:</h3>
                     <input
                         type="text"
                         name="ps-find-user"
                         placeholder="find by name ..."
-                        id="ps-select_party-input"
+                        id="ps-select_room-input"
                         class="ps-input"
                     >
-                    <ul class="ps-ul" id="ftp-to_add_parties"><!-- User parties here -->
-                        <li class="ps-select_party-li ps-party-option">
-                            <input type="checkbox" name="ps-select_party-example1" id="ps-select_party-example1" class="ps-select_party-checkbox">
-                            <label for="ps-select_party-example1" class="ps-select_party-label ps-select_party-current-label">
-                                <!-- Party name -->AvalibleParty
+                    <ul class="ps-ul" id="ftp-to_add_rooms"><!-- User rooms here -->
+                        <li class="ps-select_room-li ps-room-option">
+                            <input type="checkbox" name="ps-select_room-example1" id="ps-select_room-example1" class="ps-select_room-checkbox">
+                            <label for="ps-select_room-example1" class="ps-select_room-label ps-select_room-current-label">
+                                <!-- Room name -->AvalibleRoom
                             </label>
                         </li>
-                        <li class="ps-select_party-li ps-party-option">
-                            <input type="checkbox" name="ps-select_party-example2" id="ps-select_party-example2" class="ps-select_party-checkbox">
-                            <label for="ps-select_party-example2" class="ps-select_party-label ps-select_party-current-label">
-                                <!-- Party name -->OtherAvParty
+                        <li class="ps-select_room-li ps-room-option">
+                            <input type="checkbox" name="ps-select_room-example2" id="ps-select_room-example2" class="ps-select_room-checkbox">
+                            <label for="ps-select_room-example2" class="ps-select_room-label ps-select_room-current-label">
+                                <!-- Room name -->OtherAvRoom
                             </label>
                         </li>
                     </ul>
                 </form>
-                <form class="party_settings-form" id="party_settings-find_user-form">
+                <form class="room_settings-form" id="room_settings-find_user-form">
                     <h3 class="ftp-h3" id="ftp-username">Players:</h3>
                     <input
                         type="text"
@@ -431,17 +431,17 @@
                         class="ps-input"
                     >
                 </form>
-                <ul class="party_settings-ul" id="party_settings_users-ul"><!-- Party users here -->
+                <ul class="room_settings-ul" id="room_settings_users-ul"><!-- Room users here -->
                     <li class="ps_users-li" id="example_friend1-li">
                         <input type="checkbox" name="ps_users-example1" id="ps_users-example1" class="ps_users-checkbox">
                         <label for="ps-example1" class="ps_users-label ps-current-label">
-                            <!-- Party member here -->PartyMember
+                            <!-- Room member here -->RoomMember
                         </label>
                     </li>
                     <li class="ps_users-li" id="example_friend1-li">
                         <input type="checkbox" name="ps_users-example2" id="ps_users-example2" class="ps_users-checkbox">
                         <label for="ps_users-example2" class="ps-label ps_users-current-label">
-                            <!-- Party member here -->OtherMember
+                            <!-- Room member here -->OtherMember
                         </label>
                     </li>
                 </ul>

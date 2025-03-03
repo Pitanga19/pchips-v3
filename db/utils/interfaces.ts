@@ -22,14 +22,14 @@ export interface IBlock {
     blockedId: number,
 };
 
-export interface IParty {
+export interface IRoom {
     id: number,
     name: string,
 };
 
-export interface IPartyUser {
+export interface IRoomUser {
     id: number,
-    partyId: number,
+    roomId: number,
     userId: number,
     isOwner: boolean,
     isAdmin: boolean,
@@ -50,7 +50,7 @@ export interface ISetting {
 
 export interface IGame {
     id: number,
-    partyId: number,
+    roomId: number,
     tableNumber: number,
     isPaused: boolean,
 };
@@ -82,7 +82,7 @@ export interface IAction {
 export interface IPlayer {
     id: number,
     userId: number,
-    partyId: number,
+    roomId: number,
     gameId: number,
     seatNumber: number,
     status: EPlayerStatus,

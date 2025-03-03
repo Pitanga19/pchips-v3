@@ -1,16 +1,16 @@
-// pchips-v3/db/models/PartyModel.ts
+// pchips-v3/db/models/RoomModel.ts
 
 import { Model, DataTypes } from "sequelize";
-import { sequelize, IParty } from "../dbIndex";
+import { sequelize, IRoom } from "../dbIndex";
 
-class PartyModel extends Model {
+class RoomModel extends Model {
     public id!: number;
     public name!: string;
 
     createdAt!: Date;
     updatedAt!: Date;
 
-    public toJSON(): IParty {
+    public toJSON(): IRoom {
         return {
             id: this.id,
             name: this.name,
@@ -18,7 +18,7 @@ class PartyModel extends Model {
     };
 };
 
-PartyModel.init(
+RoomModel.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -31,10 +31,10 @@ PartyModel.init(
         },
     }, {
         sequelize,
-        modelName: 'PartyModel',
-        tableName: 'parties',
+        modelName: 'RoomModel',
+        tableName: 'rooms',
         timestamps: true,
     },
 );
 
-export default PartyModel;
+export default RoomModel;

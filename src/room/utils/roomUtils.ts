@@ -1,17 +1,17 @@
-// pchips-v3/src/party/utils/partyUtils.ts
+// pchips-v3/src/room/utils/roomUtils.ts
 
-import { TUserPartyPermissions } from '../partyIndex';
+import { TUserRoomPermissions } from '../roomIndex';
 import { addToResponseErrors, TErrorList, EErrorField, EErrorMessage } from '../../common/commonIndex';
-import { IPartyUser } from '../../../db/dbIndex';
+import { IRoomUser } from '../../../db/dbIndex';
 
-export const validatePartyName = (errors: TErrorList, partyName: string): void => {
+export const validateRoomName = (errors: TErrorList, roomName: string): void => {
     const field = EErrorField.PARTY_NAME;
     let message: EErrorMessage;
 
-    if (partyName.length < 3) {
+    if (roomName.length < 3) {
         message = EErrorMessage.NOT_ENOUGH_CHARS;
         addToResponseErrors(errors, field, message);
-    } else if (partyName.length > 32) {
+    } else if (roomName.length > 32) {
         message = EErrorMessage.CHAR_EXCESS;
         addToResponseErrors(errors, field, message);
     };
@@ -29,7 +29,7 @@ export const validateDifferentUsers = (errors: TErrorList, firstUserId: number, 
     };
 };
 
-export const validateIsOwnerOrAdmin = (errors: TErrorList, data: IPartyUser): void => {
+export const validateIsOwnerOrAdmin = (errors: TErrorList, data: IRoomUser): void => {
     const { isOwner, isAdmin } = data;
 
     if (!(isOwner || isAdmin)) {
@@ -39,7 +39,7 @@ export const validateIsOwnerOrAdmin = (errors: TErrorList, data: IPartyUser): vo
     };
 };
 
-export const validateIsOwner = (errors: TErrorList, data: Partial<IPartyUser>, expected: boolean): void => {
+export const validateIsOwner = (errors: TErrorList, data: Partial<IRoomUser>, expected: boolean): void => {
     const { isOwner } = data;
 
     if (expected === true && !isOwner) {

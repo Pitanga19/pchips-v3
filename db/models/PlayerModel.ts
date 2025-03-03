@@ -7,7 +7,7 @@ import { EPlayerStatus } from '../utils/enums';
 class PlayerModel extends Model {
     public id!: number;
     public userId!: number;
-    public partyId!: number;
+    public roomId!: number;
     public gameId!: number;
     public seatNumber!: number;
     public status!: EPlayerStatus;
@@ -21,7 +21,7 @@ class PlayerModel extends Model {
         return {
             id: this.id,
             userId: this.userId,
-            partyId: this.partyId,
+            roomId: this.roomId,
             gameId: this.gameId,
             seatNumber: this.seatNumber,
             status: this.status,
@@ -47,11 +47,11 @@ PlayerModel.init({
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     },
-    partyId: {
+    roomId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "parties",
+            model: "rooms",
             key: "id",
         },
         onDelete: "CASCADE",
@@ -94,8 +94,8 @@ PlayerModel.init({
     indexes: [
         {
             unique: true,
-            fields: ["user_id", "party_id"],
-            name: "unique_player_in_party",
+            fields: ["user_id", "room_id"],
+            name: "unique_player_in_room",
         },
     ],
 });

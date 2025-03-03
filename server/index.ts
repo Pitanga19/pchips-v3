@@ -7,7 +7,7 @@ import logger from 'morgan';
 import initDatabase from '../db/initDatabase';
 import { AuthRoutes, authTest } from '../src/auth/authIndex';
 import { RelationRoutes, relationTest } from '../src/relation/relationIndex';
-import { PartyRoutes, partyTest } from '../src/party/partyIndex';
+import { RoomRoutes, roomTest } from '../src/room/roomIndex';
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -28,7 +28,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 app.use('/api/auth', AuthRoutes);           // Register, LogIn, Recover pass, Update user
 app.use('/api/relation', RelationRoutes);   // Friend requests, friends, blocks
-app.use('/api/party', PartyRoutes);         // Parties management, members, list
+app.use('/api/room', RoomRoutes);         // Rooms management, members, list
 
 // ---------------- SOCKETS ------------------------------------ //
 // Simple connection socket
@@ -51,7 +51,7 @@ initDatabase()  // Initialize database
 
         await authTest();
         await relationTest();
-        await partyTest();
+        await roomTest();
     })
     .catch((error) => {
         console.error(`Error while initializing the database: ${error}\n`);

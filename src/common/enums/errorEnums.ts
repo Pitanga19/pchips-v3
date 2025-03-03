@@ -14,13 +14,13 @@ export enum EErrorField {
     FRIEND = 'friend',
     BLOCK = 'block',
     RELATION = 'relation',
-    PARTY = 'party',
+    PARTY = 'room',
     ACTOR = 'actor',
     TARGET = 'target',
-    PARTY_NAME = 'party-name',
-    PARTY_USER = 'party-user',
-    PARTY_ACTOR = 'party-actor',
-    PARTY_TARGET = 'party-target',
+    PARTY_NAME = 'room-name',
+    PARTY_USER = 'room-user',
+    PARTY_ACTOR = 'room-actor',
+    PARTY_TARGET = 'room-target',
     SETTING = 'setting',
 };
 

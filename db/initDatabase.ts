@@ -2,18 +2,9 @@
 
 import sequelize from "./database"; // Import sequelize object
 // ---------------- IMPORT MODELS   ---------------------------- //
-import UserModel from "./models/UserModel";
-import FriendModel from "./models/FriendModel";
-import BlockModel from "./models/BlockModel";
-import PartyUserModel from "./models/PartyUserModel";
-import PartyModel from "./models/PartyModel";
-import PlayerModel from "./models/PlayerModel";
-import SettingModel from "./models/SettingModel";
-import GameModel from "./models/GameModel";
-import RoundModel from "./models/RoundModel";
-import HandModel from "./models/HandModel";
-import ActionModel from "./models/ActionModel";
-import SeatManagerModel from "./models/SeatManagerModel"; // Importar el modelo SeatManager
+import {
+    UserModel, FriendModel, BlockModel, RoomModel, RoomUserModel, PlayerModel, SettingModel, SeatManagerModel, GameModel, RoundModel, HandModel, ActionModel,
+} from "./dbIndex";
 
 const initDatabase = async () => { // Init database function
     // ---------------- RELATIONS   ---------------------------- //
@@ -65,40 +56,40 @@ const initDatabase = async () => { // Init database function
         as: 'blocked',
     });
 
-    // User <-> PartyUser (1:N)
-    UserModel.hasMany(PartyUserModel, {
+    // User <-> RoomUser (1:N)
+    UserModel.hasMany(RoomUserModel, {
         foreignKey: "userId",
-        as: "partyMemberships",
+        as: "roomMemberships",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     });
-    PartyUserModel.belongsTo(UserModel, {
+    RoomUserModel.belongsTo(UserModel, {
         foreignKey: "userId",
         as: "user",
     });
 
-    // Party <-> PartyUser (1:N)
-    PartyModel.hasMany(PartyUserModel, {
-        foreignKey: "partyId",
-        as: "partyMembers",
+    // Room <-> RoomUser (1:N)
+    RoomModel.hasMany(RoomUserModel, {
+        foreignKey: "roomId",
+        as: "roomMembers",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     });
-    PartyUserModel.belongsTo(PartyModel, {
-        foreignKey: "partyId",
-        as: "party",
+    RoomUserModel.belongsTo(RoomModel, {
+        foreignKey: "roomId",
+        as: "room",
     });
 
-    // Party <-> Game (1:N)
-    PartyModel.hasMany(GameModel, {
-        foreignKey: "partyId",
+    // Room <-> Game (1:N)
+    RoomModel.hasMany(GameModel, {
+        foreignKey: "roomId",
         as: "games",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     });
-    GameModel.belongsTo(PartyModel, {
-        foreignKey: "partyId",
-        as: "party",
+    GameModel.belongsTo(RoomModel, {
+        foreignKey: "roomId",
+        as: "room",
     });
 
     // Game <-> Setting (1:1)
@@ -137,16 +128,16 @@ const initDatabase = async () => { // Init database function
         as: "user",
     });
 
-    // Party <-> Player (1:N)
-    PartyModel.hasMany(PlayerModel, {
-        foreignKey: "partyId",
+    // Room <-> Player (1:N)
+    RoomModel.hasMany(PlayerModel, {
+        foreignKey: "roomId",
         as: "players",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     });
-    PlayerModel.belongsTo(PartyModel, {
-        foreignKey: "partyId",
-        as: "party",
+    PlayerModel.belongsTo(RoomModel, {
+        foreignKey: "roomId",
+        as: "room",
     });
 
     // Game <-> Player (1:N)
