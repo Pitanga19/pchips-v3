@@ -90,8 +90,8 @@ const relationTest = async () => {
     showLog(file, `Block user 2 to 3 result`, block2to3, true);
     errors = showAndResetErrors(errors, file);
 
-    const block3to2 = await RelationService.blockUser(errors, usersIds[2], usersIds[1]);
-    showLog(file, `Block user 3 to 2 result`, block3to2, true);
+    const block4to3 = await RelationService.blockUser(errors, usersIds[3], usersIds[2]);
+    showLog(file, `Block user 4 to 3 result`, block4to3, true);
     errors = showAndResetErrors(errors, file);
 
     const block3to4 = await RelationService.blockUser(errors, usersIds[2], usersIds[3]);
@@ -100,6 +100,12 @@ const relationTest = async () => {
 
     const block3to5 = await RelationService.blockUser(errors, usersIds[2], usersIds[4]);
     showLog(file, `Block user 3 to 5 result`, block3to5, true);
+    errors = showAndResetErrors(errors, file);
+
+    // Send request to blocked user
+    console.log(`\n\n\n[${file}] Sending friend request to blocked user ...`);
+    const sendFriendRequest3to2 = await RelationService.sendFriendRequest(errors, usersIds[2], usersIds[1]);
+    showLog(file, `Send friend request 3 to 2 result`, sendFriendRequest3to2, false);
     errors = showAndResetErrors(errors, file);
 
     // Unblock user
