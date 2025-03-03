@@ -11,3 +11,6 @@ export type TSettingService = {
 };
 
 export type TSettingUpdates = Omit<Partial<ISetting>, 'id' | 'gameId'>;
+
+export type TSettingBody = { gameId: number };
+export type TSettingUpdateBody = { gameId: number, updates: TSettingUpdates };
