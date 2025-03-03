@@ -8,9 +8,10 @@ import {
 } from '../../common/commonIndex';
 import { UserModel, BlockModel } from '../../../db/dbIndex';
 import { TUserDataList, TUserModelList, UserService } from '../../auth/authIndex';
+import { Op } from 'sequelize';
 
 const file = 'BlockService';
-const field = EErrorField.BLOCK
+const field = EErrorField.BLOCK;
 
 class BlockService {
     private static async findBlock(errors: TErrorList, data: TBlockFindData): Promise<TBlockFindResult> {
@@ -107,10 +108,27 @@ class BlockService {
 
             await blockModel.destroy();
             deleted = true;
-            showLog(file, 'Block successfully deleted.', { blockedId, blockerId }, true);
+            showLog(file, 'Block successfully deleted.', { blockerId, blockedId }, true);
         };
 
         return { deleted };
+    };
+
+    public static async validateExistence(errors: TErrorList, firstUserId: number, secondUserId: number): Promise<void> {
+        const findResult = await BlockModel.findOne({
+            where: {
+                [Op.or]: [
+                    { blockerId: firstUserId, blockedId: secondUserId },
+                    { blockerId: secondUserId, blockedId: firstUserId }
+                ]
+            }
+        });
+
+        if (findResult) {
+            showLog(file, 'Block found', findResult.toJSON(), false);
+            const field = EErrorField.USER;
+            addToResponseErrors(errors, field, EErrorMessage.NOT_FOUND);
+        };
     };
 };
 
