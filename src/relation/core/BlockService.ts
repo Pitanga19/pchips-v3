@@ -75,7 +75,7 @@ class BlockService {
         return { blockModel, blockData };
     };
 
-    public static async getBlockedModelList(errors: TErrorList, userId: number): Promise<TBlockList>{
+    public static async getBlockedList(errors: TErrorList, userId: number): Promise<TBlockList>{
         const { userModel, userData } = await UserService.getById(errors, userId);
         let blockedModelList: TUserModelList = [];
         let blockedDataList: TUserDataList = [];

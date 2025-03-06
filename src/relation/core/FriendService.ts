@@ -120,7 +120,7 @@ class FriendService {
         return { friendModel, friendData };
     };
 
-    public static async getFriendModelList(errors: TErrorList, userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendList> {
+    public static async getFriendList(errors: TErrorList, userId: number, friendStatus: EFriendStatus | null = null): Promise<TFriendList> {
         const { userModel, userData } = await UserService.getById(errors, userId);
         let friendModelList: TUserModelList = [];
         let friendDataList: TUserDataList = [];

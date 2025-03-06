@@ -103,7 +103,7 @@ class RelationService {
     };
 
     public static async getCompleteFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
-        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId);
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendList(errors, userId);
 
         if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
             showLog(file, 'Friends for user', userData, true);
@@ -114,7 +114,7 @@ class RelationService {
     };
 
     public static async getAcceptedFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
-        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId, EFriendStatus.ACCEPTED);
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendList(errors, userId, EFriendStatus.ACCEPTED);
 
         if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
             showLog(file, 'Friends for user', userData, true);
@@ -125,7 +125,7 @@ class RelationService {
     };
 
     public static async getPendingFriendList(errors: TErrorList, userId: number): Promise<TRelationFriendList> {
-        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendModelList(errors, userId, EFriendStatus.PENDING);
+        const { userModel, userData, friendModelList, friendDataList } = await FriendService.getFriendList(errors, userId, EFriendStatus.PENDING);
 
         if (errors.length === 0 && userModel && userData && friendModelList && friendDataList) {
             showLog(file, 'Friends for user', userData, true);
@@ -136,7 +136,7 @@ class RelationService {
     };
 
     public static async getBlockedList(errors: TErrorList, userId: number): Promise<TRelationBlockList> {
-        const { userModel, userData, blockedModelList, blockedDataList } = await BlockService.getBlockedModelList(errors, userId);
+        const { userModel, userData, blockedModelList, blockedDataList } = await BlockService.getBlockedList(errors, userId);
 
         if (errors.length === 0 && userModel && userData && blockedModelList && blockedDataList) {
             showLog(file, 'Blocked users for user', userData, true);
