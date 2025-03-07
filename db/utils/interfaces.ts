@@ -48,6 +48,35 @@ export interface ISetting {
     rebuyAddon: ERebuyAddon,
 };
 
+export interface ISeatManager {
+    id: number,
+    gameId: number,
+    dealerSeat: number,
+    smallBlindSeat: number,
+    bigBlindSeat: number,
+    actionSeat: number,
+};
+
+export interface IPlayer {
+    id: number,
+    userId: number,
+    roomId: number,
+    gameId: number,
+    seatNumber: number,
+    status: EPlayerStatus,
+    chips: number,
+    bettingChips: number,
+};
+
+export interface IPot {
+    id: number,
+    gameId: number,
+    handId: number,
+    roundId: number,
+    potNumber: number,
+    chips: number,
+};
+
 export interface IGame {
     id: number,
     roomId: number,
@@ -77,24 +106,4 @@ export interface IAction {
     actionCount: number,
     type: EActionType,
     amount: number,
-};
-
-export interface IPlayer {
-    id: number,
-    userId: number,
-    roomId: number,
-    gameId: number,
-    seatNumber: number,
-    status: EPlayerStatus,
-    chips: number,
-    bettingChips: number,
-};
-
-export interface ISeatManager {
-    id: number,
-    gameId: number,
-    dealerSeat: number,
-    smallBlindSeat: number,
-    bigBlindSeat: number,
-    actionSeat: number,
 };

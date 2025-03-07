@@ -3,7 +3,7 @@
 import sequelize from "./database"; // Import sequelize object
 // ---------------- IMPORT MODELS   ---------------------------- //
 import {
-    UserModel, FriendModel, BlockModel, RoomModel, RoomUserModel, PlayerModel, SettingModel, SeatManagerModel, GameModel, RoundModel, HandModel, ActionModel,
+    UserModel, FriendModel, BlockModel, RoomModel, RoomUserModel, PlayerModel, SettingModel, SeatManagerModel, GameModel, RoundModel, HandModel, ActionModel, PotModel,
 } from "./dbIndex";
 
 const initDatabase = async () => { // Init database function
@@ -198,6 +198,42 @@ const initDatabase = async () => { // Init database function
     ActionModel.belongsTo(PlayerModel, {
         foreignKey: "playerId",
         as: "player",
+    });
+
+    // Game <-> Pot (1:N)
+    GameModel.hasMany(PotModel, {
+        foreignKey: "gameId",
+        as: "pots",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PotModel.belongsTo(GameModel, {
+        foreignKey: "gameId",
+        as: "game",
+    });
+
+    // Hand <-> Pot (1:N)
+    HandModel.hasMany(PotModel, {
+        foreignKey: "handId",
+        as: "pots",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PotModel.belongsTo(HandModel, {
+        foreignKey: "handId",
+        as: "hand",
+    });
+
+    // Round <-> Pot (1:N)
+    RoundModel.hasMany(PotModel, {
+        foreignKey: "roundId",
+        as: "pots",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PotModel.belongsTo(RoundModel, {
+        foreignKey: "roundId",
+        as: "round",
     });
 
     // ---------------- SYNC DATABASE   ------------------------ //
