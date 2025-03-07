@@ -62,3 +62,10 @@ export enum EPlayerStatus {
     WAITING_BB = 'waiting-bb',
     AFK = 'afk',
 };
+
+export enum ETableStatus {
+    STARTING = 'starting',
+    RUNNING = 'running',
+    PAUSED = 'paused',
+    FINISHED = 'finished',
+};

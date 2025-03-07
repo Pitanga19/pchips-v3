@@ -1,6 +1,6 @@
 // pchips-v3/db/utils/interfaces.ts
 
-import { EFriendStatus, EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, EActionType, ETableSize, EPlayerStatus } from "../dbIndex";
+import { EFriendStatus, EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, EActionType, ETableSize, EPlayerStatus, ETableStatus } from "../dbIndex";
 
 export interface IUser {
     id: number,
@@ -81,7 +81,7 @@ export interface ITable {
     id: number,
     roomId: number,
     tableNumber: number,
-    isPaused: boolean,
+    status: ETableStatus,
 };
 
 export interface IHand {

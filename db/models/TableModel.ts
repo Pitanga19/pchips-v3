@@ -1,13 +1,13 @@
 // pchips-v3/db/models/TableModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { ITable, sequelize } from '../dbIndex';
+import { ETableStatus, ITable, sequelize } from '../dbIndex';
 
 class TableModel extends Model {
     public id!: number;
     public roomId!: number;
     public tableNumber!: number;
-    public isPaused!: boolean;
+    public status!: ETableStatus;
 
     public createdAt!: Date;
     public updatedAt!: Date;
@@ -17,7 +17,7 @@ class TableModel extends Model {
             id: this.id,
             roomId: this.roomId,
             tableNumber: this.tableNumber,
-            isPaused: this.isPaused,
+            status: this.status,
         };
     };
 };
@@ -42,10 +42,10 @@ TableModel.init({
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    isPaused: {
-        type: DataTypes.BOOLEAN,
+    status: {
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: false,
+        defaultValue: ETableStatus.STARTING,
     },
 }, {
     sequelize,
