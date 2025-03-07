@@ -3,7 +3,7 @@
 import sequelize from "./database"; // Import sequelize object
 // ---------------- IMPORT MODELS   ---------------------------- //
 import {
-    UserModel, FriendModel, BlockModel, RoomModel, RoomUserModel, PlayerModel, SettingModel, SeatManagerModel, GameModel, RoundModel, HandModel, ActionModel, PotModel,
+    UserModel, FriendModel, BlockModel, RoomModel, RoomUserModel, PlayerModel, SettingsModel, SeatManagerModel, GameModel, RoundModel, HandModel, ActionModel, PotModel,
 } from "./dbIndex";
 
 const initDatabase = async () => { // Init database function
@@ -92,14 +92,14 @@ const initDatabase = async () => { // Init database function
         as: "room",
     });
 
-    // Game <-> Setting (1:1)
-    GameModel.hasOne(SettingModel, {
+    // Game <-> Settings (1:1)
+    GameModel.hasOne(SettingsModel, {
         foreignKey: "gameId",
         as: "settings",
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     });
-    SettingModel.belongsTo(GameModel, {
+    SettingsModel.belongsTo(GameModel, {
         foreignKey: "gameId",
         as: "game",
     });

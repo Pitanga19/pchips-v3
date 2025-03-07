@@ -1,20 +1,20 @@
-// pchips-v3/src/setting/core/SettingController.ts
+// pchips-v3/src/settings/core/SettingsController.ts
 
 import { Request, Response } from 'express';
-import { SettingService, TSettingBody, TSettingUpdateBody } from '../settingIndex';
+import { SettingsService, TSettingsBody, TSettingsUpdateBody } from '../configIndex';
 import { EResponseStatus, handleResponseStatus, TErrorList } from '../../common/commonIndex';
 
-class SettingController {
+class SettingsController {
     public static async create(req: Request, res: Response): Promise<void> {
         const errors: TErrorList = [];
-        const { gameId }: TSettingBody = req.body;
+        const { gameId }: TSettingsBody = req.body;
 
         try {
-            const { settingModel, settingData } = await SettingService.create(errors, gameId);
+            const { settingsModel, settingsData } = await SettingsService.create(errors, gameId);
             const expectedOk = EResponseStatus.CREATED;
             const status = handleResponseStatus(errors, expectedOk);
 
-            res.status(status).json({ settingModel, settingData, errors });
+            res.status(status).json({ settingsModel, settingsData, errors });
         } catch (error) {
             res.status(500).json({ error });
         };
@@ -22,14 +22,14 @@ class SettingController {
 
     public static async get(req: Request, res: Response): Promise<void> {
         const errors: TErrorList = [];
-        const { gameId }: TSettingBody = req.body;
+        const { gameId }: TSettingsBody = req.body;
 
         try {
-            const { settingModel, settingData } = await SettingService.get(errors, gameId);
+            const { settingsModel, settingsData } = await SettingsService.get(errors, gameId);
             const expectedOk = EResponseStatus.SUCCESS;
             const status = handleResponseStatus(errors, expectedOk);
             
-            res.status(status).json({ settingModel, settingData, errors });
+            res.status(status).json({ settingsModel, settingsData, errors });
         } catch (error) {
             res.status(500).json({ error });
         };
@@ -37,18 +37,18 @@ class SettingController {
 
     public static async update(req: Request, res: Response): Promise<void> {
         const errors: TErrorList = [];
-        const { gameId, updates }: TSettingUpdateBody = req.body;
+        const { gameId, updates }: TSettingsUpdateBody = req.body;
 
         try {
-            const { settingModel, settingData } = await SettingService.update(errors, gameId, updates);
+            const { settingsModel, settingsData } = await SettingsService.update(errors, gameId, updates);
             const expectedOk = EResponseStatus.SUCCESS;
             const status = handleResponseStatus(errors, expectedOk);
             
-            res.status(status).json({ settingModel, settingData, errors });
+            res.status(status).json({ settingsModel, settingsData, errors });
         } catch (error) {
             res.status(500).json({ error });
         };
     };
 };
 
-export default SettingController;
+export default SettingsController;

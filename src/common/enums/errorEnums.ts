@@ -21,7 +21,7 @@ export enum EErrorField {
     PARTY_USER = 'room-user',
     PARTY_ACTOR = 'room-actor',
     PARTY_TARGET = 'room-target',
-    SETTING = 'setting',
+    SETTINGS = 'settings',
 };
 
 export enum EErrorMessage {

@@ -35,7 +35,7 @@ export interface IRoomUser {
     isAdmin: boolean,
 };
 
-export interface ISetting {
+export interface ISettings {
     id: number,
     gameId: number,
     tableSize: ETableSize,

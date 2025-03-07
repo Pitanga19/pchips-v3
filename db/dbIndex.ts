@@ -13,7 +13,7 @@ export { default as PotModel } from './models/PotModel';
 export { default as PlayerModel } from './models/PlayerModel';
 export { default as RoundModel } from './models/RoundModel';
 export { default as SeatManagerModel } from './models/SeatManagerModel';
-export { default as SettingModel } from './models/SettingModel';
+export { default as SettingsModel } from './models/SettingsModel';
 export { default as UserModel } from './models/UserModel';
 export * from './utils/enums';
 export * from './utils/interfaces';

@@ -1,10 +1,10 @@
-// pchips-v3/db/models/SettingModel.ts
+// pchips-v3/db/models/SettingsModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { sequelize, ISetting } from '../dbIndex';
+import { sequelize, ISettings } from '../dbIndex';
 import { EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, ETableSize } from '../utils/enums';
 
-class SettingModel extends Model {
+class SettingsModel extends Model {
     public id!: number;
     public gameId!: number;
     public blindLevel!: EBlindLevel;
@@ -19,7 +19,7 @@ class SettingModel extends Model {
     public createdAt!: Date;
     public updatedAt!: Date;
 
-    public toJSON(): ISetting {
+    public toJSON(): ISettings {
         return {
             id: this.id,
             gameId: this.gameId,
@@ -35,7 +35,7 @@ class SettingModel extends Model {
     };
 };
 
-SettingModel.init({
+SettingsModel.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -96,15 +96,15 @@ SettingModel.init({
     },
 }, {
     sequelize,
-    modelName: 'SettingModel',
+    modelName: 'SettingsModel',
     tableName: 'settings',
     timestamps: true,
     hooks: {
-        // Use gameId as id for setting
-        beforeCreate: (setting: SettingModel) => {
-            setting.id = setting.gameId;
+        // Use gameId as id for settings
+        beforeCreate: (settings: SettingsModel) => {
+            settings.id = settings.gameId;
         },
     },
 });
 
-export default SettingModel;
+export default SettingsModel;
