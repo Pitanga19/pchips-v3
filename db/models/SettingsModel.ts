@@ -6,7 +6,7 @@ import { EBlindIncreaseType, ERebuyAddon, EStartingChipsType, EBlindLevel, ETabl
 
 class SettingsModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public blindLevel!: EBlindLevel;
     public tableSize!: ETableSize;
     public blindIncreaseType!: EBlindIncreaseType;
@@ -22,7 +22,7 @@ class SettingsModel extends Model {
     public toJSON(): ISettings {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             blindLevel: this.blindLevel,
             tableSize: this.tableSize,
             blindIncreaseType: this.blindIncreaseType,
@@ -41,11 +41,11 @@ SettingsModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",
@@ -100,9 +100,9 @@ SettingsModel.init({
     tableName: 'settings',
     timestamps: true,
     hooks: {
-        // Use gameId as id for settings
+        // Use tableId as id for settings
         beforeCreate: (settings: SettingsModel) => {
-            settings.id = settings.gameId;
+            settings.id = settings.tableId;
         },
     },
 });

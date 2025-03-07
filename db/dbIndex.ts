@@ -5,7 +5,7 @@ export { default as initDatabase } from './initDatabase';
 export { default as ActionModel } from './models/ActionModel';
 export { default as BlockModel } from './models/BlockModel';
 export { default as FriendModel } from './models/FriendModel';
-export { default as GameModel } from './models/GameModel';
+export { default as TableModel } from './models/TableModel';
 export { default as HandModel } from './models/HandModel';
 export { default as RoomModel } from './models/RoomModel';
 export { default as RoomUserModel } from './models/RoomUserModel';

@@ -6,7 +6,7 @@ import { EActionType } from '../utils/enums';
 
 class ActionModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public handId!: number;
     public roundId!: number;
     public playerId!: number;
@@ -20,7 +20,7 @@ class ActionModel extends Model {
     public toJSON(): IAction {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             handId: this.handId,
             roundId: this.roundId,
             playerId: this.playerId,
@@ -37,11 +37,11 @@ ActionModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

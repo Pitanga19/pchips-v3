@@ -8,7 +8,7 @@ class PlayerModel extends Model {
     public id!: number;
     public userId!: number;
     public roomId!: number;
-    public gameId!: number;
+    public tableId!: number;
     public seatNumber!: number;
     public status!: EPlayerStatus;
     public chips!: number;
@@ -22,7 +22,7 @@ class PlayerModel extends Model {
             id: this.id,
             userId: this.userId,
             roomId: this.roomId,
-            gameId: this.gameId,
+            tableId: this.tableId,
             seatNumber: this.seatNumber,
             status: this.status,
             chips: this.chips,
@@ -57,11 +57,11 @@ PlayerModel.init({
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

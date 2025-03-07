@@ -5,7 +5,7 @@ import { ISeatManager, sequelize } from '../dbIndex';
 
 class SeatManagerModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public dealerSeat!: number;
     public smallBlindSeat!: number;
     public bigBlindSeat!: number;
@@ -17,7 +17,7 @@ class SeatManagerModel extends Model {
     public toJSON(): ISeatManager {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             dealerSeat: this.dealerSeat,
             smallBlindSeat: this.smallBlindSeat,
             bigBlindSeat: this.bigBlindSeat,
@@ -32,11 +32,11 @@ SeatManagerModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

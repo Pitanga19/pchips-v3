@@ -5,7 +5,7 @@ import { IRound, sequelize } from '../dbIndex';
 
 class RoundModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public handId!: number;
     public roundCount!: number;
 
@@ -15,7 +15,7 @@ class RoundModel extends Model {
     public toJSON(): IRound {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             handId: this.handId,
             roundCount: this.roundCount,
         };
@@ -28,11 +28,11 @@ RoundModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

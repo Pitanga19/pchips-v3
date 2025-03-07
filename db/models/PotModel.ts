@@ -5,7 +5,7 @@ import { IPot, sequelize } from '../dbIndex';
 
 class PotModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public handId!: number;
     public roundId!: number;
     public potNumber!: number;
@@ -17,7 +17,7 @@ class PotModel extends Model {
     public toJSON(): IPot {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             handId: this.handId,
             roundId: this.roundId,
             potNumber: this.potNumber,
@@ -32,11 +32,11 @@ PotModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

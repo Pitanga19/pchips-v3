@@ -37,7 +37,7 @@ export interface IRoomUser {
 
 export interface ISettings {
     id: number,
-    gameId: number,
+    tableId: number,
     tableSize: ETableSize,
     blindLevel: EBlindLevel,
     blindIncreaseType: EBlindIncreaseType,
@@ -50,7 +50,7 @@ export interface ISettings {
 
 export interface ISeatManager {
     id: number,
-    gameId: number,
+    tableId: number,
     dealerSeat: number,
     smallBlindSeat: number,
     bigBlindSeat: number,
@@ -61,7 +61,7 @@ export interface IPlayer {
     id: number,
     userId: number,
     roomId: number,
-    gameId: number,
+    tableId: number,
     seatNumber: number,
     status: EPlayerStatus,
     chips: number,
@@ -70,14 +70,14 @@ export interface IPlayer {
 
 export interface IPot {
     id: number,
-    gameId: number,
+    tableId: number,
     handId: number,
     roundId: number,
     potNumber: number,
     chips: number,
 };
 
-export interface IGame {
+export interface ITable {
     id: number,
     roomId: number,
     tableNumber: number,
@@ -86,20 +86,20 @@ export interface IGame {
 
 export interface IHand {
     id: number,
-    gameId: number,
+    tableId: number,
     handCount: number,
 };
 
 export interface IRound {
     id: number,
-    gameId: number,
+    tableId: number,
     handId: number,
     roundCount: number,
 };
 
 export interface IAction {
     id: number,
-    gameId: number,
+    tableId: number,
     handId: number,
     roundId: number,
     playerId: number,

@@ -5,7 +5,7 @@ import { IHand, sequelize } from '../dbIndex';
 
 class HandModel extends Model {
     public id!: number;
-    public gameId!: number;
+    public tableId!: number;
     public handCount!: number;
 
     public createdAt!: Date;
@@ -14,7 +14,7 @@ class HandModel extends Model {
     public toJSON(): IHand {
         return {
             id: this.id,
-            gameId: this.gameId,
+            tableId: this.tableId,
             handCount: this.handCount,
         };
     };
@@ -26,11 +26,11 @@ HandModel.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    gameId: {
+    tableId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "games",
+            model: "tables",
             key: "id",
         },
         onDelete: "CASCADE",

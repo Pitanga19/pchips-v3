@@ -1,9 +1,9 @@
-// pchips-v3/db/models/GameModel.ts
+// pchips-v3/db/models/TableModel.ts
 
 import { Model, DataTypes } from 'sequelize';
-import { IGame, sequelize } from '../dbIndex';
+import { ITable, sequelize } from '../dbIndex';
 
-class GameModel extends Model {
+class TableModel extends Model {
     public id!: number;
     public roomId!: number;
     public tableNumber!: number;
@@ -12,7 +12,7 @@ class GameModel extends Model {
     public createdAt!: Date;
     public updatedAt!: Date;
 
-    public toJSON(): IGame {
+    public toJSON(): ITable {
         return {
             id: this.id,
             roomId: this.roomId,
@@ -22,7 +22,7 @@ class GameModel extends Model {
     };
 };
 
-GameModel.init({
+TableModel.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -49,9 +49,9 @@ GameModel.init({
     },
 }, {
     sequelize,
-    modelName: 'GameModel',
-    tableName: 'games',
+    modelName: 'TableModel',
+    tableName: 'tables',
     timestamps: true,
 });
 
-export default GameModel;
+export default TableModel;
