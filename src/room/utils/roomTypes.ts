@@ -3,6 +3,7 @@
 import { RoomModel, RoomUserModel, IRoom, IRoomUser } from '../../../db/dbIndex';
 import { TDeleteReturn } from '../../common/commonIndex';
 import { TUserService, TUserList, TUserModel, TUserData } from '../../auth/authIndex';
+import { TTableList } from '../../config/configIndex';
 
 export type TRoomModel = RoomModel | null;
 export type TRoomData = IRoom | null;
@@ -58,6 +59,8 @@ export type TRoomUserDelete = TDeleteReturn;
 export type TUserRooms = TUserService & TRoomList;
 
 export type TRoomMembers = TRoomService & TUserList;
+
+export type TRoomTables = TRoomService & TTableList;
 
 export type TRoomManagementFindData = {
     actorId?: number,
@@ -140,6 +143,10 @@ export type TUserRoomsBody = {
 };
 
 export type TRoomMembersBody = {
+    roomId: number,
+};
+
+export type TRoomTablesBody = {
     roomId: number,
 };
 

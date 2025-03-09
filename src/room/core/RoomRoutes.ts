@@ -75,4 +75,9 @@ router.get('/room-owners', async (req: Request, res: Response) => {
     await RoomController.getRoomOwners(req, res);
 });
 
+// Get tables of a room
+router.get('/room-tables', async (req: Request, res: Response) => {
+    await RoomController.getRoomTables(req, res);
+});
+
 export default router;

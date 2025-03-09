@@ -3,6 +3,7 @@
 import { Request, Response } from 'express';
 import {
     RoomManagementService, TRoomCreateBody, TRoomManageBody, TRoomUpdateBody, TRoomMembersBody, TRoomSelfBody, TUserRoomsBody,
+    TRoomTablesBody,
 } from '../roomIndex';
 import { EResponseStatus, handleResponseStatus, TErrorList } from '../../common/commonIndex';
 
@@ -212,6 +213,21 @@ class RoomController {
             const status = handleResponseStatus(errors, expectedOk);
 
             res.status(status).json({ roomModel, roomData, userModelList, userDataList, errors });
+        } catch (error) {
+            res.status(500).json({ error });
+        };
+    };
+
+    public static async getRoomTables(req: Request, res: Response): Promise<void> {
+        const errors: TErrorList = [];
+        const { roomId }: TRoomTablesBody = req.body;
+
+        try {
+            const { roomModel, roomData, tableModelList, tableDataList } = await RoomManagementService.getRoomTables(errors, roomId);
+            const expectedOk = EResponseStatus.SUCCESS;
+            const status = handleResponseStatus(errors, expectedOk);
+
+            res.status(status).json({ roomModel, roomData, tableModelList, tableDataList, errors });
         } catch (error) {
             res.status(500).json({ error });
         };

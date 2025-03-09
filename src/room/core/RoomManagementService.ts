@@ -3,9 +3,11 @@
 import {
     RoomService, RoomUserService, validateRoomName, validateIsOwnerOrAdmin, validateIsOwner, TRoomUserUpdates, TRoomManagement, TRoomModel, TRoomData, TRoomUserModel, TRoomUserData, TRoomManageTarget, TRoomManageDelete, TRoomManagementFindData, TRoomManageLeave, TUserRooms, TRoomModelList, TRoomDataList, TRoomMembers, ERoomManagementFindType,
     TRoomUpdates,
+    TRoomTables,
 } from '../roomIndex';
 import { TErrorList, addToResponseErrors, EErrorField, EErrorMessage } from '../../common/commonIndex';
 import { TUserData, TUserDataList, TUserModel, TUserModelList, UserService } from '../../auth/authIndex';
+import { TableService, TTableDataList, TTableModelList } from '../../config/configIndex';
 
 class RoomManagementService {
     private static async find(errors: TErrorList, data: TRoomManagementFindData, findType: ERoomManagementFindType, shouldExistRoomTarget: boolean = false) {
@@ -354,6 +356,20 @@ class RoomManagementService {
         };
 
         return { roomModel, roomData, userModelList, userDataList };
+    };
+
+    public static async getRoomTables(errors: TErrorList, roomId: number): Promise<TRoomTables> {
+        const { roomModel, roomData } = await RoomService.get(errors, roomId);
+        let tableModelList: TTableModelList = [];
+        let tableDataList: TTableDataList = [];
+
+        if (errors.length === 0 && roomModel && roomData) {
+            const tableListResult = await TableService.getListByRoom(errors, roomId);
+            tableModelList = tableListResult.tableModelList;
+            tableDataList = tableListResult.tableDataList;
+        };
+
+        return { roomModel, roomData, tableModelList, tableDataList };
     };
 };
 
