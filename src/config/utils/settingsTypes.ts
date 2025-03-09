@@ -1,4 +1,4 @@
-// pchips-v3/src/settings/utils/settingsTypes.ts
+// pchips-v3/src/config/utils/settingsTypes.ts
 
 import { ISettings, SettingsModel } from "../../../db/dbIndex";
 

@@ -22,6 +22,7 @@ export enum EErrorField {
     PARTY_ACTOR = 'room-actor',
     PARTY_TARGET = 'room-target',
     SETTINGS = 'settings',
+    TABLE = 'table',
 };
 
 export enum EErrorMessage {
@@ -39,7 +40,7 @@ export enum EErrorMessage {
     WRONG_SAFEWORD = 'wrong-safeword',                      // 401 Unauthorized
     INSUFFICIENT_PERMISSIONS = 'insufficient-permissions',  // 401 Unauthorized
     NOT_FOUND = 'not-found',                                // 404 Not Found
-    ALREADY_EXIST = 'already-exists',                      // 409 Conflict
+    ALREADY_EXIST = 'already-exists',                       // 409 Conflict
     SAME_USER = 'same-user',                                // 409 Conflict
     IS_OWNER = 'is-owner',                                  // 409 Conflict
     INTERNAL_SERVER_ERROR = 'internal-server-error',        // 500 Internal Server Error
