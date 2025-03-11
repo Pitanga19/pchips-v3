@@ -1,6 +1,6 @@
 // pchips-v3/src/config/utils/gameTypes.ts
 
-import { ITable, TableModel } from "../../../db/dbIndex";
+import { ETableStatus, ITable, TableModel } from "../../../db/dbIndex";
 import { TDeleteReturn } from "../../common/commonIndex";
 
 export type TTableModel = TableModel | null;
@@ -25,4 +25,4 @@ export type TTableRoomService = {
 
 export type TTableDelete = TDeleteReturn;
 
-export type TTableUpdates = { isPaused: boolean };
+export type TTableUpdates = { status: ETableStatus };

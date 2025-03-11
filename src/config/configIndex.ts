@@ -6,3 +6,4 @@ export { default as ConfigService } from './core/ConfigService';
 export * from './utils/settingsTypes';
 export * from './utils/tableTypes';
 export * from './utils/configUtils';
+export * from './utils/configTypes';
