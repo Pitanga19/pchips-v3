@@ -23,6 +23,9 @@ export enum EErrorField {
     PARTY_TARGET = 'room-target',
     SETTINGS = 'settings',
     TABLE = 'table',
+    PLAYER = 'player',
+    POT = 'pot',
+    POT_PLAYER = 'pot-player',
 };
 
 export enum EErrorMessage {
