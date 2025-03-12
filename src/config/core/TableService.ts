@@ -1,7 +1,7 @@
 // pchips-v3/src/config/core/TableService.ts
 
 import { ETableStatus, TableModel } from '../../../db/dbIndex';
-import { TTableData, TTableDelete, TTableModel, TTableRoomService, TTableService, TTableUpdates } from '../configIndex';
+import { TTableData, TTableDelete, TTableList, TTableModel, TTableRoomService, TTableService, TTableUpdates } from '../configIndex';
 import { addToResponseErrors, EErrorField, EErrorMessage, TErrorList } from '../../common/commonIndex';
 import { RoomManagementService } from '../../room/roomIndex';
 
@@ -64,6 +64,13 @@ class TableService {
         };
 
         return { tableModel, tableData };
+    };
+
+    public static async getListByRoom(errors: TErrorList, roomId: number): Promise<TTableList> {
+        const tableModelList = await TableModel.findAll({ where: { roomId } });
+        const tableDataList = tableModelList.map(t => t.toJSON());
+
+        return { tableModelList, tableDataList };
     };
 
     public static async update(errors: TErrorList, tableId: number, updates: TTableUpdates): Promise<TTableService> {
