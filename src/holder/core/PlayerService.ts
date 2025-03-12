@@ -69,6 +69,17 @@ class PlayerService {
         return { playerModel, playerData };
     };
 
+    public static async getById(errors: TErrorList, playerId: number): Promise<TPlayerService> {
+        const playerModel = await PlayerModel.findByPk(playerId);
+        let playerData: TPlayerData = null;
+
+        this.validateFindResult(errors, { playerModel, playerData }, true);
+
+        if (errors.length === 0 && playerModel) playerData = playerModel.toJSON();
+
+        return { playerModel, playerData };
+    };
+
     public static async update(errors: TErrorList, data: TPlayerServiceData): Promise<TPlayerService> {
         const { playerModel } = await this.get(errors, data);
         let playerData: TPlayerData = null;
