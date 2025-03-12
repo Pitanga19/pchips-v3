@@ -9,6 +9,7 @@ class PotModel extends Model {
     public handId!: number;
     public roundId!: number;
     public potNumber!: number;
+    public isActive!: boolean;
     public chips!: number;
 
     public createdAt!: Date;
@@ -21,6 +22,7 @@ class PotModel extends Model {
             handId: this.handId,
             roundId: this.roundId,
             potNumber: this.potNumber,
+            isActive: this.isActive,
             chips: this.chips,
         };
     };
@@ -66,9 +68,15 @@ PotModel.init({
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+    },
     chips: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
     },
 }, {
     sequelize,

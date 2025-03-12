@@ -74,6 +74,7 @@ export interface IPot {
     handId: number,
     roundId: number,
     potNumber: number,
+    isActive: boolean,
     chips: number,
 };
 
