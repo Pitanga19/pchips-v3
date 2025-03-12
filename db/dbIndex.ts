@@ -11,6 +11,7 @@ export { default as RoomModel } from './models/RoomModel';
 export { default as RoomUserModel } from './models/RoomUserModel';
 export { default as PotModel } from './models/PotModel';
 export { default as PlayerModel } from './models/PlayerModel';
+export { default as PotPlayerModel } from './models/PotPlayerModel';
 export { default as RoundModel } from './models/RoundModel';
 export { default as SeatManagerModel } from './models/SeatManagerModel';
 export { default as SettingsModel } from './models/SettingsModel';

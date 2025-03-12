@@ -77,6 +77,12 @@ export interface IPot {
     chips: number,
 };
 
+export interface IPotPlayer {
+    id: number,
+    potId: number,
+    playerId: number,
+};
+
 export interface ITable {
     id: number,
     roomId: number,

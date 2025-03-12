@@ -140,6 +140,18 @@ const initDatabase = async () => { // Init database function
         as: "room",
     });
 
+    // Pot <-> Player (1:N)
+    PotModel.hasMany(PlayerModel, {
+        foreignKey: "potId",
+        as: "players",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    });
+    PlayerModel.belongsTo(PotModel, {
+        foreignKey: "potId",
+        as: "pot",
+    });
+
     // Table <-> Player (1:N)
     TableModel.hasMany(PlayerModel, {
         foreignKey: "tableId",
