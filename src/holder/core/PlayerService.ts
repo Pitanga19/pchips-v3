@@ -45,7 +45,11 @@ class PlayerService {
             };
 
             playerModel = await PlayerModel.create(data);
-            playerData = playerModel.toJSON();
+            if (playerModel) {
+                playerData = playerModel.toJSON();
+            } else {
+                addToResponseErrors(errors, EErrorField.PLAYER, EErrorMessage.INTERNAL_SERVER_ERROR);
+            };
         };
 
         return { playerModel, playerData };
