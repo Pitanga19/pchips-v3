@@ -61,6 +61,7 @@ export enum EPlayerStatus {
     WAITING_NEXT_HAND = 'waiting-next-hand',
     WAITING_BB = 'waiting-bb',
     AFK = 'afk',
+    STANDING = 'standing',
 };
 
 export enum ETableStatus {

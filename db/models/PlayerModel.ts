@@ -9,8 +9,8 @@ class PlayerModel extends Model {
     public userId!: number;
     public roomId!: number;
     public tableId!: number;
-    public seatNumber!: number;
     public status!: EPlayerStatus;
+    public seatNumber!: number | null;
     public chips!: number;
     public bettingChips!: number;
 
@@ -23,8 +23,8 @@ class PlayerModel extends Model {
             userId: this.userId,
             roomId: this.roomId,
             tableId: this.tableId,
-            seatNumber: this.seatNumber,
             status: this.status,
+            seatNumber: this.seatNumber,
             chips: this.chips,
             bettingChips: this.bettingChips,
         };
@@ -67,15 +67,16 @@ PlayerModel.init({
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     },
-    seatNumber: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
     status: {
         type: DataTypes.ENUM,
         values: Object.values(EPlayerStatus),
         allowNull: false,
-        defaultValue: EPlayerStatus.WAITING_NEXT_HAND,
+        defaultValue: EPlayerStatus.STANDING,
+    },
+    seatNumber: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: null,
     },
     chips: {
         type: DataTypes.INTEGER,

@@ -62,8 +62,8 @@ export interface IPlayer {
     userId: number,
     roomId: number,
     tableId: number,
-    seatNumber: number,
     status: EPlayerStatus,
+    seatNumber: number | null,
     chips: number,
     bettingChips: number,
 };
