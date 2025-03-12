@@ -6,8 +6,6 @@ import { IPot, sequelize } from '../dbIndex';
 class PotModel extends Model {
     public id!: number;
     public tableId!: number;
-    public handId!: number;
-    public roundId!: number;
     public potNumber!: number;
     public isActive!: boolean;
     public chips!: number;
@@ -19,8 +17,6 @@ class PotModel extends Model {
         return {
             id: this.id,
             tableId: this.tableId,
-            handId: this.handId,
-            roundId: this.roundId,
             potNumber: this.potNumber,
             isActive: this.isActive,
             chips: this.chips,
@@ -39,26 +35,6 @@ PotModel.init({
         allowNull: false,
         references: {
             model: "tables",
-            key: "id",
-        },
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-    },
-    handId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: "hands",
-            key: "id",
-        },
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-    },
-    roundId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: "rounds",
             key: "id",
         },
         onDelete: "CASCADE",

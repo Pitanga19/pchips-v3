@@ -71,8 +71,6 @@ export interface IPlayer {
 export interface IPot {
     id: number,
     tableId: number,
-    handId: number,
-    roundId: number,
     potNumber: number,
     isActive: boolean,
     chips: number,
