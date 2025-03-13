@@ -3,7 +3,7 @@
 import { EStartingChipsType, PlayerModel } from "../../../db/dbIndex";
 import { addToResponseErrors, EErrorField, EErrorMessage, TErrorList } from "../../common/commonIndex";
 import { SettingsService } from "../../config/configIndex";
-import { TPlayerData, TPlayerServiceData, TPlayerModel, TPlayerService, TPlayerDelete } from "../holderIndex";
+import { TPlayerData, TPlayerServiceData, TPlayerModel, TPlayerService, TPlayerDelete, TPlayerList } from "../holderIndex";
 
 class PlayerService {
     private static async findPlayer(errors: TErrorList, data: TPlayerServiceData): Promise<TPlayerService> {
@@ -78,6 +78,13 @@ class PlayerService {
         if (errors.length === 0 && playerModel) playerData = playerModel.toJSON();
 
         return { playerModel, playerData };
+    };
+
+    public static async getListByTable(errors: TErrorList, tableId: number): Promise<TPlayerList> {
+        const playerModelList = await PlayerModel.findAll({ where: { tableId } });
+        const playerDataList = playerModelList.map(p => p.toJSON());
+
+        return { playerModelList, playerDataList };
     };
 
     public static async update(errors: TErrorList, data: TPlayerServiceData): Promise<TPlayerService> {

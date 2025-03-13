@@ -14,6 +14,11 @@ export type TPlayerService = {
     playerData: TPlayerData,
 };
 
+export type TPlayerList = {
+    playerModelList: TPlayerModelList,
+    playerDataList: TPlayerDataList,
+};
+
 export type TPlayerDelete = TDeleteReturn;
 
 export type TPlayerServiceData = {
